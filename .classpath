@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="/home/nelson/workspace/Proyectosjava/JDBGM/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry kind="lib" path="/home/nelson/workspace/java jars/sqlitejdbc-v056.jar"/>
+	<classpathentry kind="lib" path="/home/nelson/workspace/java jars/postgresql-8.4-701.jdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
