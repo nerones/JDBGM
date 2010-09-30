@@ -1,0 +1,5 @@
+Alumno(idAlumno,dni,nombre,apellido,telefono,direccion,fechaNacimiento,correoE)
+AñoLectivo(idAA,año,idAlumno,curso)
+Materia(idMateria,nombreM)
+Mateias por grado(idAA,adMateria,idMP)
+Asistencia(idMP,fecha,asistencia)
