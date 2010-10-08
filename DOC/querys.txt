@@ -1,0 +1,1 @@
+SELECT CONCAT( a.nombre,' ',a.apellido) as nombre,al.anio FROM alumno a inner join aniolectivo al on a.idAl=al.idAlumno where al.anio='2010-01-01' LIMIT 0,1000
