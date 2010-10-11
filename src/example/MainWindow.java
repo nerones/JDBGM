@@ -14,6 +14,11 @@ import javax.swing.JFrame;
 public class MainWindow extends JFrame {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2042788110055002441L;
+
 	public MainWindow(String title) {
 		super(title);
 		setLayout(new GridLayout(1,0));

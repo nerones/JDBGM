@@ -1,15 +1,15 @@
 package com.nelsonx.jdbgm;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
 import com.mysql.jdbc.Statement;
-
-import java.io.*;
 
 public class ExamplePrev {
 	static Random ranGene = new Random();;
@@ -115,7 +115,6 @@ public class ExamplePrev {
 				String mes = "1";//String.valueOf(ranGene.nextInt(12));
 				String dia = "1";//String.valueOf(ranGene.nextInt(28));
 				date = anio + "/" + mes + "/" + dia;
-				int a = ranGene.nextInt(idsalumnos.size());
 				int b = ranGene.nextInt(idsgrados.size());
 				st.executeUpdate("insert into aniolectivo(idAlumno,idgrado,anio) values ("+idsalumnos.elementAt(i)+","+idsgrados.elementAt(b)+",'"+date+"')");
 			}

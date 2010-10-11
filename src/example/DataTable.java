@@ -4,7 +4,6 @@
 package example;
 
 import java.awt.Dimension;
-import java.awt.ScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -35,7 +34,8 @@ public class DataTable {
 						new Boolean(true) },
 				{ "Joe", "Brown", "Pool", new Integer(10), new Boolean(false) } };
 
-		table = new JTable(data, columnNames);
+		//table = new JTable(data, columnNames);
+		table = new JTable(new MyTableModel());
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
 
