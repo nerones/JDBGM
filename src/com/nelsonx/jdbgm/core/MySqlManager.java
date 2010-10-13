@@ -15,15 +15,21 @@ import com.sun.rowset.CachedRowSetImpl;
  * @author Nelson Efrain A. Cruz
  *
  */
-public class MySqlManager {
+public class MySqlManager implements GenericManager{
 	
+	protected ExceptionHandler handler;
 	protected Connection connection;
 	protected Statement st;
 	protected String location, user, password, locationURL;
 	protected final String jdbc = "jdbc:mysql://";
 	
-	public MySqlManager(String location, String user, String password) throws ClassNotFoundException {
-		Class.forName("com.mysql.jdbc.Driver");
+	public MySqlManager(String location, String user, String password) {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.location = location;
 		this.user = user;
 		this.password = password;
@@ -31,20 +37,30 @@ public class MySqlManager {
 		// TODO Auto-generated constructor stub
 	}
 	
-	protected Connection getConection(String location, String user, String password) throws Exception{
+	protected Connection getConection(String location, String user, String password) {
 		if (connection == null) {
 			//Class.forName("com.mysql.jdbc.Driver");
 			String url = "jdbc:mysql://" + location;
 			//Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/world", "tester", "tester");
 			System.out.println(url);
-			connection = DriverManager.getConnection(url,user,password);
+			try {
+				connection = DriverManager.getConnection(url,user,password);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return connection;
 		
 	}
-	protected Connection getConnection() throws SQLException{
+	public Connection getConnection() {
 		if (connection == null) {
-			connection = DriverManager.getConnection(locationURL, user, password);
+			try {
+				connection = DriverManager.getConnection(locationURL, user, password);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return connection;
 	}
@@ -56,11 +72,16 @@ public class MySqlManager {
 		
 	}
 	
-	public void beginConnection() throws SQLException {
+	public void beginConnection() {
 		/*
 		 * Utilizado para demarcar el inicio de una secuencia de 
 		 */
-		getConnection().setAutoCommit(false);
+		try {
+			getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void endConnection(){
@@ -132,30 +153,57 @@ public class MySqlManager {
 		return resultset;
 	}
 	
-	public int updateAndClose(String sql) throws Exception{
+	public int updateAndClose(String sql) {
 		/*
 		 * No se si estara bien, o si sera util, esto hay que LEER MAS!
 		 */
 		int result = -1;
-		Connection connection = DriverManager.getConnection(locationURL, user, password);
-		Statement stat = connection.createStatement();
-		result = stat.executeUpdate(sql);
-		stat.close();
-		getConnection().close();
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(locationURL, user, password);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Statement stat;
+		try {
+			stat = connection.createStatement();
+			result = stat.executeUpdate(sql);
+			stat.close();
+			getConnection().close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return result;
 	}
 	
-	public CachedRowSet queryAndClose(String sql) throws SQLException {
+	public CachedRowSet queryAndClose(String sql) {
 		/*
 		 * Lo mismo que para updateAndClose
 		 */
-		Connection connection = DriverManager.getConnection(locationURL, user, password);
-		Statement stat = connection.createStatement();
-		ResultSet rs =stat.executeQuery(sql);
-		CachedRowSetImpl crs = new CachedRowSetImpl();
-		crs.populate(rs);
-		stat.close();
-		getConnection().close();
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(locationURL, user, password);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Statement stat;
+		CachedRowSetImpl crs = null;
+		try {
+			stat = connection.createStatement();
+			ResultSet rs =stat.executeQuery(sql);
+			crs = new CachedRowSetImpl();
+			crs.populate(rs);
+			stat.close();
+			getConnection().close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return crs;
 	}
 	
@@ -165,6 +213,22 @@ public class MySqlManager {
 		} finally {
 			this.connection.close();
 		}
+	}
+	/**
+	 * 
+	 */
+	@Override
+	public void setExceptionHandler() {
+		// TODO Auto-generated method stub
+		
+	}
+	/**
+	 * 
+	 */
+	@Override
+	public void getExceptionHandler() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 
