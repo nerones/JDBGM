@@ -4,53 +4,58 @@
 package example;
 
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import com.sun.rowset.CachedRowSetImpl;
 
 /**
  * @author Nelson Efrain A. Cruz
  * 
  */
-public class DataTable {
+public class JTableHolder {
 
-	private static final boolean DEBUG = false;
 	final JTable table;
 	JScrollPane scrollPane;
+	DataObtainer data;
 
-	public DataTable() {
-		String[] columnNames = { "First Name", "Last Name", "Sport",
-				"# of Years", "Vegetarian" };
-
-		Object[][] data = {
-				{ "Kathy", "Smith", "Snowboarding", new Integer(5),
-						new Boolean(false) },
-				{ "John", "Doe", "Rowing", new Integer(3), new Boolean(true) },
-				{ "Sue", "Black", "Knitting", new Integer(2),
-						new Boolean(false) },
-				{ "Jane", "White", "Speed reading", new Integer(20),
-						new Boolean(true) },
-				{ "Joe", "Brown", "Pool", new Integer(10), new Boolean(false) } };
-
+	public JTableHolder(DataObtainer data) {
 		//table = new JTable(data, columnNames);
-		table = new JTable(new MyTableModel());
+		this.data = data;
+		ResultSet rs = data.getAllStudentList();
+		CachedRowSetImpl crs = null;
+		try {
+			crs = new CachedRowSetImpl();
+			crs.populate(rs);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		table = new JTable(new DBTable(crs));
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
 
-		if (DEBUG) {
-			table.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					printDebugData(table);
-				}
-			});
-		}
-
-		// Create the scroll pane and add the table to it.
 		scrollPane = new JScrollPane(table);
-		// TODO Auto-generated constructor stub
+
 	}
+	
+	public void changeData(String year, int grade){
+		ResultSet rs = data.listStudenbyYearGrade(year, grade);
+		CachedRowSetImpl crs = null;
+		try {
+			crs = new CachedRowSetImpl();
+			crs.populate(rs);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		((DBTable)(table.getModel())).setCachedRowSet(crs);
+	}
+	
 	private void printDebugData(JTable table) {
         int numRows = table.getRowCount();
         int numCols = table.getColumnCount();
