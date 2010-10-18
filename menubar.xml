@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- version 1.0 -->
+<!-- descripcion de la barra de herramientas-->
+<menubar>
+    <menu name="Archivo">
+        <menuitem>Abrir</menuitem>
+        <menuitem>Guardar</menuitem>
+        <menuitem>Salir</menuitem>
+    </menu>
+    <menu name="Herramienta">
+        <menuitem>Graficar</menuitem>
+        <menuitem>Exportar</menuitem>
+        <menuitem>Analizar</menuitem>
+    </menu>
+    <menu name="Ayuda">
+        <menuitem>Soporte</menuitem>
+        <menuitem>Acerca de</menuitem>
+    </menu>
+</menubar>

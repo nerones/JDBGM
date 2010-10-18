@@ -30,7 +30,7 @@ public class MainWindow extends JFrame {
 		super(title);
 		setLayout(new GridLayout(1,0));
 		data = new DataObtainer("tester", "localhost/AsistenciaAlumnos", "tester");
-        BarraMenu bar = new BarraMenu(null);
+        JMenuBarHolder bar = new JMenuBarHolder(null);
         scrollPane = new JTableHolder(data);
         scrolledjtree = new JTreeHolder(data, scrollPane);
         setJMenuBar(bar.getBarra());
@@ -42,7 +42,7 @@ public class MainWindow extends JFrame {
         add(splitPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-		setSize(600, 800);
+		setSize(800, 800);
 		
     }
 	
