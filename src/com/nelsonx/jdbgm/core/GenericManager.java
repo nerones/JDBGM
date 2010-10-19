@@ -9,8 +9,11 @@ import java.sql.ResultSet;
 import javax.sql.rowset.CachedRowSet;
 
 /**
+ * A set of methods to manage a persistence layer implemented whit a 
+ * generic RDBMS. These methods act as a basis for implementing a specific manager 
+ * 
  * @author Nelson Efrain A. Cruz
- *
+ * @version 0.5
  */
 public interface GenericManager {
 	

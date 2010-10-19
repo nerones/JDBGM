@@ -1,7 +1,11 @@
 package example;
 
 import javax.swing.JLabel;
-
+/**
+ * 
+ * @author Nelson Efrain A. Cruz
+ *
+ */
 public class InfoBarHolder {
 	JLabel infoBar;
 	
