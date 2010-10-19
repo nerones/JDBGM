@@ -56,6 +56,10 @@ public class JTableHolder {
 		((DBTable)(table.getModel())).setCachedRowSet(crs);
 	}
 	
+	public int countRows() {
+		return table.getModel().getRowCount();
+	}
+	
 	private void printDebugData(JTable table) {
         int numRows = table.getRowCount();
         int numCols = table.getColumnCount();

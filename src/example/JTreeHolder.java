@@ -5,8 +5,6 @@ package example;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -18,17 +16,17 @@ import javax.swing.tree.DefaultTreeModel;
  * @author Nelson Efrain A. Cruz
  *
  */
-public class JTreeHolder implements TreeSelectionListener{
+public class JTreeHolder {
 	
 	private JScrollPane scrollpane;
 	private DataObtainer data;
 	private JTree tree;
 	private DefaultTreeModel model;
-	private JTableHolder table;
+	private TreeSelListener listener;
 	
-	public JTreeHolder(DataObtainer data, JTableHolder table) {
-		this.table = table;
+	public JTreeHolder(DataObtainer data, TreeSelListener listener) {
 		this.data = data;
+		this.listener = listener;
 		makeTree();
 	    scrollpane = new JScrollPane(tree);
 	}
@@ -41,7 +39,7 @@ public class JTreeHolder implements TreeSelectionListener{
 		DefaultMutableTreeNode mainnode = new DefaultMutableTreeNode("Mis cursos");
 	    model = new DefaultTreeModel(mainnode);
 	    tree = new JTree(model);
-	    tree.addTreeSelectionListener(this);
+	    tree.addTreeSelectionListener(listener);
 	    String[] years = data.listYears();
 	    Grade[] gradesByYear;
 	    for (int i = 0; i < years.length; i++) {
@@ -56,22 +54,27 @@ public class JTreeHolder implements TreeSelectionListener{
 	    
 	}
 
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-        tree.getLastSelectedPathComponent();
-
-		if (node == null)
-			return;
-		
-		
-		Object[] path = node.getUserObjectPath(); 
-		if (node.isLeaf()) {
-			String year1 = (String) path[1];
-			int idgrade = ((Grade)path[2]).getId();
-			table.changeData(year1, idgrade );
-			
-		} 
+	
+	public JTree getJTree() {
+		return tree;
 	}
+//	@Override
+//	public void valueChanged(TreeSelectionEvent e) {
+//		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+//        tree.getLastSelectedPathComponent();
+//
+//		if (node == null)
+//			return;
+//		
+//		
+//		Object[] path = node.getUserObjectPath(); 
+//		if (node.isLeaf()) {
+//			String year1 = (String) path[1];
+//			int idgrade = ((Grade)path[2]).getId();
+//			table.changeData(year1, idgrade );
+//			int rowsAfected = table.countRows();
+//			infobar.setInfo(rowsAfected+" filas afectadas");
+//		} 
+//	}
 
 }

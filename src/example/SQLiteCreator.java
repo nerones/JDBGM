@@ -1,4 +1,4 @@
-package com.nelsonx.jdbgm;
+package example;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Random;
 import java.util.Vector;
 
-import com.mysql.jdbc.Statement;
 
-public class ExamplePrev {
+public class SQLiteCreator {
 	static Random ranGene = new Random();;
 
 	static Vector<String> openFile(String vr) throws IOException {
@@ -28,29 +28,29 @@ public class ExamplePrev {
 
 	public static void main(String[] args) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("org.sqlite.JDBC");
 			Connection conexion = DriverManager.getConnection(
-					"jdbc:mysql://localhost/AsistenciaAlumnos", "tester",
-					"tester");
+					"jdbc:sqlite:AsistenciaAlumnos.db");
+					//, "tester", "tester");
 			Statement st = (Statement) conexion.createStatement();
-			st.executeUpdate("CREATE TABLE if not exists alumno (idAl INT AUTO_INCREMENT, PRIMARY KEY(idAl),"
+			st.executeUpdate("CREATE TABLE if not exists alumno (idAl INT AUTO_INCREMENT PRIMARY KEY,"
 					+ "dni int,fechaNacimiento date, correoe varchar(40), direccion varchar(40),"
 					+ " nombre VARCHAR(40), apellido VARCHAR(40), telefono VARCHAR(20))");
 
-			st.executeUpdate("create table if not exists materia (idMateria INT AUTO_INCREMENT, PRIMARY KEY(idMateria),"
+			st.executeUpdate("create table if not exists materia (idMateria INT AUTO_INCREMENT PRIMARY KEY,"
 					+ "nombre varchar(20))");
 
-			st.executeUpdate("create table if not exists aniolectivo (idAA INT AUTO_INCREMENT, PRIMARY KEY(idAA),"
-					+ "idAlumno int, foreign key(idAlumno) references alumno(idAlumno), idgrado int, anio date)");
+			st.executeUpdate("create table if not exists aniolectivo (idAA INT AUTO_INCREMENT PRIMARY KEY,"
+					+ "idAlumno int, idgrado int, anio date, foreign key(idAlumno) references alumno(idAlumno))");
 
-			st.executeUpdate("create table if not exists materiasxanio (idMP INT AUTO_INCREMENT, PRIMARY KEY(idMP),"
-					+ "idAA int, foreign key(idAA) references aniolectivo(idAA), idMateria int, "
-					+ "foreign key(idMateria) references materia(idMateria))");
+			st.executeUpdate("create table if not exists materiasxanio (idMP INT AUTO_INCREMENT PRIMARY KEY,"
+					+ "idAA int, idMateria int, "
+					+ "foreign key(idMateria) references materia(idMateria), foreign key(idAA) references aniolectivo(idAA))");
 
 			st.executeUpdate("create table if not exists asistencia (fecha date, asistencia int,"
 					+ "idMP int, foreign key(idMP) references materiasxanio(idMP))");
 
-			st.executeUpdate("create table if not exists grados (idgrado INT AUTO_INCREMENT, PRIMARY KEY(idgrado),"
+			st.executeUpdate("create table if not exists grados (idgrado INT AUTO_INCREMENT PRIMARY KEY,"
 					+ "nombre varchar(20))");
 
 			Vector<String> calles = openFile("DOC/CallesFixed.txt");

@@ -24,7 +24,7 @@ public class DataObtainer {
 	}
 
 	public ResultSet getAllStudentList() {
-		String sql = "select * from alumno";
+		String sql = "select * from alumnos";
 		return manager.query(sql);
 	}
 
@@ -32,23 +32,23 @@ public class DataObtainer {
 		/*
 		 * Usar Date?
 		 */
-		String sql = "SELECT a.idAl, a.nombre,a.apellido, al.anio " +
-				"FROM alumno a inner join aniolectivo al on a.idAl=al.idAlumno " +
+		String sql = "SELECT a.idAlumno, a.nombre,a.apellido, al.anio " +
+				"FROM alumnos a inner join aniolectivo al on a.idAlumno = al.idAlumno " +
 				"where al.anio='" + date + "'";
 		return manager.query(sql);
 	}
 	
 	 public ResultSet getListByGrade(int idGrado){
-		String sql = "SELECT a.idAl, a.nombre,a.apellido, al.anio " +
-				"FROM alumno a inner join aniolectivo al on a.idAl=al.idAlumno " +
+		String sql = "SELECT a.idAlumno, a.nombre,a.apellido, al.anio " +
+				"FROM alumno a inner join aniolectivo al on a.idAlumno = al.idAlumno " +
 				"where al.idgrado="+idGrado;
 		return manager.query(sql);
 		 
 	 }
 	 
 	 public ResultSet getStudent(int idAlumno){
-		 String sql = "select * from alumno " +
-		 		"where alumno.idAl ="+idAlumno;
+		 String sql = "select * from alumnos " +
+		 		"where alumno.idAlumno ="+idAlumno;
 		 return manager.query(sql);
 	 }
 	 
@@ -91,8 +91,8 @@ public class DataObtainer {
 	 }
 	 
 	 public ResultSet listStudenbyYearGrade(String year, int idgrade){
-		String sql = "select a.nombre, a.apellido, a.dni, a.correoe " +
-				"from aniolectivo al inner join alumno a on a.idAl = al.idAlumno " +
+		String sql = "select a.nombre, a.apellido, a.dni, a.email " +
+				"from aniolectivo al inner join alumnos a on a.idAlumno = al.idAlumno " +
 		 		"where al.anio='"+year+"' and al.idgrado="+idgrade;
 		return manager.query(sql); 
 		
