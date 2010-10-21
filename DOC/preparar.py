@@ -20,6 +20,7 @@
 #	   MA 02110-1301, USA.
 
 import random
+
 def load(file_name = '',mod = 'r'):
 	try:
 		file = open(file_name, mod)
@@ -37,13 +38,17 @@ def make_streets(file_name=''):
 	name = file_name.replace(".txt","Fixed.txt")
 	out = open(name, "w")
 	
-	for i in xrange(tam):
-		if data[i] != "\n":
-			line = data[i].strip()
-			line = line.replace(".","")
-			numeroCalle = random.randint(0,5000)
-			line = line + " " + str(numeroCalle)
-			out.write(line+"\n")
+	for i in xrange(300):
+		empty_line = 1
+		while (empty_line == 1):
+			street_name = random.choice(data)
+			if street_name != "\n":
+				empty_line = 0
+		line = street_name.strip()
+		line = line.replace(".","")
+		numeroCalle = random.randint(0,5000)
+		line = line + " " + str(numeroCalle)
+		out.write(line+"\n")
 	out.close
 
 def make_names(file_name='',file_lastname=''):
@@ -54,7 +59,7 @@ def make_names(file_name='',file_lastname=''):
 	out = open(namef, "w")
 	out2 = open("ApellidoF.txt" , "w")
 	
-	for i in xrange(100):
+	for i in xrange(300):
 		#print(names[i])
 		name = random.choice(names)
 		lastname = random.choice(lastnames)

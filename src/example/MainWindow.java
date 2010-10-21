@@ -32,6 +32,7 @@ public class MainWindow extends JFrame {
 		super(title);
 		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		data = new DataObtainer("tester", "localhost/AsistenciaAlumnos", "tester");
+		//data = new DataObtainer("nelson", "localhost/AsistenciaAlumnos", "gnusmas");
         JMenuBarHolder bar = new JMenuBarHolder(null);
         scrolledTable = new JTableHolder(data);
         scrolledjtree = new JTreeHolder(data, new TreeSelListener(this));

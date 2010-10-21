@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import com.nelsonx.jdbgm.core.GenericManager;
 import com.nelsonx.jdbgm.core.MySqlManager;
+import com.nelsonx.jdbgm.core.PostgreSQLManager;
 import com.nelsonx.jdbgm.core.SQLiteManager;
 
 /**
@@ -21,6 +22,7 @@ public class DataObtainer {
 		this.user = user;
 		this.password = password;
 		manager = new MySqlManager(location, user, password);
+		//manager = new PostgreSQLManager(location, user, password);
 		//manager = new SQLiteManager(location, user, password);
 
 	}

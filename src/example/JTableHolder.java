@@ -75,6 +75,7 @@ public class JTableHolder {
         }
         System.out.println("--------------------------");
     }
+	
 	public JScrollPane getPanedTable(){return scrollPane;}
 
 }

@@ -1,199 +1,300 @@
-Aben Canes 4452
-Abrego  4720
-Adelfa 984
-Agustín Salido 2162
-Alamillo Alto  4063
-Alamillo Bajo 2318
-Alarcos  542
-Alarcos, Ronda  2639
-Albacete 3317
-Albalá 312
-Alcaicería, Pasaje 4313
-Alcántara 261
-Alcázar 3865
-Alemania 2799
-Alfareros  2652
-Alfonso XI 4350
-Alfonso X El Sabio, Avda 3759
-Alfonso Eanes 78
-Alicante 1049
-Almaden 1049
-Almagro 4525
-Almería 3316
-Almodóvar 1808
-Alonso Cano 3094
-Alonso Céspedes Guzman  2162
-Alonso de Estrada  1677
-Alonso G de Villaquiran 571
-Alonso Quijano 2305
-Altagracia  4892
-Alvar Gómez de Ciudad Real 2693
-América, Plaza  4655
-Andalucía 3960
-Andorra  700
-Andrés de Concha 1965
-Andrómeda  937
-Angel 4945
-Antonio Blazquez 1394
-Aparicio Arce 3851
-Aragón 119
-Arándano 4780
-Argentina 4532
-Arrayanes  2487
-Asturias 3451
-Atalaya  1081
-Atalaya, Ctra 4554
-Austria 768
-Avila 3089
-Azucena 2563
-Azuez 3680
-Bachiller Fernán Gomez 1687
-Badajoz  3757
-Baleares 763
-Barcelona  2735
-Bañuelos 3887
-Beato F de Ayala  2700
-Beato Juan B de la Concepción  706
-Becea  1116
-Belchite 3800
-Barrejón G S  1415
-Bélgica  249
-Bernardo Balbuena 3872
-Bernardo Mulleras  3928
-Berruguete 654
-Bolaños  4442
-Borjas  4700
-Brasil 869
-Brezo 4120
-Brunete 699
-Bullaque 686
-Burgos 1535
-Caballero Ramón Froilaz 3716
-Caballeros  1008
-Cabeza del Palo 1056
-Cachorro, El 2367
-Calatrava 2993
-Calatrava, Rda  673
-Calvario 1053
-Calzada, Ctra 3111
-Camarín 1682
-Camilo José Cela  3953
-Camino Calvario  744
-Camino de Sancho Rey 1539
-Camino del Campillo 3389
-Camino de la Guija  786
-Camino viejo de Alarcos 4142
-Campo de Criptana 433
-Cantabria 1849
-Cañas 602
-Capellán Marcelo Colino 551
-Caracola 3062
-Cardenal Lorenzana 1869
-Cardenal Monescillo 212
-Carlos Eraña, paseo  1616
-Carlos III (Gta)  4774
-Carlos López Bustos 4211
-Carmen 4358
-Carmen, Plaza  4915
-Carmen, Ronda 4193
-Carmen Amaya 1192
-Carrión, Ctra 2893
-Castellón  2686
-Castilla 2696
-Castillo de Caracuel 358
-Centauro 3224
-Cerrillo, del  1859
-Cervantes, Pza  2208
-Ceuta 1886
-Ciencia, de la Avda 4201
-Cierva 240
-Cierzo  2936
-Cigüela 4494
-Cipres 4426
-Ciruela 3335
-Ciruela, Ronda 3839
-Claudio Coello  1396
-Clavel 1446
-Compás de Santo Domingo  3270
-Concepción Arenal  4359
-Conde de la Cañada  2735
-Constitución, Plaza 1985
-Corazón de María 2359
-Cristina, Mª 3036
-Cristóbal Colón 94
-Cruz  3033
-Cruz del Sur 1754
-Cuadras 3115
-Cuba 4838
-Cuchilleria  531
-Cuenca 2360
-Daimiel (ctra) 818
-Daimiel 3246
-Dalí, Pasaje  4520
-Del Camino de Santiago  2993
-Del Ferrocarril, Avda 3994
-De las Lagunas de Ruidera, Avda 3811
-De los Descubrimientos, Avda 4294
-Delgado Merchan 4666
-Delicias 809
-De la Luna 3767
-De Jupiter 509
-Del Parque de Cabañeros, Avda 2047
-Del Rey Santo, Avda 4259
-Descubrimiento de America Avda  419
-De Valdepeñas, Avda 3860
-De Valdepeñas, Ctra  4147
-Del Sol  3570
-Diego de Almagro 4905
-Diego de Mazariegos 2539
-Dinamarca 4793
-Dr Fleming 4471
-Don Quijote 416
-Dulcinea del Toboso 3796
-Echegaray 1147
-Edison 4027
-Elisa Cendreros 425
-Einstein 186
-Enebro 2502
-Enmedio 3263
-Eras del Cerrillo  2340
-España, Plaza 2343
-Esperanza 421
-Espino 1129
-Estación Vía Crucis 780
-Estrasburgo, Plaza de 3052
-Estrella 894
-Extramuros de Calatrava  3136
-Extremadura  1920
-Europa Avda de 1459
-Felipe II  1911
-Feria 2843
-Fernando Alonso de Coca  619
-Fernando Merry de Val, Pza  730
-Fernando Pobrete  3886
-Finlandia 396
-Fortuny 3769
-Formentera  607
-Francia  3735
-Fray Hernando de Ciudad Real  3970
-Fray María Rafael 3017
-Fuensanta, Ctra 446
-Galicia 4723
-García Coronado, escultor  1546
-García de Loaysa  597
-General Aguilera 3431
-General Espartero 816
-General Rey 4386
-Giraldo de Merlo 2347
-Goya  4858
-Gran Bretaña 2619
-Granada  532
-Granada, Rda  886
-Grecia  4237
-Greco 1954
-Gregorio Marañón 4651
-Guadalajara 2629
-Gualdamez 2833
-Guadiana 9
-Guitierréz Ortega Paje 2789
-Guttemberg 1756
+Angel 4061
+Delgado Merchan 1633
+Belchite 555
+Alvar Gómez de Ciudad Real 3088
+General Espartero 2555
+General Aguilera 3679
+Capellán Marcelo Colino 117
+General Espartero 4758
+Alonso G de Villaquiran 2397
+Calatrava, Rda  3739
+Burgos 3877
+Andrómeda  1408
+Castillo de Caracuel 4970
+Agustín Salido 360
+Alamillo Alto  41
+De la Luna 4762
+Gregorio Marañón 3724
+Burgos 3543
+Adelfa 2429
+América, Plaza  1920
+Capellán Marcelo Colino 2958
+General Rey 1617
+Gualdamez 2173
+Austria 3956
+Extremadura  2924
+Alonso de Estrada  1799
+Argentina 4756
+Centauro 1389
+Berruguete 4036
+Enmedio 4808
+Guadiana 3986
+Castillo de Caracuel 2687
+Dalí, Pasaje  1014
+Cuadras 1475
+Camino de Sancho Rey 1021
+Guadalajara 525
+Bernardo Balbuena 3788
+Cerrillo, del  4308
+Cruz  2814
+General Espartero 4014
+Caracola 4246
+Andalucía 1029
+Compás de Santo Domingo  3637
+Finlandia 2304
+Cierzo  2256
+Badajoz  2608
+Castellón  2309
+Brunete 3735
+Bélgica  2411
+Estrasburgo, Plaza de 674
+Fuensanta, Ctra 1080
+Corazón de María 1563
+Bernardo Balbuena 4563
+Enebro 1662
+Calatrava 648
+Almagro 1603
+De Valdepeñas, Ctra  1638
+Fernando Alonso de Coca  752
+Extremadura  64
+Alonso Cano 2155
+Gregorio Marañón 4551
+Badajoz  770
+Gregorio Marañón 561
+Bolaños  2251
+Alicante 4972
+Albacete 1984
+Don Quijote 2448
+Fortuny 3205
+Andrómeda  4792
+Abrego  2618
+Cardenal Lorenzana 2664
+Calatrava, Rda  1139
+Avila 2611
+Claudio Coello  2902
+Giraldo de Merlo 4507
+Delgado Merchan 763
+España, Plaza 3908
+Campo de Criptana 4762
+Carlos III (Gta)  3442
+Ceuta 1943
+Camarín 2174
+Delgado Merchan 2339
+Cuenca 1274
+Granada, Rda  4670
+Azuez 3826
+De la Luna 3333
+Cuadras 889
+Daimiel 3769
+Estación Vía Crucis 3521
+Carmen 1965
+Fernando Pobrete  641
+Gran Bretaña 1096
+Caballeros  3285
+Finlandia 3426
+Capellán Marcelo Colino 2322
+Cuenca 1471
+Alfareros  4445
+Calatrava 1069
+Guttemberg 4674
+Cierva 3658
+Borjas  748
+Cuenca 2534
+Carlos III (Gta)  1353
+Greco 2558
+Cierzo  3303
+Campo de Criptana 2483
+General Rey 2650
+Cuchilleria  3459
+Alonso Quijano 4083
+Aragón 1148
+Don Quijote 994
+Cruz del Sur 3873
+Fray Hernando de Ciudad Real  1605
+Bañuelos 3687
+Calatrava, Rda  3251
+Fortuny 2930
+Diego de Almagro 2758
+De las Lagunas de Ruidera, Avda 2728
+De Valdepeñas, Avda 480
+Castilla 4053
+Galicia 1865
+Carmen Amaya 1963
+Delgado Merchan 366
+Gualdamez 4608
+Alfonso XI 957
+Cardenal Lorenzana 1630
+Guadalajara 3393
+Dulcinea del Toboso 3341
+Galicia 1955
+Carmen 6
+Beato Juan B de la Concepción  3002
+Daimiel 1641
+Camino de Sancho Rey 4585
+Carlos Eraña, paseo  185
+Cardenal Lorenzana 3423
+Azuez 1490
+Centauro 2579
+Aparicio Arce 1228
+Burgos 3155
+Goya  1266
+De los Descubrimientos, Avda 1783
+Feria 2862
+Centauro 954
+Bélgica  1811
+Enmedio 527
+Extremadura  4605
+Estación Vía Crucis 2520
+Daimiel (ctra) 432
+Feria 4258
+Almagro 2483
+Arrayanes  4368
+Alfareros  1878
+Guitierréz Ortega Paje 612
+Badajoz  3306
+Alfonso Eanes 1360
+Campo de Criptana 4209
+Guttemberg 1785
+Claudio Coello  2570
+Alcaicería, Pasaje 4793
+Ciruela 451
+Cervantes, Pza  1046
+Argentina 621
+Esperanza 3297
+Delgado Merchan 1046
+Einstein 1556
+Abrego  3588
+Diego de Mazariegos 9
+Gregorio Marañón 4108
+Alfonso XI 68
+Echegaray 24
+Echegaray 3108
+Albacete 2212
+Andalucía 4020
+Bañuelos 579
+Cachorro, El 1487
+Calatrava 3637
+Guadalajara 1098
+Andalucía 3829
+Gualdamez 859
+Compás de Santo Domingo  2232
+Adelfa 1986
+Eras del Cerrillo  1270
+Dinamarca 3596
+Caracola 3326
+Alamillo Bajo 4306
+Claudio Coello  2529
+Diego de Almagro 3634
+Castellón  546
+Camino de Sancho Rey 268
+Del Rey Santo, Avda 1019
+General Espartero 1721
+Aparicio Arce 2751
+Cristina, Mª 1766
+Carmen, Ronda 915
+Calatrava, Rda  2277
+Cachorro, El 2872
+Berruguete 291
+Galicia 3519
+Centauro 3500
+Ciencia, de la Avda 4185
+Bañuelos 2462
+Finlandia 579
+Del Rey Santo, Avda 3545
+Fuensanta, Ctra 743
+Andrés de Concha 3835
+Gregorio Marañón 2700
+Feria 2663
+Dr Fleming 1607
+Cervantes, Pza  1940
+Feria 1903
+Calzada, Ctra 3970
+Bernardo Mulleras  2153
+Del Camino de Santiago  1558
+Ceuta 1453
+Camino de la Guija  3230
+Borjas  4726
+Europa Avda de 3867
+Camino viejo de Alarcos 4288
+Diego de Almagro 1601
+Castillo de Caracuel 4747
+Caracola 3967
+General Aguilera 2910
+Fray María Rafael 10
+Camilo José Cela  2591
+Extramuros de Calatrava  2632
+América, Plaza  4703
+Cervantes, Pza  2941
+Alonso G de Villaquiran 2151
+Cipres 959
+Del Ferrocarril, Avda 1734
+Gran Bretaña 4105
+Cuenca 112
+Azuez 1002
+Alonso Cano 2017
+Granada  3846
+Europa Avda de 696
+Eras del Cerrillo  691
+Camino de Sancho Rey 3579
+Caballero Ramón Froilaz 4243
+Cruz del Sur 2958
+Almaden 1232
+Francia  3991
+Beato Juan B de la Concepción  4227
+Austria 3823
+Clavel 2280
+Cabeza del Palo 832
+Centauro 3197
+Alcántara 2879
+Granada, Rda  4773
+Descubrimiento de America Avda  86
+Constitución, Plaza 1058
+Guitierréz Ortega Paje 919
+Granada, Rda  222
+Dulcinea del Toboso 3598
+Alonso de Estrada  2884
+Einstein 4972
+Delgado Merchan 2368
+España, Plaza 2
+Arrayanes  2969
+Del Sol  3866
+Estrasburgo, Plaza de 2980
+Becea  4497
+Fray María Rafael 4319
+Esperanza 1202
+Castilla 1918
+Clavel 1129
+Ciruela, Ronda 4420
+Corazón de María 1107
+Bernardo Balbuena 1112
+Guttemberg 2188
+Arrayanes  2693
+Bullaque 94
+Guadalajara 3573
+Baleares 207
+Andrés de Concha 4808
+Cuchilleria  1622
+Calvario 3015
+Estrella 4288
+Extramuros de Calatrava  737
+Aragón 1304
+Argentina 2269
+Alfareros  3169
+Extremadura  1826
+Cristóbal Colón 3678
+Alonso Céspedes Guzman  3441
+Azuez 1351
+Delgado Merchan 1366
+Cruz  2423
+De Valdepeñas, Ctra  1818
+Cipres 808
+Atalaya, Ctra 3748
+Carmen 243
+Delgado Merchan 2553
+Cabeza del Palo 3988
+Estrella 4435
+Guitierréz Ortega Paje 3937
+Angel 1399
+De Valdepeñas, Ctra  1338
+Del Sol  4342
+Alemania 3736
