@@ -3,7 +3,6 @@
  */
 package com.nelsonx.jdbgm;
 
-import com.nelsonx.jdbgm.core.GenericManager;
 
 /**
  * @author Nelson Efrain A. Cruz
