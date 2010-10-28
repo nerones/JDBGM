@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.Vector;
 
-import com.nelsonx.jdbgm.core.GenericManager;
-import com.nelsonx.jdbgm.core.MySqlManager;
+import com.nelsonx.jdbgm.GenericManager;
+import com.nelsonx.jdbgm.MySqlManager;
 
 public class MakeMySqlDB {
 	GenericManager manager;
