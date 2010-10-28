@@ -2,7 +2,6 @@ package com.nelsonx.jdbgm;
 
 import java.sql.ResultSet;
 
-import com.nelsonx.jdbgm.core.MySqlManager;
 
 public class ExampleUsage {
 	public static void main(String[] args) throws ClassNotFoundException {
