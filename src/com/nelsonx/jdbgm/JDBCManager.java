@@ -51,13 +51,7 @@ public class JDBCManager implements GenericManager {
 		}
 		return connection;
 	}
-	
-	public void closeConection() {
-		
-	}
-	public void makeQuery() {
-		
-	}
+
 	
 	public void beginConnection() {
 		/*
@@ -118,7 +112,6 @@ public class JDBCManager implements GenericManager {
 			try {
 				stat.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -219,13 +212,27 @@ public class JDBCManager implements GenericManager {
 	}
 	@Override
 	public void beginTransaction() {
-		// TODO Auto-generated method stub
-		
+		try {
+			getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public void endTransaction() {
-		// TODO Auto-generated method stub
-		
+		try {
+			getConnection().commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			getConnection().setAutoCommit(true);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
