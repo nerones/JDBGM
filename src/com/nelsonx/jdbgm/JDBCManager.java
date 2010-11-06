@@ -27,9 +27,7 @@ public class JDBCManager implements GenericManager {
 	@Deprecated
 	protected Connection getConection(String location, String user, String password) {
 		if (connection == null) {
-			//Class.forName("com.mysql.jdbc.Driver");
 			String url = "jdbc:mysql://" + location;
-			//Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/world", "tester", "tester");
 			System.out.println(url);
 			try {
 				connection = DriverManager.getConnection(url,user,password);

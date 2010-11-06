@@ -1,0 +1,27 @@
+Basicamente para acceder a una base de datos hay que hacer lo siguiente:
+
+manager = new MySQLManager(location,user,password);
+//supongamos que existe una tabla personas
+ResultSet rs = manager.query("SELECT * FROM personas");
+//en ResultSet se pueden leer los resultados de la consulta, es lo que
+//devuelve cualquier implementación de JDBC
+manager.update("CREATE TABLE calles (id int, nombre varchar(30))");
+
+Aunque tambien se definen otros metodos como por ejemplo para ejectutar varias sentencias SQL como una unica transacción (si es soportado por el DBMS)
+
+manager.beginTransaction();
+manager.update(sql1);
+...
+manager.update(sqln);
+manager.endTransaction();
+
+Hasta aca lo que hacen estos metodos es envolver los metodos de JDBC en unos mas simples. Para soportar una verdadera independencia de la base de datos (la dependencia se da con la necesidad de que las sentencias sql deben estar acorde a el dialecto de SQL que usa una base de datos en particular) me decidi por crear metodos con una sintaxis parecida a las de SQL que luego sean traducidas a el dialecto en particular, por ejemplo:
+
+Select selectStmt = new Select();
+selectStmt.addColumns("nombre, apellido, edad");
+selectStmt.addOrigin("personas");
+selectStmt.addRestrict("edad = 23");
+
+Para esto encontre el proyecto crossdb (en sourceforge) que no tiene actividad en algo asi como 4 años y tiene una licencia Apache, este proyecto pretendia hacer esto ultimo y tiene implementado entre otras soporte para mysql, aun asi me quedaria modificar el codigo para adaptarlo  a lo que necesito e implemetar el soporte para SQLite y PostgreSQL.
+
+Es aceptable que modifique esta libreria como parte de mi tesis? o deberia implementar de nuevo, a mi parecer es valido pero quiero su opinion, y ademas que le parece el modo en el que voy encarando el proyecto?

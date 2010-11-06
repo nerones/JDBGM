@@ -23,41 +23,6 @@ public class MakeSQLiteDB {
 		manager = new SQLiteManager(location, user, password);
 		ranGene = new Random();
 	}
-
-//	public void main2(String[] args) {
-//		try {
-//			Class.forName("org.sqlite.JDBC");
-//			Connection conexion = DriverManager.getConnection(
-//					"jdbc:sqlite:AsistenciaAlumnos.db");
-//					//, "tester", "tester");
-//			Statement st = (Statement) conexion.createStatement();
-//			st.executeUpdate("CREATE TABLE if not exists alumno (idAl INT AUTOINCREMENT PRIMARY KEY,"
-//					+ "dni int,fechaNacimiento date, correoe varchar(40), direccion varchar(40),"
-//					+ " nombre VARCHAR(40), apellido VARCHAR(40), telefono VARCHAR(20))");
-//
-//			st.executeUpdate("create table if not exists materia (idMateria INT AUTO_INCREMENT PRIMARY KEY,"
-//					+ "nombre varchar(20))");
-//
-//			st.executeUpdate("create table if not exists aniolectivo (idAA INT AUTO_INCREMENT PRIMARY KEY,"
-//					+ "idAlumno int, idgrado int, anio date, foreign key(idAlumno) references alumno(idAlumno))");
-//
-//			st.executeUpdate("create table if not exists materiasxanio (idMP INT AUTO_INCREMENT PRIMARY KEY,"
-//					+ "idAA int, idMateria int, "
-//					+ "foreign key(idMateria) references materia(idMateria), foreign key(idAA) references aniolectivo(idAA))");
-//
-//			st.executeUpdate("create table if not exists asistencia (fecha date, asistencia int,"
-//					+ "idMP int, foreign key(idMP) references materiasxanio(idMP))");
-//
-//			st.executeUpdate("create table if not exists grados (idgrado INT AUTO_INCREMENT PRIMARY KEY,"
-//					+ "nombre varchar(20))");
-//
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			e.printStackTrace();
-//			System.out.print("error");
-//		}
-//
-//	}
 	
 	public void makeDB(){
 		try {
