@@ -8,7 +8,7 @@ import com.spaceprogram.sql.mysql.*;
 //import java.util.List;
 //import java.sql.*;
 
-public class SapdbFactory implements SQLFactory {
+public class SapdbFactory implements SpecificSQLFactory {
     private String sequenceSuffix;
 
     public InsertQuery getInsertQuery(){

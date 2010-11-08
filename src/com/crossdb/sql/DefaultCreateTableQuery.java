@@ -36,7 +36,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 
     public abstract String toString();
 
-
+    /*
     public void execute(java.sql.Statement stmt) throws SQLException {
         //q = new 	Query(conn);
         //rs = stmt.executeQuery(querystring);
@@ -48,5 +48,6 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
         execute(stmt);
         stmt.close();
     }
+    */
 
 }

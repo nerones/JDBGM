@@ -5,7 +5,7 @@ import com.crossdb.sql.DefaultResultSet;
 
 import java.sql.*;
 
-public class MySQLResultSet extends DefaultResultSet implements ResultSet {
+public class MySQLResultSet extends DefaultResultSet  {
 
 
 

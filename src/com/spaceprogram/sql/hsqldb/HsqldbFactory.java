@@ -3,7 +3,7 @@ package com.spaceprogram.sql.hsqldb;
 import com.crossdb.sql.*;
 
 
-public class HsqldbFactory implements SQLFactory {
+public class HsqldbFactory implements SpecificSQLFactory {
 	
 	public InsertQuery getInsertQuery(){
 		HsqldbInsertQuery iq = new HsqldbInsertQuery();

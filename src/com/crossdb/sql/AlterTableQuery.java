@@ -9,27 +9,23 @@ package com.crossdb.sql;
  * @version 0.1
  */
 
-import java.util.List;
-import java.sql.*;
 
 public interface AlterTableQuery {
-	
 	
 	/**
 	 * Set the table to alter.
 	 */
 	void setTable(String table);
+	
 	/**
 	 * Adds a column to be added.
 	 */
 	void addColumn(Column c);
+	
 	/**
 	 * Adds a column to be dropped.
 	 */
 	void dropColumn(String c);
-	
-	
-	
 	
 	/**
 	Returns the SQL statement.
@@ -38,13 +34,14 @@ public interface AlterTableQuery {
 	
 	/**
 	Returns the number of rows affected
-	 */
+	 * /
 	int execute(Connection conn)throws SQLException ;
 	
 		/**
 	Uses stmt to execute the query.  This is so you can keep reusing the same
 	statement.  Be sure to use new statements if you want more than one resultset
 	open at the same time.
-	 */
-	int execute(java.sql.Statement stmt) throws SQLException ;
+	 * /
+	int execute(java.sql.Statement stmt) throws SQLException;
+	*/
 }

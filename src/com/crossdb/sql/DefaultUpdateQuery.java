@@ -14,7 +14,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.Connection;
 
-public abstract class DefaultUpdateQuery extends DefaultUpdateableQuery implements UpdateQuery, ExecuteUpdate {
+public abstract class DefaultUpdateQuery extends DefaultUpdateableQuery implements UpdateQuery {
 
 	protected String table;
 
@@ -115,7 +115,8 @@ public abstract class DefaultUpdateQuery extends DefaultUpdateableQuery implemen
     }
 
     public abstract String toString();
-
+    
+    /*
 	public int execute(Statement stmt) throws SQLException {
 		return stmt.executeUpdate(toString());
 	}
@@ -126,4 +127,5 @@ public abstract class DefaultUpdateQuery extends DefaultUpdateableQuery implemen
 		stmt.close();
 		return ret;
 	}
+	*/
 }

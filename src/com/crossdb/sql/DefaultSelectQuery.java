@@ -269,7 +269,8 @@ public abstract class DefaultSelectQuery implements SelectQuery {
             return toString();
         }
     }
-
+    
+    /*
     public CrossdbResultSet execute(Connection conn) throws SQLException{
 		Statement stmt = conn.createStatement();
 		CrossdbResultSet ret = execute(stmt);
@@ -284,6 +285,7 @@ public abstract class DefaultSelectQuery implements SelectQuery {
         String q = getUnionizedQuery();
 		return new DefaultResultSet(stmt.executeQuery(q));
 	}
+	*/
 
     public void union(SelectQuery sq) {
         this.union = (DefaultSelectQuery)sq;

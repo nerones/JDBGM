@@ -18,7 +18,7 @@ import java.io.Reader;
 import java.util.*;
 import java.net.URL;
 
-public class DefaultResultSet implements CrossdbResultSet {
+public class DefaultResultSet /*implements CrossdbResultSet*/ {
 
 	/** the underlying java.sql.ResultSet */
 	private ResultSet rs;

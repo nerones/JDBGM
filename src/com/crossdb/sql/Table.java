@@ -12,7 +12,8 @@ So holds a list of columns.
  * @version 0.1
  */
 package com.crossdb.sql;
-import java.util.*;
+
+import java.util.List;
 
 public class Table extends Object {
 

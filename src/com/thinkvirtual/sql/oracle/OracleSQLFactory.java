@@ -7,7 +7,7 @@ import com.crossdb.sql.*;
 //import java.util.List;
 //import java.sql.*;
 
-public class OracleSQLFactory implements SQLFactory {
+public class OracleSQLFactory implements SpecificSQLFactory {
     private String sequenceSuffix;
 
     public InsertQuery getInsertQuery(){

@@ -7,7 +7,7 @@ import com.crossdb.sql.*;
 //import java.util.List;
 //import java.sql.*;
 
-public class SybaseFactory implements SQLFactory {
+public class SybaseFactory implements SpecificSQLFactory {
 	
 	String schema;
 	

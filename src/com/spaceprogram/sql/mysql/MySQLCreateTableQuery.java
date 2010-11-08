@@ -11,48 +11,43 @@ import java.sql.Connection;
 
 import com.crossdb.sql.*;
 
-public class MySQLCreateTableQuery extends DefaultCreateTableQuery implements CreateTableQuery {
-
+public class MySQLCreateTableQuery extends DefaultCreateTableQuery implements
+		CreateTableQuery {
 
     public MySQLCreateTableQuery() {
         super();
     }
 
-    public String toString() {
+	public String toString() {
 
-        String query1;
-        query1 = " CREATE TABLE " + name + " ( "; //"CREATE TABLE IF NOT EXISTS " + table_name + " ( ";
-		for(int j =0; j < columns.size(); j++){
-			Column df = (Column)(columns.get(j));
+		String query1;
+		query1 = " CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
+													// + table_name + " ( ";
+		for (int j = 0; j < columns.size(); j++) {
+			Column df = (Column) (columns.get(j));
 			query1 += df.getName() + " ";
 
 			query1 += MySQLDataTypes.getAsString(df);
 
+			if (df.isAutoIncrement()) {
+				query1 += " auto_increment primary key NOT NULL";
 
-              if (df.isAutoIncrement()) {
-                query1 += " auto_increment primary key NOT NULL";
+			} else {
 
-            }
-            else {
+				if (df.isNullable() == 1) {
+					query1 += " NULL ";
+				} else
+					query1 += " NOT NULL ";
+				if (df.getDefaultValue() != null) {
+					if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
+						// Can't use functions like Now() in defaults in mysql
+						query1 += " DEFAULT " + df.getDefaultValue();
+					}
 
+				}
+			}
 
-                if (df.isNullable() == 1) {
-                    query1 += " NULL ";
-                }
-                else
-                    query1 += " NOT NULL ";
-                if (df.getDefaultValue() != null) {
-                    if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
-                        // Can't use functions like Now() in defaults in mysql
-                        query1 += " DEFAULT " + df.getDefaultValue();
-                    }
-
-
-                }
-            }
-
-
-			if(j < columns.size()-1){
+			if (j < columns.size() - 1) {
 				query1 += ", ";
 			}
 		}

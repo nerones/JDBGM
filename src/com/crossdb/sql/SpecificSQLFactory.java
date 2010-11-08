@@ -22,7 +22,7 @@ Then you use one of the get methods to get the type of query you want to use.
  * @version 0.1
  */
 
-public interface SQLFactory {
+public interface SpecificSQLFactory {
 
 	InsertQuery getInsertQuery();
 	SelectQuery getSelectQuery();

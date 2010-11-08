@@ -2,7 +2,7 @@ package com.spaceprogram.sql.db2;
 
 import com.crossdb.sql.*;
 
-public class DB2Factory implements SQLFactory {
+public class DB2Factory implements SpecificSQLFactory {
 
 	public InsertQuery getInsertQuery(){
 		DB2InsertQuery iq = new DB2InsertQuery();

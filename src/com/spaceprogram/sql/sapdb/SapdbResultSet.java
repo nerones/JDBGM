@@ -5,7 +5,7 @@ import com.crossdb.sql.DefaultResultSet;
 
 import java.sql.*;
 
-public class SapdbResultSet extends DefaultResultSet implements ResultSet {
+public class SapdbResultSet extends DefaultResultSet {
 
 
 

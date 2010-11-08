@@ -7,7 +7,7 @@ import com.crossdb.sql.*;
 //import java.util.List;
 //import java.sql.*;
 
-public class MySQLFactory implements SQLFactory {
+public class MySQLFactory implements SpecificSQLFactory {
 	
 	public InsertQuery getInsertQuery(){
 		MySQLInsertQuery iq = new MySQLInsertQuery();

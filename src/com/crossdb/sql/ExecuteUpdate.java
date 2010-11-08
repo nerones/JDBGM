@@ -1,4 +1,6 @@
 /**
+ * NOTE: this class is not needed because JDBGM will manage the execute of any
+ * sql statement.
  * The interface that all update queries extend:
  * insert, update, delete (maybe alter?)
  * Any query that does Statment.executeUpdate on execute.

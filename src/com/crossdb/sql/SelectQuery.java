@@ -15,11 +15,9 @@ This represents a Select query.
  * @version 0.1
  */
 
-import com.crossdb.sql.optimization.OptimizationHint;
-
 import java.util.Date;
-import java.sql.Connection;
-import java.sql.SQLException;
+
+import com.crossdb.sql.optimization.OptimizationHint;
 
 /*
 Should have a predefined WhereClause in which the user can add conditions to it.
@@ -180,18 +178,18 @@ public interface SelectQuery {
 	 */
 	//String toString();
 
-	/**
+	/* *
 	Uses stmt to execute the query.  This is so you can keep reusing the same
 	statement.  Be sure to use new statements if you want more than one resultset
 	open at the same time.
-	 */
+	 * /
     CrossdbResultSet execute(java.sql.Statement stmt) throws SQLException ;
 
-	/**
+	/* *
 	This one takes a java.sql.Connection and then creates a statement and executes.
 
      The statement created is closed when the return ResultSet is closed.
-     */
+     * /
     CrossdbResultSet execute(Connection conn) throws SQLException ;
 
 	/**

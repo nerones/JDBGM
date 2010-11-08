@@ -93,13 +93,13 @@ public class DefaultUpdateableQuery implements UpdateableQuery
         return columns;
     }
 
-
-    /**
+    
+    /* *
      * Dummy function so that it can implement ExecuteUpdate
      * @param conn
      * @return
      * @throws SQLException
-     */
+     * /
     public int execute(Connection conn) throws SQLException {
         return 0;
     }
@@ -109,7 +109,7 @@ public class DefaultUpdateableQuery implements UpdateableQuery
      * @param stmt
      * @return
      * @throws SQLException
-     */
+     * /
     public int execute(Statement stmt) throws SQLException {
         return 0;
     }

@@ -7,7 +7,7 @@ import com.crossdb.sql.*;
 //import java.util.List;
 //import java.sql.*;
 
-public class SQLServerFactory implements SQLFactory {
+public class SQLServerFactory implements SpecificSQLFactory {
 	
 	String schema;
 	

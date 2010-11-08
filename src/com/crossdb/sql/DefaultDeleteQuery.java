@@ -6,9 +6,6 @@
  */
 package com.crossdb.sql;
 
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
 
 public abstract class DefaultDeleteQuery implements DeleteQuery {
 
@@ -100,7 +97,8 @@ public abstract class DefaultDeleteQuery implements DeleteQuery {
 		}
 		return ret;
 	}
-
+	
+	/*
 	public int execute(Statement stmt) throws SQLException {
 
 		return stmt.executeUpdate(toString());
@@ -111,7 +109,6 @@ public abstract class DefaultDeleteQuery implements DeleteQuery {
 		int ret = execute(stmt);
 		stmt.close();
 		return ret;
-
-
 	}
+	*/
 }

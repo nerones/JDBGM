@@ -153,11 +153,13 @@ public class OracleSelectQuery extends DefaultSelectQuery implements SelectQuery
         return ret.toString();
     }
 
+    /*
     public CrossdbResultSet execute(Statement stmt) throws SQLException {
         //q = new 	Query(conn);
         //rs = stmt.executeQuery(querystring);
         return new OracleResultSet(stmt.executeQuery(toString()));
     }
+    */
 
 
 }

@@ -6,56 +6,46 @@
  */
 package com.crossdb.sql;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
-public abstract class DefaultInsertQuery extends DefaultUpdateableQuery implements InsertQuery {
-
+public abstract class DefaultInsertQuery extends DefaultUpdateableQuery
+		implements InsertQuery {
 
 	protected String table;
 
-
 	protected boolean return_id = false;
 
-	public DefaultInsertQuery(){
+	public DefaultInsertQuery() {
 
-
-        super();
+		super();
 
 	}
 
-
-
-
-	public void setTable(String table){
+	public void setTable(String table) {
 		this.table = table;
 	}
-	public void addAutoIncrementColumn(String column){
+
+	public void addAutoIncrementColumn(String column) {
 		ColumnValue c = new ColumnValue(column, null);
 		c.setAutoIncrement(true);
 		columns.add(c);
-		//values.add(null);
+		// values.add(null);
 	}
-	public void addAutoIncrementColumn(String column, String sequence){
+
+	public void addAutoIncrementColumn(String column, String sequence) {
 		ColumnValue c = new ColumnValue(column, null);
 		c.setAutoIncrement(true);
 		c.setSequence(sequence);
 		columns.add(c);
-		//values.add(null);
+		// values.add(null);
 	}
 
-
-
-	public void returnID(boolean b){
+	public void returnID(boolean b) {
 		return_id = b;
 	}
 
 	public abstract String toString();
-
+	
+	/*
 	public abstract int execute(Statement stmt) throws SQLException;
 
 	public int execute(Connection conn) throws SQLException {
@@ -64,8 +54,11 @@ public abstract class DefaultInsertQuery extends DefaultUpdateableQuery implemen
 		stmt.close();
 		return ret;
 	}
-	public PreparedStatement getPreparedStatement(Connection conn) throws SQLException{
+
+	public PreparedStatement getPreparedStatement(Connection conn)
+			throws SQLException {
 		PreparedStatement pstmt = conn.prepareStatement(toString());
 		return pstmt;
 	}
+	*/
 }

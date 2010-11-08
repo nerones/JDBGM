@@ -5,7 +5,7 @@ import com.crossdb.sql.DefaultResultSet;
 
 import java.sql.*;
 
-public class DB2ResultSet extends DefaultResultSet implements ResultSet {
+public class DB2ResultSet extends DefaultResultSet {
 
 
 

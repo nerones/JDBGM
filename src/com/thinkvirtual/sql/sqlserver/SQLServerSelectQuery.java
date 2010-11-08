@@ -153,6 +153,8 @@ public class SQLServerSelectQuery extends DefaultSelectQuery implements com.cros
 		}*/
 		return ret;
 	}
+	
+	/*
 	public CrossdbResultSet execute(Statement stmt) throws SQLException{
 		//q = new 	Query(conn);
 		//rs = stmt.executeQuery(querystring);
@@ -162,8 +164,7 @@ public class SQLServerSelectQuery extends DefaultSelectQuery implements com.cros
 		//q = new 	Query(conn);
 		Statement stmt = conn.createStatement();
 		return execute(stmt);
-		
-		
 	}
+	*/
 
 }
