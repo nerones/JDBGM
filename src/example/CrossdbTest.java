@@ -5,11 +5,12 @@ package example;
 
 import com.crossdb.sql.AlterTableQuery;
 import com.crossdb.sql.Column;
+import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.Join;
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
+import com.crossdb.sql.SpecificSQLFactory;
 import com.crossdb.sql.WhereCondition;
-import com.spaceprogram.sql.mysql.MySQLFactory;
-import com.spaceprogram.sql.mysql.MySQLSelectQuery;
 
 /**
  * @author Nelson Efrain A. Cruz
@@ -22,7 +23,7 @@ public class CrossdbTest {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MySQLFactory fact = new MySQLFactory();
+		SpecificSQLFactory fact = SQLFactory.getFactory(SQLFactory.MYSQL_DB);
 		SelectQuery sq = fact.getSelectQuery();
 		sq.addColumn("nombre");
 		sq.addColumn("apellido");
@@ -35,6 +36,12 @@ public class CrossdbTest {
 		atq.setTable("tabla");
 		atq.addColumn(new Column("casa"));
 		System.out.println(atq);
+		CreateTableQuery ctq = fact.getCreateTableQuery();
+		ctq.setName("persona");
+		Column col = new Column("direccion", java.sql.Types.VARCHAR);
+		col.setPrimaryKey(true);
+		ctq.addColumn(col);
+		System.out.println(ctq);
 
 	}
 

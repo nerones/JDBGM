@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import com.nelsonx.jdbgm.GenericManager;
+import com.nelsonx.jdbgm.JDException;
+import com.nelsonx.jdbgm.ManagerFactory;
 import com.nelsonx.jdbgm.MySqlManager;
 import com.nelsonx.jdbgm.PostgreSQLManager;
 import com.nelsonx.jdbgm.SQLiteManager;
@@ -17,22 +19,20 @@ public class DataObtainer {
 	String location, user, password;
 	GenericManager manager;
 
-	public DataObtainer(String user, String location, String password) {
+	public DataObtainer(String user, String location, String password) throws JDException {
 		this.location = location;
 		this.user = user;
 		this.password = password;
-		manager = new MySqlManager(location, user, password);
-		//manager = new PostgreSQLManager(location, user, password);
-		//manager = new SQLiteManager(location, user, password);
+		manager = ManagerFactory.getManager(ManagerFactory.MYSQL_DB,user,location , password);
 
 	}
 
-	public ResultSet getAllStudentList() {
+	public ResultSet getAllStudentList() throws JDException {
 		String sql = "select * from alumnos";
 		return manager.query(sql);
 	}
 
-	public ResultSet getListByYear(String date) {
+	public ResultSet getListByYear(String date) throws JDException {
 		/*
 		 * Usar Date?
 		 */
@@ -42,7 +42,7 @@ public class DataObtainer {
 		return manager.query(sql);
 	}
 	
-	 public ResultSet getListByGrade(int idGrado){
+	 public ResultSet getListByGrade(int idGrado) throws JDException{
 		String sql = "SELECT a.idAlumno, a.nombre,a.apellido, al.anio " +
 				"FROM alumno a inner join aniolectivo al on a.idAlumno = al.idAlumno " +
 				"where al.idgrado="+idGrado;
@@ -50,13 +50,13 @@ public class DataObtainer {
 		 
 	 }
 	 
-	 public ResultSet getStudent(int idAlumno){
+	 public ResultSet getStudent(int idAlumno) throws JDException{
 		 String sql = "select * from alumnos " +
 		 		"where alumno.idAlumno ="+idAlumno;
 		 return manager.query(sql);
 	 }
 	 
-	 public String[] listYears(){
+	 public String[] listYears() throws JDException{
 		String sql = "select DISTINCT anio from aniolectivo";
 		ResultSet rs = manager.query(sql);
 		Vector<String> data = new Vector<String>(1);
@@ -73,7 +73,7 @@ public class DataObtainer {
 		return dat;
 	 }
 	 
-	 public Grade[] listGradesByYear(String year){
+	 public Grade[] listGradesByYear(String year) throws JDException{
 		String sql = "select DISTINCT g.nombre, g.idgrado " +
 		 		"from aniolectivo a inner join grados g on a.idgrado = g.idgrado " +
 		 		"where a.anio='"+year+"'";
@@ -94,7 +94,7 @@ public class DataObtainer {
 		return dat;
 	 }
 	 
-	 public ResultSet listStudenbyYearGrade(String year, int idgrade){
+	 public ResultSet listStudenbyYearGrade(String year, int idgrade) throws JDException{
 		String sql = "select a.nombre, a.apellido, a.dni, a.email " +
 				"from aniolectivo al inner join alumnos a on a.idAlumno = al.idAlumno " +
 		 		"where al.anio='"+year+"' and al.idgrado="+idgrade;

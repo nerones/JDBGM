@@ -8,6 +8,8 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import com.nelsonx.jdbgm.JDException;
+
 /**
  * Esta clase sirve para crear un JTree e inicializarlo con los valores
  * tomados desde la base de datos, lista los años y para cada año lista
@@ -24,7 +26,7 @@ public class JTreeHolder {
 	private DefaultTreeModel model;
 	private TreeSelListener listener;
 	
-	public JTreeHolder(DataObtainer data, TreeSelListener listener) {
+	public JTreeHolder(DataObtainer data, TreeSelListener listener) throws JDException {
 		this.data = data;
 		this.listener = listener;
 		makeTree();
@@ -35,7 +37,7 @@ public class JTreeHolder {
 		return scrollpane;
 	}
 	
-	public void makeTree(){
+	public void makeTree() throws JDException{
 		DefaultMutableTreeNode mainnode = new DefaultMutableTreeNode("Mis cursos");
 	    model = new DefaultTreeModel(mainnode);
 	    tree = new JTree(model);

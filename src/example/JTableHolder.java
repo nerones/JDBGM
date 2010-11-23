@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import com.nelsonx.jdbgm.JDException;
 import com.sun.rowset.CachedRowSetImpl;
 
 /**
@@ -25,7 +26,13 @@ public class JTableHolder {
 	public JTableHolder(DataObtainer data) {
 		//table = new JTable(data, columnNames);
 		this.data = data;
-		ResultSet rs = data.getAllStudentList();
+		ResultSet rs = null;
+		try {
+			rs = data.getAllStudentList();
+		} catch (JDException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		CachedRowSetImpl crs = null;
 		try {
 			crs = new CachedRowSetImpl();
@@ -44,7 +51,13 @@ public class JTableHolder {
 	}
 	
 	public void changeData(String year, int grade){
-		ResultSet rs = data.listStudenbyYearGrade(year, grade);
+		ResultSet rs = null;
+		try {
+			rs = data.listStudenbyYearGrade(year, grade);
+		} catch (JDException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		CachedRowSetImpl crs = null;
 		try {
 			crs = new CachedRowSetImpl();

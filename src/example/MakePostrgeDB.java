@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import com.nelsonx.jdbgm.GenericManager;
+import com.nelsonx.jdbgm.JDException;
 import com.nelsonx.jdbgm.PostgreSQLManager;
 
 /**
@@ -21,7 +22,7 @@ public class MakePostrgeDB {
 	String user,location,password;
 	Random ranGene;
 	
-	public MakePostrgeDB(String location, String user, String password) {
+	public MakePostrgeDB(String location, String user, String password) throws JDException {
 		// TODO Auto-generated constructor stub
 		this.user = user;
 		this.password = password;
@@ -30,7 +31,7 @@ public class MakePostrgeDB {
 		ranGene = new Random();
 	}
 	
-	public void makeDB(){
+	public void makeDB() throws JDException{
 		try {
 			//Creo la estrucutura de la base de datos
 			String sql = "CREATE TABLE alumnos (idAlumno serial PRIMARY KEY,"
@@ -188,7 +189,7 @@ public class MakePostrgeDB {
 			e.printStackTrace();
 		}
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws JDException {
 		MakePostrgeDB mkdb = new MakePostrgeDB("localhost/AsistenciaAlumnos", "nelson", "gnusmas");
 		mkdb.makeDB();
 	}

@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import com.nelsonx.jdbgm.GenericManager;
+import com.nelsonx.jdbgm.JDException;
 import com.nelsonx.jdbgm.SQLiteManager;
 
 
@@ -15,7 +16,7 @@ public class MakeSQLiteDB {
 	String user,location,password;
 	Random ranGene;
 	
-	public MakeSQLiteDB(String location, String user, String password) {
+	public MakeSQLiteDB(String location, String user, String password) throws JDException {
 		// TODO Auto-generated constructor stub
 		this.user = user;
 		this.password = password;
@@ -24,7 +25,7 @@ public class MakeSQLiteDB {
 		ranGene = new Random();
 	}
 	
-	public void makeDB(){
+	public void makeDB() throws JDException{
 		try {
 			//Creo la estrucutura de la base de datos
 			String sql = "CREATE TABLE if not exists alumnos (idAlumno INTEGER PRIMARY KEY AUTOINCREMENT ,"
@@ -48,7 +49,7 @@ public class MakeSQLiteDB {
 				+ "nombre varchar(20))";
 			manager.update(sql);
 			
-			manager.beginConnection();
+			manager.beginTransaction();
 			//Empiezo a leer los datos desde un archivo y prepararlos para las tablas de la base de datos
 			//empezando por alumnos
 			Vector<String> calles = Utils.openFile("DOC/CallesFixed.txt");
@@ -172,6 +173,7 @@ public class MakeSQLiteDB {
 					manager.update(sql);
 				}
 			}
+			manager.endTransaction();
 			manager.endConnection();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -182,7 +184,9 @@ public class MakeSQLiteDB {
 		}
 	}
 	
-	public static void main(String[] args) {
+	
+	
+	public static void main(String[] args) throws JDException {
 		MakeSQLiteDB mkdb = new MakeSQLiteDB("localhost/AsistenciaAlumnos.db", "tester", "tester");
 		mkdb.makeDB();
 	}
