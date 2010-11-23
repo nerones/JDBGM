@@ -22,7 +22,7 @@ import com.crossdb.sql.optimization.OptimizationHint;
 /*
 Should have a predefined WhereClause in which the user can add conditions to it.
  */
-public interface SelectQuery {
+public interface SelectQuery extends QueryStatement{
 
 	/**
 

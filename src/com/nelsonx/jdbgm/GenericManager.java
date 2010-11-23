@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 
 import javax.sql.rowset.CachedRowSet;
 
+import com.crossdb.sql.QueryStatement;
+import com.crossdb.sql.UpdateStatement;
+
 /**
  * A set of methods to manage a persistence layer implemented whit a 
  * generic RDBMS. These methods act as a basis for implementing a specific manager 
@@ -20,18 +23,21 @@ public interface GenericManager {
 	/**
 	 * Obtiene una conexión con la base de datos (capa de persistencia) 
 	 * @return A connection whit the persistence layer
+	 * @throws JDException 
 	 */
-	Connection getConnection();
+	Connection getConnection() throws JDException;
 	
 	/**
+	 * @throws JDException 
 	 * 
 	 */
-	void beginConnection();
+	void beginConnection() throws JDException;
 	
 	/**
+	 * @throws JDException 
 	 * 
 	 */
-	void endConnection();
+	void endConnection() throws JDException;
 	
 	/**
 	 * <p>Realiza una acción de actualización sobre la capa de persistencia </p> 
@@ -41,8 +47,13 @@ public interface GenericManager {
 	 * en SQL. 
 	 * @param sql La sentencia a ser ejecutada sobre la capa de persistencia
 	 * @return el numero de filas afectadas en la operación realizada.
+	 * @throws JDException 
 	 */
-	int update(String sql);
+	int update(String sql) throws JDException;
+	
+	int update(UpdateStatement update) throws JDException;
+	
+	
 	
 	/**
 	 * <p>Realiza una consulta sobre la capa de persistencia con un comando que es
@@ -51,8 +62,11 @@ public interface GenericManager {
 	 * SELECT de SQL.
 	 * @param sql Es la sentencia a ser ejecutada sobre la capad de persistencia
 	 * @return a {@link ResultSet} whit the result of the query
+	 * @throws JDException 
 	 */
-	ResultSet query(String sql);
+	ResultSet query(String sql) throws JDException;
+	
+	ResultSet query(QueryStatement query) throws JDException;
 	
 	/**
 	 * <p>
@@ -67,10 +81,13 @@ public interface GenericManager {
 	 * 
 	 * @param sql La acción a ser realizada sobre la capa de persistencia
 	 * @return El numero de filas afectadas.
+	 * @throws JDException 
 	 * @see #update(String sql)
 	 * 
 	 */
-	int updateAndClose(String sql);
+	int updateAndClose(String sql) throws JDException;
+	
+	int updateAndClose(UpdateStatement update) throws JDException;
 	
 	/**
 	 * <p>Actúa igual que <code> query(String sql) </code> realiza una consulta
@@ -85,21 +102,23 @@ public interface GenericManager {
 	 * @return a {@link CachedRowSet} whit te result of the query
 	 * @see #update(String)
 	 */
-	CachedRowSet queryAndClose(String sql);
+	CachedRowSet queryAndClose(String sql) throws JDException;
 	
+	CachedRowSet queryAndClose(QueryStatement query) throws JDException;
+
 	/**
 	 * Establece la interfaz que estará encargada de gestionar las excepciones
 	 * que puedan producir cualquiera de los métodos definidos en esta interfaz
 	 * 
 	 * @see ExceptionHandler
 	 */
-	void setExceptionHandler();
+	void setExceptionHandler(ExceptionHandler handler);
 	
 	/**
 	 * Obtiene la interfaz encargada de gestionar las excepciones que puedan
 	 * producir cualquiera de los métodos definidos en la interfaz.   
 	 */
-	void getExceptionHandler();
+	ExceptionHandler getExceptionHandler();
 	
 	/**
 	 * Demarca el inicio de una secuencia de acciones sobre la capa de persistencia
@@ -109,13 +128,13 @@ public interface GenericManager {
 	 * 
 	 * @see #endTransaction()
 	 */
-	void beginTransaction();
+	void beginTransaction() throws JDException;
 	
 	/**
 	 * Demarca el final de una transacción, intenta hacer permanente los cambios
 	 * realizados sobre la capa de persistencia.
 	 */
-	void endTransaction();
+	void endTransaction() throws JDException;
 	
 	
 

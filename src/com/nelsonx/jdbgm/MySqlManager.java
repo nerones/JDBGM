@@ -13,7 +13,7 @@ public class MySqlManager extends JDBCManager{
 	
 	protected final String jdbc = "jdbc:mysql://";
 	
-	public MySqlManager(String location, String user, String password) {
+	public MySqlManager(String location, String user, String password) throws JDException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -23,6 +23,7 @@ public class MySqlManager extends JDBCManager{
 		this.user = user;
 		this.password = password;
 		locationURL = jdbc+location;
+		beginConnection();
 	}
 
 }

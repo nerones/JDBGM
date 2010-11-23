@@ -11,7 +11,7 @@ package com.crossdb.sql;
  */
 
 
-public interface DeleteQuery {
+public interface DeleteQuery extends UpdateStatement{
 
 	// public SelectQuery(String table);
 	void setTable(String table);

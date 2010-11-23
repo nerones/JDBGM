@@ -11,8 +11,7 @@ import java.sql.Connection;
 
 import com.crossdb.sql.*;
 
-public class MySQLCreateTableQuery extends DefaultCreateTableQuery implements
-		CreateTableQuery {
+public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 
     public MySQLCreateTableQuery() {
         super();

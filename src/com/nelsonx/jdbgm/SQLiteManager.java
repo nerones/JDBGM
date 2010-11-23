@@ -17,7 +17,7 @@ public class SQLiteManager extends JDBCManager {
 
 	protected final String jdbc = "jdbc:sqlite:";
 	
-	public SQLiteManager(String location, String user, String password) {
+	public SQLiteManager(String location, String user, String password) throws JDException {
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
@@ -31,6 +31,7 @@ public class SQLiteManager extends JDBCManager {
 			location = location.split("/")[1];
 		}
 		locationURL = jdbc+location+".db";
+		beginConnection();
 		System.out.println(locationURL);
 	}
 	

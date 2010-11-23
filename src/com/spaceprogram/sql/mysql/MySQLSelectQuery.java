@@ -5,9 +5,8 @@ package com.spaceprogram.sql.mysql;
 import com.crossdb.sql.Join;
 import com.crossdb.sql.WhereClause;
 import com.crossdb.sql.ext.DefaultLevel1SelectQuery;
-import com.crossdb.sql.ext.Level1SelectQuery;
 
-public class MySQLSelectQuery extends DefaultLevel1SelectQuery implements Level1SelectQuery {
+public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 
 
 	public MySQLSelectQuery(){

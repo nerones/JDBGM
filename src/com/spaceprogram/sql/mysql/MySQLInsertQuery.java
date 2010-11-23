@@ -2,12 +2,12 @@ package com.spaceprogram.sql.mysql;
 
 /** This is an initial beta of a class that will represent a query string */
 
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.*;
-import com.crossdb.sql.*;
+import com.crossdb.sql.ColumnValue;
+import com.crossdb.sql.DefaultInsertQuery;
+import com.crossdb.sql.SQLDateTimeFormat;
+import com.crossdb.sql.SQLFormat;
 
-public class MySQLInsertQuery extends DefaultInsertQuery implements InsertQuery {
+public class MySQLInsertQuery extends DefaultInsertQuery{
 
 
 	public String toString(){
@@ -61,7 +61,7 @@ public class MySQLInsertQuery extends DefaultInsertQuery implements InsertQuery 
 		query2b += " ) ";
 		return query2 + query2b;
 	}
-
+	/*
     public int execute(Statement stmt) throws SQLException{
 		//q = new 	Query(conn);
 		//conn.executeQuery();
@@ -78,5 +78,6 @@ public class MySQLInsertQuery extends DefaultInsertQuery implements InsertQuery 
 
 		return ret;
 	}
+	*/
 
 }

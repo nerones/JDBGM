@@ -8,11 +8,6 @@
  */
 package com.crossdb.sql;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
 
 public abstract class DefaultUpdateQuery extends DefaultUpdateableQuery implements UpdateQuery {
 

@@ -11,7 +11,7 @@ public class PostgreSQLManager extends JDBCManager {
 	
 	protected final String jdbc = "jdbc:postgresql://";
 	
-	public PostgreSQLManager(String location, String user, String password) {
+	public PostgreSQLManager(String location, String user, String password) throws JDException {
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -23,6 +23,7 @@ public class PostgreSQLManager extends JDBCManager {
 		this.password = password;
 		locationURL = jdbc+location;
 		// TODO Auto-generated constructor stub
+		beginConnection();
 	}
 
 }

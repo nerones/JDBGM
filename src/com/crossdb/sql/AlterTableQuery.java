@@ -10,7 +10,7 @@ package com.crossdb.sql;
  */
 
 
-public interface AlterTableQuery {
+public interface AlterTableQuery extends UpdateStatement{
 	
 	/**
 	 * Set the table to alter.

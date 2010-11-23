@@ -23,7 +23,7 @@ package com.crossdb.sql;
 
 import java.sql.ResultSetMetaData;
 
-public class Column extends Object {
+public class Column {
 
 	String name = null;
 	int is_nullable = ResultSetMetaData.columnNullable; // equivalent to java.sql.ResultSetMetaData nullable fields
@@ -48,8 +48,8 @@ public class Column extends Object {
 		this.columnIndex = columnIndex;
 	}
 
-	public Column(String n){
-		name = n;
+	public Column(String name){
+		this.name = name;
 	}
 	/**
 	 Takes a name and a type referenced from java.sql.Types
@@ -58,6 +58,25 @@ public class Column extends Object {
 		name = n;
 		this.type = type;
 	}
+	
+	/**
+	 * Crea un objeto Columna pero con la posibilidad de definir si es clave primaria
+	 * y si tiene la opción de autoincrementar activa, toma el tipo de datos desde
+	 * la clase {@link java.sql.Types} 
+	 * 
+	 * @param name El nombre de la columna
+	 * @param type El tipo de dato para la columna
+	 * @param isPK Si es clave primaria
+	 * @param isAutoIncr si tiene activa la opción de autoincrementar
+	 */
+	public Column(String name, int type, boolean isPK, boolean isAutoIncr){
+		this.name = name;
+		this.type = type;
+		isPrimaryKey = isPK;
+		auto_increment = isAutoIncr;
+	}
+	
+	
 
 	
 	
@@ -192,5 +211,44 @@ public class Column extends Object {
 	public void setForeignTable(String foreignTable) {
 		this.foreignTable = foreignTable;
 	}
+	
+	/**
+	 * Añade una clave y tabla foranea para esta Columna, marca implícitamente
+	 * esta clase como una que tiene clave foranea, este método esta pensado para
+	 * añadir toda la información de clave foranea de una sola vez.
+	 * 
+	 * @param foreignTable La tabla a la que se referencia
+	 * @param foreignPK La clave primaria de la tabla a la que se esta referenciando
+	 * 
+	 * @see #isForeignKey()
+	 * @see #setForeignKey(boolean)
+	 * @see #setForeignPrimaryKey(String)
+	 * @see #setForeignTable(String)
+	 */
+	public void setForeignKey(String foreignTable, String foreignPK){
+		isForeignKey = true;
+		this.foreignTable = foreignTable;
+		foreignPrimaryKey = foreignPK;
+	}
+	
+	/**
+	 * Añade una clave y tabla foranea para esta Columna asumiendo que la clave
+	 * foranea tiene el mismo identificador en ambas tablas, marca implícitamente
+	 * esta clase como una que tiene clave foranea, este método esta pensado para
+	 * añadir toda la información de clave foranea de una sola vez.
+	 * 
+	 * @param foreignTable La tabla a la que se referencia
+	 * 
+	 * @see #isForeignKey()
+	 * @see #setForeignKey(boolean)
+	 * @see #setForeignPrimaryKey(String)
+	 * @see #setForeignTable(String)
+	 */
+	public void setForeignKey(String foreignTable){
+		isForeignKey = true;
+		this.foreignTable = foreignTable;
+		foreignPrimaryKey = name;
+	}
+	
 
 }

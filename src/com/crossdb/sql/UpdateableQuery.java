@@ -16,7 +16,7 @@ package com.crossdb.sql;
 import java.util.List;
 import java.math.BigDecimal;
 
-public interface UpdateableQuery {
+public interface UpdateableQuery extends UpdateStatement{
 
 	void addColumn(String column, String value);
 
@@ -32,6 +32,8 @@ public interface UpdateableQuery {
 	void addColumn(String column, boolean value);
 
 	void addColumn(String column, BigDecimal value);
+	
+	public void addColumn(ColumnValue column);
 
 	/**
 	 * Add the list of columns to the current list in the query.

@@ -31,7 +31,7 @@ package com.crossdb.sql;
 // import java.util.List;
 // import java.sql.*;
 
-public interface CreateTableQuery {
+public interface CreateTableQuery extends UpdateStatement{
 
 	void setName(String name);
 

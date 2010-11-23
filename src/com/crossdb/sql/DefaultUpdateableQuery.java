@@ -66,6 +66,10 @@ public class DefaultUpdateableQuery implements UpdateableQuery
     public void addColumn(String column, BigDecimal value) {
         columns.add(new ColumnValue(column, value));
     }
+    
+    public void addColumn(ColumnValue column) {
+        columns.add(column);
+    }
 
     public void addColumnNoAlter(String column, String value){
         ColumnValue c = new ColumnValue(column, value);
