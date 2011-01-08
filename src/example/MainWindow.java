@@ -69,6 +69,7 @@ public class MainWindow extends JFrame {
 				scrolledjtree = new JTreeHolder(data, listener);
 			} catch (JDException e) {
 				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(getRootPane(), "scrolled"+ "\n" +user+ "\n " + pass, "conexion", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 			setJMenuBar(bar.getBarra());
@@ -84,7 +85,7 @@ public class MainWindow extends JFrame {
 			add(infobar.getJLabel());
 			setVisible(true);
 		} catch (JDException e) {
-			JOptionPane.showMessageDialog(getRootPane(), "error" +user + pass, "conexion", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "error"+ "\n" +user+ "\n " + pass, "conexion", JOptionPane.ERROR_MESSAGE);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

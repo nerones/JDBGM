@@ -35,14 +35,13 @@ public class SQLiteManager extends JDBCManager {
 		System.out.println(locationURL);
 	}
 	
-	public Connection getConnection(){
-		if (connection == null) {
+	public Connection getConnection() throws JDException{
+		if ( (connection == null) ) {
 			try {
-				connection = DriverManager.getConnection(locationURL);
+				connection = DriverManager.getConnection(locationURL, user, password);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				System.out.println("aca");
-				e.printStackTrace();
+				throw new JDException("problema al conectar con la base de datos", e);
 			}
 		}
 		return connection;

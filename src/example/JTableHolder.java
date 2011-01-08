@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -31,6 +32,7 @@ public class JTableHolder {
 			rs = data.getAllStudentList();
 		} catch (JDException e) {
 			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "getallstudent", "conexion", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 		CachedRowSetImpl crs = null;

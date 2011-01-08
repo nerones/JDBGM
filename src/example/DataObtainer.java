@@ -23,7 +23,7 @@ public class DataObtainer {
 		this.location = location;
 		this.user = user;
 		this.password = password;
-		manager = ManagerFactory.getManager(ManagerFactory.MYSQL_DB,user,location , password);
+		manager = ManagerFactory.getManager(ManagerFactory.SQLITE_DB,user,location , password);
 
 	}
 
