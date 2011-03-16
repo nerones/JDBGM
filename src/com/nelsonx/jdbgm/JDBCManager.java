@@ -66,13 +66,16 @@ public class JDBCManager implements GenericManager {
 			connectionStarted = true;
 			isAutoCommit = true;
 		} catch (JDException e) {
+			/*
+			 * que paso acá?
+			 */
 			throw e;
 		}
 	}
 	
 	public void endConnection() throws JDException{
 		/*
-		 * Mejorar el manejo de las exepxiones, mas bien hacer algo con la excepciones
+		 * Mejorar el manejo de las excepciones, mas bien hacer algo con la excepciones
 		 */
 		if ( (connection == null) ) return;
 		
@@ -105,8 +108,9 @@ public class JDBCManager implements GenericManager {
 	public int update(String sql) throws JDException{
 		/*
 		 * RECORDAR que hacer con statement, si mantener una instancia del mismo
-		 * mientras dure la conexion u obtener un nuevo statement cada vez que se
-		 * realiza un update.
+		 * mientras dure la conexión u obtener un nuevo statement cada vez que se
+		 * realiza un update. Además se ha de eliminar este método o al menos volverlo
+		 * privado.
 		 */
 		if ( !connectionStarted ) 
 			throw new JDException("la conexion no fue inicializada o fue cerrada", null);
@@ -154,7 +158,7 @@ public class JDBCManager implements GenericManager {
 	
 	public int updateAndClose(String sql) throws JDException {
 		/*
-		 * No se si estara bien, o si sera util, esto hay que LEER MAS!
+		 * No se si estara bien, o si sera útil, esto hay que LEER MAS!
 		 */
 		int result = -1;
 		Connection connection = null;

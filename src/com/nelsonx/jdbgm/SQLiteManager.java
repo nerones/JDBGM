@@ -40,7 +40,7 @@ public class SQLiteManager extends JDBCManager {
 			try {
 				connection = DriverManager.getConnection(locationURL, user, password);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				// TODO arreglar esta excepción
 				throw new JDException("problema al conectar con la base de datos", e);
 			}
 		}

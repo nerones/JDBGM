@@ -190,7 +190,7 @@ public class MakePostrgeDB {
 		}
 	}
 	public static void main(String[] args) throws JDException {
-		MakePostrgeDB mkdb = new MakePostrgeDB("localhost/AsistenciaAlumnos", "nelson", "gnusmas");
+		MakePostrgeDB mkdb = new MakePostrgeDB("localhost/AsistenciaAlumnos", "tester", "tester");
 		mkdb.makeDB();
 	}
 
