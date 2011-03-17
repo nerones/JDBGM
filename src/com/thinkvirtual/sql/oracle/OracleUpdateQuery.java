@@ -13,7 +13,7 @@ import java.sql.*;
 import com.crossdb.sql.*;
 
 
-public class OracleUpdateQuery extends DefaultUpdateQuery implements UpdateQuery {
+public class OracleUpdateQuery extends DefaultUpdateQuery {
 
 
 

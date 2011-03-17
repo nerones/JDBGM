@@ -7,7 +7,7 @@
 package com.crossdb.sql;
 
 
-public abstract class DefaultInsertQuery extends DefaultUpdateableQuery implements InsertQuery{
+public abstract class DefaultInsertQuery extends InsertQuery{
 
 	protected String table;
 

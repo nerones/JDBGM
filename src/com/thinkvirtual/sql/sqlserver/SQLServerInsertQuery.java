@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import com.crossdb.sql.*;
 
-public class SQLServerInsertQuery extends DefaultInsertQuery implements InsertQuery {
+public class SQLServerInsertQuery extends DefaultInsertQuery {
 
 
 	public String toString(){

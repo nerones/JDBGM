@@ -14,7 +14,7 @@ import java.sql.*;
 
 import com.crossdb.sql.*;
 
-public class MySQLUpdateQuery extends DefaultUpdateQuery implements UpdateQuery {
+public class MySQLUpdateQuery extends DefaultUpdateQuery {
 
 
 	public MySQLUpdateQuery() {

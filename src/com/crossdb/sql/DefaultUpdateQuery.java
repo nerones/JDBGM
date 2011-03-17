@@ -9,7 +9,7 @@
 package com.crossdb.sql;
 
 
-public abstract class DefaultUpdateQuery extends DefaultUpdateableQuery implements UpdateQuery {
+public abstract class DefaultUpdateQuery extends UpdateQuery {
 
 	protected String table;
 

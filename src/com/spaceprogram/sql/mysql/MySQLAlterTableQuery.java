@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import com.crossdb.sql.*;
 
-public class MySQLAlterTableQuery extends DefaultAlterTableQuery implements
-		AlterTableQuery {
+public class MySQLAlterTableQuery extends DefaultAlterTableQuery {
 
 	public MySQLAlterTableQuery() {
 		super();

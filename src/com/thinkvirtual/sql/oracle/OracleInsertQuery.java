@@ -12,7 +12,7 @@ import java.sql.*;
 
 import com.crossdb.sql.*;
 
-public class OracleInsertQuery extends DefaultInsertQuery implements InsertQuery {
+public class OracleInsertQuery extends DefaultInsertQuery {
     private String sequenceSuffix = "_seq";
 
 

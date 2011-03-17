@@ -15,45 +15,45 @@ package com.crossdb.sql;
 
 import java.util.Date;
 
-public interface UpdateQuery extends UpdateableQuery {
+public abstract class UpdateQuery extends DefaultUpdateableQuery {
 
-	void setTable(String table);
+	public abstract void setTable(String table);
 
-	void addWhereCondition(String x, int comparison, String y);
+	public abstract void addWhereCondition(String x, int comparison, String y);
 
-	void addWhereCondition(String x, int comparison, int y);
+	public abstract void addWhereCondition(String x, int comparison, int y);
 
-	void addWhereCondition(String x, int comparison, Date y);
+	public abstract void addWhereCondition(String x, int comparison, Date y);
 
-	void addWhereCondition(String and_or, String x, int comparison, String y);
+	public abstract void addWhereCondition(String and_or, String x, int comparison, String y);
 
-	void addWhereCondition(String and_or, String x, int comparison, int y);
+	public abstract void addWhereCondition(String and_or, String x, int comparison, int y);
 
-	void addWhereCondition(String and_or, String x, int comparison, Date y);
+	public abstract void addWhereCondition(String and_or, String x, int comparison, Date y);
 
-	void addWhereString(String x, int comparison, String y);
+	public abstract void addWhereString(String x, int comparison, String y);
 
-	void addWhereString(String and_or, String x, int comparison, String y);
+	public abstract void addWhereString(String and_or, String x, int comparison, String y);
 
-	void addWhereCondition(WhereCondition cond);
+	public abstract void addWhereCondition(WhereCondition cond);
 
-	void addWhereClause(WhereClause wc);
+	public abstract void addWhereClause(WhereClause wc);
 
-	void addWhereNotNull(String col);
+	public abstract void addWhereNotNull(String col);
 
-	void addWhereNotNull(String and_or, String col);
+	public abstract void addWhereNotNull(String and_or, String col);
 
-	void addWhereIsNull(String col);
+	public abstract void addWhereIsNull(String col);
 
-	void addWhereIsNull(String and_or, String col);
+	public abstract void addWhereIsNull(String and_or, String col);
 
 	/**
 	 * This one is used for passing in a string value and not altering it on the
 	 * insert. ie: Not putting single quotes around it or escaping anything.
 	 * Just goes in exactly as it is in value.
 	 */
-	void addColumnNoAlter(String column, String value);
-
+	//public abstract void addColumnNoAlter(String column, String value);
+	// TODO revisar si crea algún problema
 	/**
 	 * This will add a value to a column during an update, for example:
 	 * columnName + 2
@@ -62,7 +62,7 @@ public interface UpdateQuery extends UpdateableQuery {
 	 * @param valueToAdd
 	 *            an integer value to add, can also be a negative number
 	 */
-	void addToColumn(String column, int valueToAdd);
+	public abstract void addToColumn(String column, int valueToAdd);
 
 	/**
 	 * Same as addToColumn(String, int) version, but with a double
@@ -71,13 +71,13 @@ public interface UpdateQuery extends UpdateableQuery {
 	 * @param column
 	 * @param valueToAdd
 	 */
-	void addToColumn(String column, double valueToAdd);
+	public abstract void addToColumn(String column, double valueToAdd);
 
 	/**
 	 * convenience method, equivalent to addToColumn(column, 1);
 	 * 
 	 * @param column
 	 */
-	void incrementColumn(String column);
+	public abstract void incrementColumn(String column);
 
 }

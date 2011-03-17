@@ -3,9 +3,9 @@ package com.crossdb.sql;
 /**
  * Interface base para la creación de cualquier sentencia que represente una
  * acción de actualización a la base de datos, en una BBDD relacional representaría
- * una consulta del tipo ALTER, CREATE o DELETE. A parte de servir de interface base,
+ * una consulta del tipo ALTER, CREATE, INSERT, UPDATE o DELETE. A parte de servir de interface base,
  * sirve para reconocer que tipo de sentencia se construirá con la clase que implemente
- * este método.
+ * esta interface.
  *  
  * @version 1
  * @since 0.5

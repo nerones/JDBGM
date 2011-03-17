@@ -8,7 +8,7 @@ import java.sql.*;
 
 import com.crossdb.sql.*;
 
-public class SQLServerUpdateQuery  extends DefaultUpdateQuery implements com.crossdb.sql.UpdateQuery {
+public class SQLServerUpdateQuery  extends DefaultUpdateQuery {
 
 	String query1;
 

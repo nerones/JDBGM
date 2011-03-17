@@ -15,15 +15,15 @@ package com.crossdb.sql;
  * @author Travis Reeder - travis@spaceprogram.com
  * @version 0.1
  */
-public interface InsertQuery extends UpdateableQuery {
+public abstract class InsertQuery extends DefaultUpdateableQuery {
 
 	// public SelectQuery(String table);
-	void setTable(String table);
+	public abstract void setTable(String table);
 
 	// void addColumn(String column, String value, boolean auto_inc);
-	void addAutoIncrementColumn(String column); // uses default sequence
+	public abstract void addAutoIncrementColumn(String column); // uses default sequence
 
-	void addAutoIncrementColumn(String column, String sequence); // uses named
+	public abstract void addAutoIncrementColumn(String column, String sequence); // uses named
 																	// sequence
 
 	/**
@@ -33,7 +33,7 @@ public interface InsertQuery extends UpdateableQuery {
 	/**
 	 * Returns the last id inserted if this is specified.
 	 */
-	void returnID(boolean b);
+	public abstract void returnID(boolean b);
 
 	/**
 	 * Uses stmt to execute the query. This is so you can keep reusing the same

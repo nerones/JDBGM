@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class OracleCreateTableQuery extends DefaultCreateTableQuery implements CreateTableQuery {
+public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 
 
 	Statement stmt;

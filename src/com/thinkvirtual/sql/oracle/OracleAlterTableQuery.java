@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import com.crossdb.sql.*;
 
-public class OracleAlterTableQuery extends DefaultAlterTableQuery implements AlterTableQuery {
+public class OracleAlterTableQuery extends DefaultAlterTableQuery {
 
 	
 	public String toString(){

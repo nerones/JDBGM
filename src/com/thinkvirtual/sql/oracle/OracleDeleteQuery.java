@@ -15,6 +15,6 @@ import java.sql.*;
 import com.crossdb.sql.*;
 
 
-public class OracleDeleteQuery extends DefaultDeleteQuery implements DeleteQuery {
+public class OracleDeleteQuery extends DefaultDeleteQuery {
 
 }

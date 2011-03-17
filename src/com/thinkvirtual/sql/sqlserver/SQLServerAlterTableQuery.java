@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import com.crossdb.sql.*;
 
-public class SQLServerAlterTableQuery implements AlterTableQuery {
+public class SQLServerAlterTableQuery extends DefaultAlterTableQuery{
 	//Query q;
 	String query1;
 	

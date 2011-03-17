@@ -11,7 +11,7 @@ import com.crossdb.sql.*;
 //import StringUtils;
 
 
-public class MySQLDeleteQuery extends DefaultDeleteQuery implements DeleteQuery {
+public class MySQLDeleteQuery extends DefaultDeleteQuery {
 
 
 
