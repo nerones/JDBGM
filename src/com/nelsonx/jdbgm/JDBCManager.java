@@ -49,7 +49,7 @@ public class JDBCManager implements GenericManager {
 			try {
 				connection = DriverManager.getConnection(locationURL, user, password);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				// TODO arreglar mensaje de error
 				throw new JDException("problema al conectar con la base de datos", e);
 			}
 		}
@@ -67,7 +67,9 @@ public class JDBCManager implements GenericManager {
 			isAutoCommit = true;
 		} catch (JDException e) {
 			/*
-			 * que paso acá?
+			 * que paso acá? El método getConnection fallo, deberla ser por que no
+			 * se puede acceder a la base de datos o bien los parámetros usados en
+			 * DriverManager.getConnection están erróneos. 
 			 */
 			throw e;
 		}
@@ -77,7 +79,7 @@ public class JDBCManager implements GenericManager {
 		/*
 		 * Mejorar el manejo de las excepciones, mas bien hacer algo con la excepciones
 		 */
-		if ( (connection == null) ) return;
+		if ( (connection == null) || (!connectionStarted)) return;
 		
 		try {
 			if (!connection.isClosed()){

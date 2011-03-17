@@ -28,9 +28,15 @@ public interface GenericManager {
 	Connection getConnection() throws JDException;
 	
 	/**
-	 * @throws JDException 
+	 * Método que provee un modo de probar (testear) que se posible realizar la conexión,
+	 * usando los datos de conexión a la base de datos, debería ser invocado solamente 
+	 * en el constructor de la clase que implemente esta interface.
+	 *   
+	 * @throws JDException si no es posible realizar la conexión o autenticación con
+	 * la base de datos. 
 	 * 
 	 */
+	// TODO mejorar esta descripción
 	void beginConnection() throws JDException;
 	
 	/**

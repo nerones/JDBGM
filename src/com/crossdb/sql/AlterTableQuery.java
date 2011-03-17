@@ -13,7 +13,7 @@ package com.crossdb.sql;
 public interface AlterTableQuery extends UpdateStatement{
 	
 	/**
-	 * Set the table to alter.
+	 * Set the name of table to alter.
 	 */
 	void setTable(String table);
 	
