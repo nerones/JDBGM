@@ -1,0 +1,7 @@
+jueves, 17 de marzo de 2011 
+
+01:38 - Arreglando problemas con crossdb tiene autoreferencias en las interfaces, por ejemplo la interfaz updateQuery 
+es implementada en defaultUpdateQuery pero por ejemplo MySQLupdateQuery extiende defaultUpdateQuery e implementa updateQuery lo que es
+una redundancia puesto que la ultima ya implementa la primera por herencia.
+
+ 
