@@ -10,6 +10,7 @@ import java.util.List;
  * Time: 10:11:15 PM
  * @version 0.1
  */
+// TODO mover la documentación de la implementación de esta Interfaz
 public interface IWhereClause {
      /**
 	 defaults to AND

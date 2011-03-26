@@ -21,13 +21,13 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
         }
 		int i;
 		if(columns == null || columns.size() == 0){
-			ret.append("* ");
+			ret.append("*");
 		}
 		else{
 			// rifle through columns and spit out string'
 			for(i = 0; i < columns.size(); i++){
                 if(i > 0){
-                    ret.append(",");
+                    ret.append(", ");
                 }
 				String column = (String)(columns.get(i));
 				ret.append(column);
@@ -54,7 +54,7 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 				if(tj instanceof String){
 					String tablestr = (String)(tj);
 					if(i > 0){
-                        ret.append(",");
+                        ret.append(", ");
 					}
 						ret.append(tablestr);
 				}
@@ -78,7 +78,7 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
                         ret.append(jconds.toString());
 					}
 					else{ // INNER JOIN
-						ret.append(",").append(join.getTableName()); // inner join default
+						ret.append(", ").append(join.getTableName()); // inner join default
 						WhereClause jconds = join.getConditions();
 
 						/*for(int m = 0; m < jconds.size(); m++){
@@ -108,9 +108,10 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 		else if(join_conditions.length() > 0){
 			ret.append(" WHERE ").append(join_conditions);// in case it's only join conditions
 		}
-		if(join_conditions.length() > 0){
-			ret.append(" AND ").append(join_conditions);
-		}
+		// TODO revisar si no afecta esto
+//		if(join_conditions.length() > 0){
+//			ret.append(" AND ").append(join_conditions);
+//		}
 		if(group_by == null || group_by.size() == 0){
 			//return null;
 		}
@@ -149,7 +150,8 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 				ret.append(" LIMIT ").append(limit[0]).append(",").append(limit[1]);
 			}
 		}
-		return ret.toString();
+		//String res = 
+		return getUnionizedQuery(ret).toString(); //ret.toString();
 	}
 
 

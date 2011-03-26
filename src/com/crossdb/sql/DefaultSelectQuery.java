@@ -1,23 +1,21 @@
+package com.crossdb.sql;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.crossdb.sql.optimization.OptimizationHint;
+
 /**
- *
- * most implementations should just extend this
+ * Implementación base de {@link SelectQuery}, cualquier implementación especifica
+ * para una BD concreta debiera heredar de esta clase. 
  *
  * @author Travis Reeder - travis@spaceprogram.com
+ * @author Nelson Efrain A. Cruz
+ * @version 0.5
  * Date: Jun 27, 2002
  * Time: 6:34:51 PM
  * 
  */
-package com.crossdb.sql;
-
-import com.crossdb.sql.optimization.OptimizationHint;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
-
 public abstract class DefaultSelectQuery implements SelectQuery {
 
 
@@ -27,8 +25,6 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 	protected List order_by; // ORDER BY order_by
 	protected List group_by; // GROUP BY order_by
     //protected String limit;
-
-
 	protected WhereClause wclause = new WhereClause();
     protected DefaultSelectQuery union;
     private boolean isDistinct;
@@ -43,43 +39,7 @@ public abstract class DefaultSelectQuery implements SelectQuery {
         group_by = new ArrayList();
     }
 
-	/**
-	 Should be in a separate file
-
-	 CHANGE IN WhereClause.java!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 That's where it's being done now.
-	 */
-	public static String getOperatorString(int operator){
-		String ret = null;
-		switch(operator){
-			case WhereCondition.EQUAL_TO:
-				ret = "=";
-				break;
-			case WhereCondition.NOT_EQUAL_TO:
-				ret = "<>";
-				break;
-			case WhereCondition.LESS_THAN:
-				ret = "<";
-				break;
-			case WhereCondition.LESS_THAN_OR_EQUAL_TO:
-				ret = "<=";
-				break;
-			case WhereCondition.GREATER_THAN:
-				ret = ">";
-				break;
-			case WhereCondition.GREATER_THAN_OR_EQUAL_TO:
-				ret = ">=";
-				break;
-			case WhereCondition.LIKE:
-				ret = "LIKE";
-				break;
-
-		}
-		return ret;
-	}
-
-
-
+	
 	public void addTable(String table){
 
 		tables.add(table);
@@ -261,12 +221,12 @@ public abstract class DefaultSelectQuery implements SelectQuery {
      * will recurse through all SelectQuery's until union is null
      * @return query unioned together
      */
-    private String getUnionizedQuery() {
+    protected StringBuffer getUnionizedQuery(StringBuffer ret) {
         if(union != null){
-            return toString() + " UNION " + union.getUnionizedQuery();
+            return ret.append( " UNION " + union.toString());
         }
         else{
-            return toString();
+            return ret;
         }
     }
     

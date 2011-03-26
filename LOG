@@ -4,4 +4,14 @@ jueves, 17 de marzo de 2011
 es implementada en defaultUpdateQuery pero por ejemplo MySQLupdateQuery extiende defaultUpdateQuery e implementa updateQuery lo que es
 una redundancia puesto que la ultima ya implementa la primera por herencia.
 
- 
+
+viernes, 18 de marzo de 2011
+
+00:58 - Arreglando la documentación de crossdb y empezando a ver que hay demasiadas cosas sin hacer. Estoy empezando a mover cosas como clausulas where y funciones a clases que las representen, aunque la idea ya estaba no estaba implementada se ve un esbozo, no estoy seguro si empezar a comenter lineas de codigo, tengo miedo de romper cosas je. No estoy comodo escribiendo en ingles asi que me decanto por mi idioma natal, lamento el dia en que no me meti en ese curso de m.
+
+19:29 - Lidiando con WhereClause y WhereCondition que lio. Que documentación de mierda no era tanto lio. 
+
+
+viernes, 25 de marzo de 2011
+
+19:42 - Empezando a limpiar un poco la clase que representa SELECT, maldito dolor de mano impulsaba mi ganas de no hacer nada, parece que voy a mover todas las funciones adwhere a whereclause si no queda muy "sucia" la interfaz. Aunque puede que no sea lo mas simple pero si mas elegante. Ya se vera.

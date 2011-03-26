@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="/home/nelson/workspace/java jars/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="/home/nelson/workspace/java jars/postgresql-8.4-701.jdbc4.jar"/>
 	<classpathentry kind="lib" path="/home/nelson/workspace/Proyectosjava/JDBGM/rowset.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

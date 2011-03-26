@@ -15,7 +15,7 @@ package com.crossdb.sql;
 
 import java.util.List;
 
-public class Table extends Object {
+public class Table {
 
 	String name;
 //	String display_name;

@@ -78,7 +78,7 @@ public class SQLServerSelectQuery extends DefaultSelectQuery implements com.cros
 							if(m > 0){
 								ret += " AND ";
 							}
-							ret += c.getPre() + getOperatorString(c.getOperator()) + c.getPost();
+							ret += c.getPre() + WhereClause.getOperatorString(c.getOperator()) + c.getPost();
 						}
 					}
 					else{
@@ -91,7 +91,7 @@ public class SQLServerSelectQuery extends DefaultSelectQuery implements com.cros
 							if(m > 0){
 								join_conditions += ",";
 							}
-							join_conditions += c.getPre() + getOperatorString(c.getOperator()) + c.getPost();
+							join_conditions += c.getPre() + WhereClause.getOperatorString(c.getComparison()) + c.getPost();
 						}
 					}
 					
