@@ -2,6 +2,7 @@ package com.spaceprogram.sql.mysql;
 
 /** This is an initial beta of a class that will represent a query string */
 
+import com.crossdb.sql.Functions;
 import com.crossdb.sql.Join;
 import com.crossdb.sql.WhereClause;
 import com.crossdb.sql.ext.DefaultLevel1SelectQuery;
@@ -44,7 +45,8 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 
 			Join.autoJoin(wclause, this);
             if(tables == null  || tables.size() == 0){
-				return null;
+            	throw new RuntimeException("The sentence has no tables defined, cannot construct the sentence");
+				//return null;
 			}
 		}
 		else{
@@ -120,7 +122,7 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 			// rifle through tables and return string
 			for(i = 0; i < group_by.size(); i++){
                 if(i > 0){
-                    ret.append(",");
+                    ret.append(", ");
                 }
 				String group = (String)(group_by.get(i));
 				ret.append(group);
@@ -135,7 +137,7 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 			// rifle through tables and return string
 			for(i = 0; i < order_by.size(); i++){
                 if(i > 0){
-                    ret.append(",");
+                    ret.append(", ");
                 }
 				String order = (String)(order_by.get(i));
 				ret.append(order);
@@ -152,6 +154,15 @@ public class MySQLSelectQuery extends DefaultLevel1SelectQuery {
 		}
 		//String res = 
 		return getUnionizedQuery(ret).toString(); //ret.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.crossdb.sql.DefaultSelectQuery#getFunction(int)
+	 */
+	@Override
+	protected String getFunction(int functionId) {
+		// TODO ver si es necesario heredar de la clase Function para obtener el nombre de la función
+		return Functions.getFunctionName(functionId);
 	}
 
 

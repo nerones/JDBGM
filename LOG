@@ -15,3 +15,13 @@ viernes, 18 de marzo de 2011
 viernes, 25 de marzo de 2011
 
 19:42 - Empezando a limpiar un poco la clase que representa SELECT, maldito dolor de mano impulsaba mi ganas de no hacer nada, parece que voy a mover todas las funciones adwhere a whereclause si no queda muy "sucia" la interfaz. Aunque puede que no sea lo mas simple pero si mas elegante. Ya se vera.
+
+
+domingo, 27 de marzo de 2011
+
+20:41 - Retomando la refacción de DefaultSelectQuery, falta un largo camino para terminar todo, Seguimos con los test
+
+
+jueves, 31 de marzo de 2011
+
+10:40 - Encontre una buena explicación de como se manejan los errores en http://groups.google.com/group/comp.lang.java.help/msg/2c00a7840c6fb349

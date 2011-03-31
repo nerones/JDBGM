@@ -153,6 +153,15 @@ public class OracleSelectQuery extends DefaultSelectQuery implements SelectQuery
         return ret.toString();
     }
 
+	/* (non-Javadoc)
+	 * @see com.crossdb.sql.DefaultSelectQuery#getFunction(int)
+	 */
+	@Override
+	protected String getFunction(int functionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     /*
     public CrossdbResultSet execute(Statement stmt) throws SQLException {
         //q = new 	Query(conn);

@@ -8,7 +8,7 @@ import com.crossdb.sql.optimization.OptimizationHint;
 /**
  * Esta clase representa una sentencia SELECT. Si nunca se agrega una columna, llamando a
  * {@link #addColumn(String)} por ejemplo, se tomara como que se quieren devolver todas las
- * columnas resultantes, o sea SELECT * FR... 
+ * columnas resultantes, o sea SELECT * FROM... 
  * <p>
  * Además provee una interfaz para agregar los comandos correspondientes a la sentencia SQL
  * todo: move all the addWhere functions to WhereClause and deprecate them in
@@ -57,6 +57,7 @@ public interface SelectQuery extends QueryStatement {
 	 */
 	// TODO agregar funciones desde la clase Functions
 	void addFunctionColumn(String function, String column);
+	
 
 	/**
 	 * For use with aggregate functions such as: AVG COUNT MIN MAX SUM etc...
@@ -69,6 +70,20 @@ public interface SelectQuery extends QueryStatement {
 	 * @param column
 	 */
 	void addFunctionColumn(String function, String table, String column);
+	
+	/**
+	 * Usado para agregar las funciones agregadas que poseen los motores de BB DD tales
+	 * como: AVG, COUNT, MIN, MAX, SUM, etc.
+	 * <p>
+	 * Warning: Does not guarantee database independence if used, use the
+	 * aggregage functions such as countColumn to get database independence
+	 * 
+	 * @param alias es la etiqueta o alias que tomara esta columna en la tabla resultante de la consulta
+	 * @param functionId el identificador de la función que se especifica en Functions
+	 * @param table especifica la tabla de la que se esta tomando la columna
+	 * @param column el identificador de la columna
+	 */
+	void addFunctionColumn(String alias, int functionId, String table, String column);
 
 	void sumColumn(String column);
 

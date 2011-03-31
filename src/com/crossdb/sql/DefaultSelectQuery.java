@@ -18,25 +18,25 @@ import com.crossdb.sql.optimization.OptimizationHint;
  */
 public abstract class DefaultSelectQuery implements SelectQuery {
 
-
-	protected List columns; // = new ArrayList(); // SELECT columns
-	protected List tables;// = new ArrayList(); // FROM tables
+	// TODO ver si se pueden declarar los ArrayList de algun tipo concreto
+	protected ArrayList<Object> columns; // = new ArrayList(); // SELECT columns
+	protected ArrayList<Object> tables;// = new ArrayList(); // FROM tables
 	//List where_clauses; // WHERE where_clauses
-	protected List order_by; // ORDER BY order_by
-	protected List group_by; // GROUP BY order_by
+	protected ArrayList<Object> order_by; // ORDER BY order_by
+	protected ArrayList<Object> group_by; // GROUP BY order_by
     //protected String limit;
 	protected WhereClause wclause = new WhereClause();
     protected DefaultSelectQuery union;
     private boolean isDistinct;
-    protected List optimizationHints = new ArrayList();
+    protected ArrayList<Object> optimizationHints = new ArrayList<Object>();
 
     public DefaultSelectQuery(){
         //query1 = "";
-        tables = new ArrayList();
-        columns = new ArrayList();
+        tables = new ArrayList<Object>();
+        columns = new ArrayList<Object>();
         //where_clauses = new ArrayList();
-        order_by = new ArrayList();
-        group_by = new ArrayList();
+        order_by = new ArrayList<Object>();
+        group_by = new ArrayList<Object>();
     }
 
 	
@@ -69,13 +69,19 @@ public abstract class DefaultSelectQuery implements SelectQuery {
     public void addColumn(String table, String column) {
         columns.add(table + "." + column);
     }
-
+    
+    abstract protected String getFunction(int functionId);
+    // TODO  mover las funciones a Functions y ver los alias (AS)
     public void addFunctionColumn(String function, String column) {
-        columns.add(function + "(" + column + ") ");
+        columns.add(function + "( " + column + " )");
     }
 
     public void addFunctionColumn(String function, String table, String column) {
-        columns.add(function + "(" + table + "." + column + ") ");
+        columns.add(function + "( " + table + "." + column + " )");
+    }
+    
+    public void addFunctionColumn(String alias, int functionId, String table, String column) {
+        columns.add(getFunction(functionId) + "( " + table + "." + column + " ) AS " + alias );
     }
 
     public void sumColumn(String column) {

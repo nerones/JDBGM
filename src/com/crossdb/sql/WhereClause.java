@@ -63,7 +63,7 @@ public class WhereClause implements IWhereClause {
 		for (int i = 0; i < conditions.size(); i++) {
 			Object ob = conditions.get(i);
 			if (i != 0) {
-				ret += separators.get(i) + " ";
+				ret += " " + separators.get(i) + " ";
 			}
 			if (ob instanceof WhereCondition) {
 				WhereCondition cond = (WhereCondition) ob;
@@ -98,8 +98,9 @@ public class WhereClause implements IWhereClause {
 					// TODO " " -> "" rompio algo?
 
 			} else { // clause cause that's all it can be
+				//System.out.println("por aca " + i + conditions.size() + conditions.get(i));
 				WhereClause clause = (WhereClause) ob;
-				ret += " (" + clause.toString() + ") ";
+				ret += "( " + clause.toString() + " )";
 			}
 		}
 		return ret;
