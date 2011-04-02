@@ -148,4 +148,13 @@ public class SQLServerCreateTableQuery implements com.crossdb.sql.CreateTableQue
         java.sql.Statement stmt = conn.createStatement();
         execute(stmt);
     }
+
+	/* (non-Javadoc)
+	 * @see com.crossdb.sql.CreateTableQuery#setTemporary(boolean)
+	 */
+	@Override
+	public void setTemporary(boolean istemporary) {
+		// TODO Auto-generated method stub
+		
+	}
 }

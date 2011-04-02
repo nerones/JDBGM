@@ -1,22 +1,28 @@
+package com.crossdb.sql;
+
+import java.util.ArrayList;
+
 /**
+ * Implementación base de {@link CreateTableQuery}, de  esta clase deberían heredar todas
+ * las implementaciones especificas para algún motor dado.
+ *   
  * @author Travis Reeder - travis@spaceprogram.com
+ * @author Nelson Efrain A. Cruz
+ * @version 0.5
+ * 
  * Date: Jun 27, 2002
  * Time: 8:47:24 PM
  *
  */
-package com.crossdb.sql;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 
     protected String name;
-    protected List columns;
+    protected ArrayList<Column> columns;
     protected boolean auto_defaults = true;
+    protected boolean isTemporary = false;
 
     public DefaultCreateTableQuery() {
-        columns = new ArrayList();
+        columns = new ArrayList<Column>();
     }
 
     public void setName(String name) {
@@ -30,7 +36,10 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     public void setAutoDefaults(boolean b) {
         auto_defaults = b;
     }
-
+    
+    public void setTemporary(boolean istemporary){
+    	isTemporary = istemporary;
+    }
     public abstract String toString();
 
     /*

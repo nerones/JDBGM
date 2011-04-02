@@ -1,21 +1,20 @@
 package com.crossdb.sql;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
 
 import com.crossdb.sql.optimization.OptimizationHint;
 
 /**
- * Esta clase representa una sentencia SELECT. Si nunca se agrega una columna, llamando a
- * {@link #addColumn(String)} por ejemplo, se tomara como que se quieren devolver todas las
- * columnas resultantes, o sea SELECT * FROM... 
+ * Esta clase representa una sentencia SELECT. Si nunca se agrega una columna,
+ * llamando a {@link #addColumn(String)} por ejemplo, se tomara como que se
+ * quieren devolver todas las columnas resultantes, o sea SELECT * FROM...
  * <p>
- * Además provee una interfaz para agregar los comandos correspondientes a la sentencia SQL
- * todo: move all the addWhere functions to WhereClause and deprecate them in
- * this so that they can all be used in any query like delete and update.
+ * Además provee una interfaz para agregar los comandos correspondientes a la
+ * sentencia SQL todo: move all the addWhere functions to WhereClause and
+ * deprecate them in this so that they can all be used in any query like delete
+ * and update.
  * <p>
- * Copyright: Copyright (c) 2002
- * Company: Space Program Inc.
+ * Copyright: Copyright (c) 2002 Company: Space Program Inc.
  * </p>
  * 
  * @author Travis Reeder - travis@spaceprogram.com
@@ -30,34 +29,40 @@ import com.crossdb.sql.optimization.OptimizationHint;
 public interface SelectQuery extends QueryStatement {
 
 	/**
-	 * Agrega una columna a la sentencia SELECT que se esta armando. Si no hay columnas
-	 * agregadas a la sentencia (no se llamo a ningun metodo addColumn) se devolverá
-	 * como de manera predeterminada todas las columnas (SELECT *)
+	 * Agrega una columna a la sentencia SELECT que se esta armando. Si no hay
+	 * columnas agregadas a la sentencia (no se llamo a ningun metodo addColumn)
+	 * se devolverá de manera predeterminada todas las columnas (SELECT *)
 	 * 
 	 * @param column
-	 *            nombre de la columna a devolver en la lista de columnas de la sentencia select.
+	 *            nombre de la columna a devolver en la lista de columnas de la
+	 *            sentencia select.
 	 */
 	void addColumn(String column);
 
 	/**
-	 * equivalente a referirse a una columna en una tabla por table.column, es
-	 * usado cuando se esta realizando una consulta sobre mas de una tabla.
+	 * Agrega una columna a la sentencia SELECT pero haciendo referencia a una
+	 * columna column en una tabla table y por table.column, es usado cuando la
+	 * sentencia select se este realiza sobre mas de una tabla.
 	 * 
 	 * @param table
-	 *            the name of the table
+	 *            el nombre de la tabla que contiene la columna que se quiere
+	 *            agregar.
 	 * @param column
-	 *            the name of the column
+	 *            el nombre de la columna que se esta agregando.
 	 */
 	void addColumn(String table, String column);
 
 	/**
+	 * Usado para agregar las funciones agregadas que poseen los motores de BB
+	 * DD tales como: AVG, COUNT, MIN, MAX, SUM, etc.
 	 * 
 	 * @param function
+	 *            el nombre de la función.
 	 * @param column
+	 *            el nombre de la columna.
 	 */
 	// TODO agregar funciones desde la clase Functions
 	void addFunctionColumn(String function, String column);
-	
 
 	/**
 	 * For use with aggregate functions such as: AVG COUNT MIN MAX SUM etc...
@@ -70,20 +75,26 @@ public interface SelectQuery extends QueryStatement {
 	 * @param column
 	 */
 	void addFunctionColumn(String function, String table, String column);
-	
+
 	/**
-	 * Usado para agregar las funciones agregadas que poseen los motores de BB DD tales
-	 * como: AVG, COUNT, MIN, MAX, SUM, etc.
+	 * Usado para agregar las funciones agregadas que poseen los motores de BB
+	 * DD tales como: AVG, COUNT, MIN, MAX, SUM, etc.
 	 * <p>
 	 * Warning: Does not guarantee database independence if used, use the
 	 * aggregage functions such as countColumn to get database independence
 	 * 
-	 * @param alias es la etiqueta o alias que tomara esta columna en la tabla resultante de la consulta
-	 * @param functionId el identificador de la función que se especifica en Functions
-	 * @param table especifica la tabla de la que se esta tomando la columna
-	 * @param column el identificador de la columna
+	 * @param alias
+	 *            es la etiqueta o alias que tomara esta columna en la tabla
+	 *            resultante de la consulta
+	 * @param functionId
+	 *            el identificador de la función que se especifica en Functions
+	 * @param table
+	 *            especifica la tabla de la que se esta tomando la columna
+	 * @param column
+	 *            el identificador de la columna
 	 */
-	void addFunctionColumn(String alias, int functionId, String table, String column);
+	void addFunctionColumn(String alias, int functionId, String table,
+			String column);
 
 	void sumColumn(String column);
 
@@ -106,15 +117,20 @@ public interface SelectQuery extends QueryStatement {
 	void maxColumn(String table, String column);
 
 	/**
-	 * Agrega una tabla a la sentencia SELECT con INNER JOIN como predeterminado
+	 * Agrega una tabla a la sentencia SELECT sobre la cual se ara la consulta
+	 * con INNER JOIN como predeterminado. Es decir el identificador de tabla
+	 * que se agregara después de FROM.
 	 * 
 	 * @param table
-	 *            el nombre de la tabla que se agrega a la sentencia.
+	 *            el nombre de la tabla sobre la cual se esta haciendo la
+	 *            consulta.
 	 */
 	void addTable(String table);
 
 	/**
-	 * Agrega una tabla a la sentencia SELECT con la opción de JOIN seleccionada
+	 * Agrega una tabla a la sentencia SELECT con la opción de JOIN
+	 * seleccionada. Las opciones de JOIN se obtienen de las constantes
+	 * declaradas en la clase {@link Join}.
 	 * 
 	 * @param joinType
 	 *            - type of join using the fields in Join.java
