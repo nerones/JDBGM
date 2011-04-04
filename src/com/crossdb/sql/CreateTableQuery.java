@@ -61,6 +61,9 @@ public interface CreateTableQuery extends UpdateStatement{
 	 * esto. 
 	 */
 	
+	boolean isCompositePK();
+	
+	String getCompositePK();
 	// TODO soportan las demas la opcion AS select_sentence
 
 	/**
@@ -71,15 +74,5 @@ public interface CreateTableQuery extends UpdateStatement{
 	 * default sequence names.
 	 */
 	// void setSequence(String sequence_table_name);
-
-	/*/**
-	 * Uses stmt to execute the query. This is so you can keep reusing the same
-	 * statement. Be sure to use new statements if you want more than one
-	 * resultset open at the same time.
-	 * /
-	void execute(java.sql.Statement stmt) throws java.sql.SQLException;
-
-	void execute(java.sql.Connection conn) throws java.sql.SQLException;
-	*/
 
 }

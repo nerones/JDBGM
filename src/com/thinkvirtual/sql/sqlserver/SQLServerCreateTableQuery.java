@@ -157,4 +157,22 @@ public class SQLServerCreateTableQuery implements com.crossdb.sql.CreateTableQue
 		// TODO Auto-generated method stub
 		
 	}
+
+	/* (non-Javadoc)
+	 * @see com.crossdb.sql.CreateTableQuery#isCompositePK()
+	 */
+	@Override
+	public boolean isCompositePK() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.crossdb.sql.CreateTableQuery#getCompositePK()
+	 */
+	@Override
+	public String getCompositePK() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

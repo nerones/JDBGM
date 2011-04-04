@@ -20,6 +20,19 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected ArrayList<Column> columns;
     protected boolean auto_defaults = true;
     protected boolean isTemporary = false;
+    /**
+     * Cuenta la cantidad de columnas que forman la clave Primaria (pk) tener en
+     * cuenta que si su valor final es 0 se trata de una pk formada por una única
+     * columna, valores mayores a 0 indican la cantidad de columnas que forman la
+     * clave primaria por lo que se estaría frente a una pk compuesta por varias
+     * columnas.  
+     */
+    protected int pkCounter = -1;
+    /**
+     * De tener la tabla una clave primaria (pk) compuesta por mas de una columna
+     * esta variable guarda la lista de columnas que la conforman en forma de String.
+     */
+    protected String compositePrimaryKey = "";
 
     public DefaultCreateTableQuery() {
         columns = new ArrayList<Column>();
@@ -30,7 +43,22 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     }
 
     public void addColumn(Column column) {
+    	String pre = "";
+    	if (column.isPrimaryKey())
+    		pkCounter++;
+    		if (pkCounter > 0) pre = ", "; 
+    		compositePrimaryKey += pre + column.getName();
         columns.add(column);
+    }
+    
+    public boolean isCompositePK(){
+    	if (pkCounter > 0) return true;
+    	else return false;
+    }
+    
+    public String getCompositePK(){
+    	// TODO tirar error cuando me llamen y no sea clave compuesta?
+    	return compositePrimaryKey;
     }
 
     public void setAutoDefaults(boolean b) {
@@ -41,19 +69,10 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     	isTemporary = istemporary;
     }
     public abstract String toString();
-
-    /*
-    public void execute(java.sql.Statement stmt) throws SQLException {
-        //q = new 	Query(conn);
-        //rs = stmt.executeQuery(querystring);
-        stmt.executeUpdate(toString());
-    }
-
-    public void execute(Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
-        execute(stmt);
-        stmt.close();
-    }
-    */
+    //TODO soporte para multiples claves foraneas
+    //TODO soporte para FK compuesta (multiples columnas)
+    //TODO soporte para acciones que siguen a FK
+  //TODO soporte unique
+  //TODO soporte default;
 
 }

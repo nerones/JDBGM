@@ -9,39 +9,43 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 	@Override
 	public String toString() {
 		String query1;
-		query1 = " CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
+		query1 = "CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
 													// + table_name + " ( ";
 		for (int j = 0; j < columns.size(); j++) {
 			Column df = (Column) (columns.get(j));
 			query1 += df.getName() + " ";
 
-			query1 += MySQLDataTypes.getAsString(df);
+			query1 += SQLiteDataTypes.getAsString(df);
 
-			if (df.isAutoIncrement()) {
-				query1 += " auto_increment primary key NOT NULL";
-
-			} else {
-
-				if (df.isNullable() == 1) {
-					query1 += " NULL ";
-				} else
-					query1 += " NOT NULL ";
-				if (df.getDefaultValue() != null) {
+//			if (df.isAutoIncrement() )
+//				// TODO limpiar por aca
+//				query1 += "";//" AUTOINCREMENT";
+			if (df.isPrimaryKey() && !isCompositePK()){
+				query1 += " PRIMARY KEY";
+				if (df.isAutoIncrement()) query1 += " AUTOINCREMENT";
+			}
+			else if (df.isForeignKey())
+				// TODO soporte para acciones sobre FK y updates and deletes
+				query1 += " REFERENCES "+df.getForeignTable() + "(" + df.getForeignPrimaryKey() + ")"; 
+			if (df.isNullable() == 0)	
+				query1 += " NOT NULL";
+			if (df.getDefaultValue() != null) {
 					if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
 						// Can't use functions like Now() in defaults in mysql
 						query1 += " DEFAULT " + df.getDefaultValue();
 					}
 
 				}
-			}
 
 			if (j < columns.size() - 1) {
 				query1 += ", ";
 			}
 		}
 		// we add the foreign key or primary key definition if we have then
+		if (isCompositePK())
+			query1 += ", PRIMARY KEY (" + getCompositePK()+")";
 
-		query1 += " ) ";
+		query1 += " )";
 
 
             // MYSQL already does this so skip it.

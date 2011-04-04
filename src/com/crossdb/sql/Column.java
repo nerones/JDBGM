@@ -1,26 +1,24 @@
 package com.crossdb.sql;
 
 import java.sql.ResultSetMetaData;
-
+import java.sql.Types;
+// TODO review the documentation
 /**
-
-Generic column class.
-
-Note: This was taken from DataField.
-
- * <p>Title: crossdb - Column</p>
- * <p>Description: Represents a column in a table</p>
- * <p>Copyright: Copyright (c) 2002</p>
- * <p>Company: Space Program Inc.</p>
- * @author Travis Reeder - travis@spaceprogram.com
- * @version 0.1
+ * Generic column class.
  * 
- 	<p>Revision 1: add primary keys and foreign keys support</p>
-  	@author Jorge P&eacute;rez Burgos
-	@author jorge.perez@adaptia.net
-	@author http://www.adaptia.net
-	@author	(C) 2003
-	@version 0.2
+ * Note: This was taken from DataField.
+ * 
+ * <p>
+ * Copyright: Copyright (c) 2002 - Company: Space Program Inc.
+ * </p>
+ * 
+ * @author Travis Reeder - travis@spaceprogram.com
+ * 
+ * @version 0.1
+ * @author Jorge P&eacute;rez Burgos
+ * @author jorge.perez@adaptia.net - http://www.adaptia.net (C) 2003
+ * @author Nelson Efrain A. Cruz
+ * @version 0.2
  */
 public class Column {
 
@@ -29,38 +27,80 @@ public class Column {
 	 * Indica si la columna acepta valores nulos.
 	 */
 	private int is_nullable = ResultSetMetaData.columnNullable; // equivalent to
-														// java.sql.ResultSetMetaData
-														// nullable fields
+	// java.sql.ResultSetMetaData
+	// nullable fields
+	/**
+	 * Identifica el tipo de dato de la columna
+	 */
 	private int type = 0; // maps to java.sql.Types
+	/**
+	 * Tamaño por defecto para las cadenas (CHAR, VARCHAR)
+	 */
 	private int size = 50; // default 50
 	private int columnIndex = 0;
+	/**
+	 * Indica si es clave primaria o no.
+	 */
 	private boolean isPrimaryKey = false;
+	/**
+	 * Indica si es clave foranea o no.
+	 */
 	private boolean isForeignKey = false;
 	// If a column is foreign key we need the the foreign table and the foreign
 	// primary key
+	/**
+	 * Tabla a la que apunta la columna en el caso de que se trate de una
+	 * columna que sea clave foranea
+	 */
 	private String foreignTable = null;
+	/**
+	 * Clave primaria de la tabla a la que apunta la columna en el caso de que
+	 * se trate de una columna que sea clave foranea
+	 */
 	private String foreignPrimaryKey = null;
 
 	// auto inc variables
+	/**
+	 * Si la columna presenta la restricción AUTOINCREMENT
+	 */
+	/*
+	 * Tener en cuenta que en SQLite solo puede ser autoincrement si es clave
+	 * primaria
+	 */// TODO es soportado por SQLite pero solo cuando es INTEGER PRIMARY KEY eliminarlo?
 	private boolean auto_increment = false;
+	/*
+	 * variables de ajuste para AUTOINCREMENT no creo que sea soportado por SQLite
+	 */
 	private int start_with = 1;
 	private int increment_by = 1;
+	/*
+	 *Sequence lo vi en oracle es para designar algo asi como un generador de "secuencias"
+	 *para agregar a las tablas, no quedo claro: se crea una sequence y esta genera  
+	 */
 	private String sequence = null;
-
+	
+	/*
+	 * creo que es el valor por defecto pero tengo duda
+	 */
 	private String col_default = null;
 	
+	/**
+	 * Si la columna es del tipo UNIQUE
+	 */
 	private boolean unique = false;
-	
+
 	/*
 	 * No se para que es el columnIndex
 	 */
 	public Column(int columnIndex) {
 		this.columnIndex = columnIndex;
 	}
-	
+
 	/**
 	 * Crea una columna con el nombre indicado en name
-	 * @param name - el nombre de la columna.
+	 * 
+	 * @param name
+	 *            - el nombre de la columna.
 	 */
 	public Column(String name) {
 		this.name = name;
@@ -70,8 +110,11 @@ public class Column {
 	 * Crea una columna con nombre dado por name y el tipo de dato de la columna
 	 * dado por java.sql.Types.
 	 * 
-	 * @param name - el nombre de la columna
-	 * @param type - el tipo de dato de la columna tomado de {@link java.sql.Types}
+	 * @param name
+	 *            - el nombre de la columna
+	 * @param type
+	 *            - el tipo de dato de la columna tomado de
+	 *            {@link java.sql.Types}
 	 */
 	public Column(String name, int type) {
 		this.name = name;
@@ -98,7 +141,12 @@ public class Column {
 		isPrimaryKey = isPK;
 		auto_increment = isAutoIncr;
 	}
-
+	
+	/**
+	 * Devuelve el nombre o identificador de la columna. Un simple getter
+	 * 
+	 * @return el nombre de la columna
+	 */
 	public String getName() {
 		return name;
 	}
@@ -117,15 +165,28 @@ public class Column {
 	public int getType() {
 		return type;
 	}
-
+	
+	/**
+	 * Para saber si la columna es una clave primaria
+	 * @return TRUE si es clave primaria, FALSE en caso contrario.
+	 */
 	public boolean isPrimaryKey() {
 		return isPrimaryKey;
 	}
-
+	
+	/**
+	 * Para saber si la columna es clave foranea, en caso de serlo se tiene que
+	 * especificar la tabla a la que se apunta y la clave primaria de esa tabla.
+	 * @return TRUE si es clave primaria, FALSE en caso contrario.
+	 */
 	public boolean isForeignKey() {
 		return isForeignKey;
 	}
-
+	
+	/**
+	 * Para saber si la columna es AUTOINCREMENT
+	 * @return true si es AUTOINCREMENT, false en caso contrarop
+	 */
 	public boolean isAutoIncrement() {
 		return auto_increment;
 	}
@@ -199,10 +260,22 @@ public class Column {
 		is_nullable = n;
 	}
 
+	/**
+	 * Especifica el tipo de datos de la columna.
+	 * 
+	 * @param t - el tipo de dato tomado de {@link Types}
+	 */
 	public void setType(int t) {
 		type = t;
 	}
 
+	/**
+	 * Especifica el tipo de datos de la columna y de ser necesario el tamaño para
+	 * tipos de dato como CHAR, de no ser necesario especificar un tamaño para el tipo
+	 * ha de usarse {@link #setType(int)}.
+	 * @param t - el tipo de dato tomado de {@link Types}
+	 * @param size - el tamaño del tipo
+	 */
 	public void setType(int t, int size) {
 		type = t;
 		this.size = size;

@@ -3,22 +3,22 @@ package com.nelsonx.sqlite;
 import com.crossdb.sql.Column;
 
 public class SQLiteDataTypes {
-	
+	// TODO fix data types
 	public static String getAsString(int type, int size) {
         String query1;
         switch (type) {
             case java.sql.Types.BIGINT:
-                query1 = " BIGINT ";
+                query1 = "BIGINT";
                 break;
             case java.sql.Types.BINARY:
-                query1 = " BINARY ";
+                query1 = "BINARY";
                 break;
             case java.sql.Types.BIT:
             case java.sql.Types.BOOLEAN:
-                query1 = " BIT ";
+                query1 = "BIT";
                 break;
             case java.sql.Types.CHAR:
-                query1 = " CHAR(" + size + ") ";
+                query1 = "CHAR(" + size + ")";
                 break;
             case java.sql.Types.DATE:
                 query1 = " DATE ";
@@ -33,7 +33,7 @@ public class SQLiteDataTypes {
                 query1 = " FLOAT ";
                 break;
             case java.sql.Types.INTEGER:
-                query1 = " INT ";
+                query1 = "INTEGER";
                 break;
             case java.sql.Types.JAVA_OBJECT:
                 query1 = " OBJECT ";
