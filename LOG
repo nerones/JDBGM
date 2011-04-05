@@ -26,6 +26,12 @@ jueves, 31 de marzo de 2011
 
 10:40 - Encontre una buena explicación de como se manejan los errores en http://groups.google.com/group/comp.lang.java.help/msg/2c00a7840c6fb349
 
+
 viernes, 01 de abril de 2011
 
 00:10 - empieso a revisar la clase correspondiente a create creo que el mayo problema aca son los tipos de datos. No se agrega, al menos por ahora la opción CREATE TABLE table_name AS SELECT por algunas incompatibilidades, como por ejemplo en SQLite de agregarse la opción AS SELECT no se pueden agregar mas columnas aparte de las devueltas por select en cambio en MySQL y PostgreSQL si se puede. quizás haya algun mode de sortear esto. 
+
+
+lunes, 04 de abril de 2011
+
+19:50 - crear o no una estructura de datos para primary key y foreign key. PK ya esta resuelto pues se admite una sola pk para cualquier tabla, en cambio se pueden tener mas de una FK se podria solucionar con una lista de matrices de 1*2 [][].

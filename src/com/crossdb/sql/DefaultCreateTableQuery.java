@@ -20,6 +20,8 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected ArrayList<Column> columns;
     protected boolean auto_defaults = true;
     protected boolean isTemporary = false;
+    protected boolean hasFK = false; 
+    protected ArrayList<String[]> foreignKeys = new ArrayList<String[]>();
     /**
      * Cuenta la cantidad de columnas que forman la clave Primaria (pk) tener en
      * cuenta que si su valor final es 0 se trata de una pk formada por una única
@@ -44,16 +46,44 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 
     public void addColumn(Column column) {
     	String pre = "";
-    	if (column.isPrimaryKey())
+    	if (column.isPrimaryKey()){
     		pkCounter++;
     		if (pkCounter > 0) pre = ", "; 
     		compositePrimaryKey += pre + column.getName();
+    	}
+    	if (column.isForeignKey()) setForeignKey(column);
         columns.add(column);
     }
     
     public boolean isCompositePK(){
     	if (pkCounter > 0) return true;
     	else return false;
+    }
+    //TODO soporte para multiples claves foraneas quizas deba usar otra estructura de datos
+    //TODO soporte para FK compuesta (multiples columnas)
+    protected void setForeignKey(Column column){
+    	hasFK = true;
+    	boolean matchFK = false;
+    	for (int i = 0; i < foreignKeys.size(); i++) {
+			String[] foreignKey = foreignKeys.get(i);
+			if (foreignKey[0].equals(column.getForeignTable()) ){
+				foreignKey[1] += ", " + column.getName();
+				foreignKey[2] += ", " + column.getForeignPrimaryKey();
+				matchFK = true;
+				break;
+			}
+		}
+    	if (!matchFK){
+    		String[] foreignKey = new String[3];
+    		foreignKey[0] = column.getForeignTable();
+    		foreignKey[1] = column.getName();
+    		foreignKey[2] = column.getForeignPrimaryKey();
+    		foreignKeys.add(foreignKey);
+    	}
+    }
+    
+    public ArrayList<String[]> getForeignKeys(){
+    	return foreignKeys;
     }
     
     public String getCompositePK(){
@@ -68,9 +98,10 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     public void setTemporary(boolean istemporary){
     	isTemporary = istemporary;
     }
+    
     public abstract String toString();
-    //TODO soporte para multiples claves foraneas
-    //TODO soporte para FK compuesta (multiples columnas)
+    
+
     //TODO soporte para acciones que siguen a FK
   //TODO soporte unique
   //TODO soporte default;

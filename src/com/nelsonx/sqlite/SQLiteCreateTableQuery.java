@@ -1,5 +1,7 @@
 package com.nelsonx.sqlite;
 
+import java.util.ArrayList;
+
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultCreateTableQuery;
 import com.spaceprogram.sql.mysql.MySQLDataTypes;
@@ -24,9 +26,9 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 				query1 += " PRIMARY KEY";
 				if (df.isAutoIncrement()) query1 += " AUTOINCREMENT";
 			}
-			else if (df.isForeignKey())
-				// TODO soporte para acciones sobre FK y updates and deletes
-				query1 += " REFERENCES "+df.getForeignTable() + "(" + df.getForeignPrimaryKey() + ")"; 
+//			else if (df.isForeignKey())
+//				TODO soporte para acciones sobre FK y updates and deletes
+//				query1 += " REFERENCES "+df.getForeignTable() + "(" + df.getForeignPrimaryKey() + ")"; 
 			if (df.isNullable() == 0)	
 				query1 += " NOT NULL";
 			if (df.getDefaultValue() != null) {
@@ -44,6 +46,12 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 		// we add the foreign key or primary key definition if we have then
 		if (isCompositePK())
 			query1 += ", PRIMARY KEY (" + getCompositePK()+")";
+		if (hasFK) {
+			ArrayList<String[]> fks = getForeignKeys();
+			for (String[] strings : fks) {
+				query1 += ", FOREIGN KEY ("+strings[1]+") REFERENCES "+strings[0]+"("+strings[2]+")";
+			}
+		}
 
 		query1 += " )";
 

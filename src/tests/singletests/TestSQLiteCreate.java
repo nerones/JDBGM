@@ -39,7 +39,6 @@ public class TestSQLiteCreate {
 		ct.addColumn(test);
 		ct.addColumn(new Column("Id", Types.INTEGER, true, true));
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
-		System.out.println(ct.toString());
 		assertEquals("CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, Id INTEGER PRIMARY KEY AUTOINCREMENT, carac INTEGER )", ct.toString());
 		
 	}
@@ -59,10 +58,19 @@ public class TestSQLiteCreate {
 		test.setForeignKey("Entes");
 		test.setNullable(0);
 		ct.addColumn(test);
+		Column test2 = new Column("Genero2", Types.CHAR, false, false);
+		test2.setForeignKey("Entes");
+		ct.addColumn(test2);
+		Column test3 = new Column("Cientifico", Types.CHAR, false, false);
+		test3.setForeignKey("Estudio","Cientifico2");
+		ct.addColumn(test3);
 		ct.addColumn(new Column("Id", Types.INTEGER, true, true));
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
 		System.out.println(ct.toString());
-		assertEquals("CREATE TABLE Animales4 ( Genero CHAR(50) REFERENCES Entes(Genero) NOT NULL, Id INTEGER PRIMARY KEY AUTOINCREMENT, carac INTEGER )", ct.toString());
+		assertEquals("CREATE TABLE Animales4 ( Genero CHAR(50) NOT NULL, Genero2 CHAR(50), Cientifico CHAR(50)," +
+				" Id INTEGER PRIMARY KEY AUTOINCREMENT, carac INTEGER," +
+				" FOREIGN KEY (Genero, Genero2) REFERENCES Entes(Genero, Genero2)," +
+				" FOREIGN KEY (Cientifico) REFERENCES Estudio(Cientifico2) )", ct.toString());
 		
 	}
 	

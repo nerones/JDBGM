@@ -22,7 +22,7 @@ import java.sql.Types;
  */
 public class Column {
 
-	String name = null;
+	private String name = null;
 	/**
 	 * Indica si la columna acepta valores nulos.
 	 */
