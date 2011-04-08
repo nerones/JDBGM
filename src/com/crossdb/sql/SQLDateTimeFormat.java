@@ -1,3 +1,5 @@
+package com.crossdb.sql;
+
 /**
  * for DATETIME or TIMESTAMP columns, might need a timestamp Format too maybe?
  *
@@ -12,7 +14,6 @@
  * Time: 3:37:50 PM
  * 
  */
-package com.crossdb.sql;
 public class SQLDateTimeFormat extends java.text.SimpleDateFormat {
 
 	public SQLDateTimeFormat(){

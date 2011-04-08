@@ -18,6 +18,7 @@
  */
 package tests.singletests;
 
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Types;
 
@@ -26,16 +27,13 @@ import org.junit.Test;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
-import com.nelsonx.sqlite.SQLiteCreateTableQuery;
-
-import static org.junit.Assert.assertEquals;
+import com.spaceprogram.sql.mysql.MySQLCreateTableQuery;
 
 /**
  * @author Nelson Efrain A. Cruz
  *
  */
-public class TestSQLiteCreate {
-
+public class TestMySqlCreate {
 	CreateTableQuery ct;
 	Column col;
 	/**
@@ -43,7 +41,7 @@ public class TestSQLiteCreate {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ct = new SQLiteCreateTableQuery();
+		ct = new MySQLCreateTableQuery();
 	}
 	
 	@Test
@@ -54,7 +52,7 @@ public class TestSQLiteCreate {
 		ct.addColumn(test);
 		ct.addColumn(new Column("Id", Types.INTEGER, true, true));
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
-		assertEquals("CREATE TABLE Animales ( Genero TEXT NOT NULL, Id INTEGER PRIMARY KEY AUTOINCREMENT, carac INTEGER )", ct.toString());
+		assertEquals("CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, Id INTEGER PRIMARY KEY AUTO_INCREMENT, carac INTEGER AUTO_INCREMENT )", ct.toString());
 		
 	}
 	
@@ -177,6 +175,5 @@ public class TestSQLiteCreate {
 				"col34 BLOB, " +
 				"col35 TEXT )", ct.toString());
 	}
-	
 
 }

@@ -1,3 +1,7 @@
+package com.crossdb.sql;
+
+import java.util.Date;
+
 /**
  *
  * This will be on an implementation basis, the Formatter is retrieved/created
@@ -8,10 +12,6 @@
  * Time: 9:43:43 PM
  * 
  */
-package com.crossdb.sql;
-
-import java.util.Date;
-
 public interface Formatter {
 	/** Formats a date to be used in a query string. */
 	 String format(Date d);

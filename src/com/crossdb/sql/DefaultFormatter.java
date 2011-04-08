@@ -1,3 +1,7 @@
+package com.crossdb.sql;
+
+import java.util.Date;
+
 /**
  * 
  * @author Travis reeder
@@ -5,10 +9,6 @@
  * Time: 3:37:08 PM
  * @version 0.1
  */
-package com.crossdb.sql;
-
-import java.util.Date;
-
 public class DefaultFormatter implements Formatter {
    /** Returns a string for inserting into db. */
     public String format(Date d){

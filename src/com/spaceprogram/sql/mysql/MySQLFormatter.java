@@ -15,7 +15,7 @@ import com.crossdb.sql.DefaultFormatter;
 
 import java.util.Date;
 
-public class MySQLFormatter extends DefaultFormatter implements Formatter {
+public class MySQLFormatter extends DefaultFormatter {
 
 
 

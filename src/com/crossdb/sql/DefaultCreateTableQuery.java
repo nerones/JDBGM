@@ -103,7 +103,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     
 
     //TODO soporte para acciones que siguen a FK
-  //TODO soporte unique
-  //TODO soporte default;
+    //TODO compatibilidad de unique
+    //TODO soporte default para tipos de datos extraños;
 
 }

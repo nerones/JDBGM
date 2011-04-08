@@ -22,6 +22,7 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 //			if (df.isAutoIncrement() )
 //				// TODO limpiar por aca
 //				query1 += "";//" AUTOINCREMENT";
+			if (df.isUnique()) query1 += " UNIQUE";
 			if (df.isPrimaryKey() && !isCompositePK()){
 				query1 += " PRIMARY KEY";
 				if (df.isAutoIncrement()) query1 += " AUTOINCREMENT";

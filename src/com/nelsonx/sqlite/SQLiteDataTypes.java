@@ -8,29 +8,31 @@ public class SQLiteDataTypes {
         String query1;
         switch (type) {
             case java.sql.Types.BIGINT:
-                query1 = "BIGINT";
+                query1 = "INTEGER";
                 break;
+            //TODO no hay binary en sqlite
             case java.sql.Types.BINARY:
                 query1 = "BINARY";
                 break;
             case java.sql.Types.BIT:
+            	//TODO boolean mapeado a integer 1 = true; 0 = false
             case java.sql.Types.BOOLEAN:
-                query1 = "BIT";
+                query1 = "INTEGER";
                 break;
             case java.sql.Types.CHAR:
-                query1 = "CHAR(" + size + ")";
+                query1 = "TEXT";
                 break;
             case java.sql.Types.DATE:
-                query1 = " DATE ";
+                query1 = "TEXT";
                 break;
             case java.sql.Types.DECIMAL:
-                query1 = " DECIMAL ";
+                query1 = "NUMERIC";
                 break;
             case java.sql.Types.DOUBLE:
-                query1 = " DOUBLE ";
+                query1 = "REAL";
                 break;
             case java.sql.Types.FLOAT:
-                query1 = " FLOAT ";
+                query1 = "REAL";
                 break;
             case java.sql.Types.INTEGER:
                 query1 = "INTEGER";
@@ -42,13 +44,13 @@ public class SQLiteDataTypes {
                 query1 = " MEDIUMBLOB ";
                 break;
             case java.sql.Types.LONGVARCHAR:
-                query1 = " TEXT ";
+                query1 = "TEXT";
                 break;
             case java.sql.Types.NUMERIC:
-                query1 = " NUMERIC ";
+                query1 = "NUMERIC";
                 break;
             case java.sql.Types.SMALLINT:
-                query1 = " SMALLINT ";
+                query1 = "INTEGER";
                 break;
             case java.sql.Types.TIME:
                 query1 = " TIME ";
@@ -57,14 +59,14 @@ public class SQLiteDataTypes {
                 query1 = " TIMESTAMP ";
                 break;
             case java.sql.Types.TINYINT:
-                query1 = " TINYINT ";
+                query1 = "INTEGER";
                 break;
             case java.sql.Types.VARBINARY:
                 query1 = " VARCHAR BINARY ";
                 break;
             case java.sql.Types.VARCHAR:
             default:
-                query1 = " VARCHAR(" + size + ") ";
+                query1 = "TEXT";
         }
         return query1;
 

@@ -210,7 +210,7 @@ public class Column {
 	public int getIncrementBy() {
 		return increment_by;
 	}
-
+	// TODO mover setSequence SQLite lo soporta?
 	/**
 	 * Sets the sequence used for this column if it's an auto increment column.
 	 */
@@ -224,6 +224,19 @@ public class Column {
 
 	public String getDefaultValue() {
 		return col_default;
+	}
+	
+	
+	/**
+	 * Para ver si es una columna con la restricción UNIQUE
+	 * @return true si la columna tiene la restricción UNIQUE, falso en caso contrario
+	 */
+	public boolean isUnique() {
+		return unique;
+	}
+
+	public void setUnique(boolean unique) {
+		this.unique = unique;
 	}
 
 	/**

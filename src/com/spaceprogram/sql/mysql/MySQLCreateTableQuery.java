@@ -1,16 +1,16 @@
+
+
+package com.spaceprogram.sql.mysql;
+
+import com.crossdb.sql.Column;
+import com.crossdb.sql.DefaultCreateTableQuery;
+
 /**
  *
  * @author  prophecy
- * @version
+ * @author Nelson Efrain A. Cruz
+ * @version 0.5
  */
-package com.spaceprogram.sql.mysql;
-
-import java.util.*;
-import java.sql.SQLException;
-import java.sql.Connection;
-
-import com.crossdb.sql.*;
-
 public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 
     public MySQLCreateTableQuery() {
@@ -20,7 +20,7 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 	public String toString() {
 
 		String query1;
-		query1 = " CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
+		query1 = "CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
 													// + table_name + " ( ";
 		for (int j = 0; j < columns.size(); j++) {
 			Column df = (Column) (columns.get(j));
@@ -29,14 +29,14 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 			query1 += MySQLDataTypes.getAsString(df);
 
 			if (df.isAutoIncrement()) {
-				query1 += " auto_increment primary key NOT NULL";
+				query1 += " AUTO_INCREMENT";// primary key NOT NULL";
 
 			} else {
 
 				if (df.isNullable() == 1) {
-					query1 += " NULL ";
+					query1 += " NULL";
 				} else
-					query1 += " NOT NULL ";
+					query1 += " NOT NULL";
 				if (df.getDefaultValue() != null) {
 					if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
 						// Can't use functions like Now() in defaults in mysql
@@ -52,7 +52,7 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 		}
 		// we add the foreign key or primary key definition if we have then
 
-		query1 += " ) ";
+		query1 += " )";
 
 
             // MYSQL already does this so skip it.
