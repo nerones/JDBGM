@@ -2,6 +2,8 @@
 
 package com.spaceprogram.sql.mysql;
 
+import java.util.ArrayList;
+
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultCreateTableQuery;
 
@@ -28,26 +30,35 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 
 			query1 += MySQLDataTypes.getAsString(df);
 
-			if (df.isAutoIncrement()) {
-				query1 += " AUTO_INCREMENT";// primary key NOT NULL";
-
-			} else {
-
-				if (df.isNullable() == 1) {
-					query1 += " NULL";
-				} else
-					query1 += " NOT NULL";
-				if (df.getDefaultValue() != null) {
-					if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
-						// Can't use functions like Now() in defaults in mysql
-						query1 += " DEFAULT " + df.getDefaultValue();
-					}
-
+			// if (df.isAutoIncrement()) {
+			// //una tabla de mysql solo puede tener una columna auto_increment
+			// query1 += " AUTO_INCREMENT";// primary key NOT NULL";
+			if (df.isUnique()) query1 += " UNIQUE";
+			if (df.isPrimaryKey() && !isCompositePK()){
+				query1 += " PRIMARY KEY";
+				if (df.isAutoIncrement()) query1 += " AUTO_INCREMENT";
+			} 
+			if (df.isNullable() == 0)
+				query1 += " NOT NULL";
+			if (df.getDefaultValue() != null) {
+				if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
+					// Can't use functions like Now() in defaults in mysql
+					query1 += " DEFAULT " + df.getDefaultValue();
 				}
+
 			}
 
 			if (j < columns.size() - 1) {
 				query1 += ", ";
+			}
+
+		}
+		if (isCompositePK())
+			query1 += ", PRIMARY KEY (" + getCompositePK()+")";
+		if (hasFK) {
+			ArrayList<String[]> fks = getForeignKeys();
+			for (String[] strings : fks) {
+				query1 += ", FOREIGN KEY ("+strings[1]+") REFERENCES "+strings[0]+"("+strings[2]+")";
 			}
 		}
 		// we add the foreign key or primary key definition if we have then

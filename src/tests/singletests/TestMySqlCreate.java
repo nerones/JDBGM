@@ -52,7 +52,7 @@ public class TestMySqlCreate {
 		ct.addColumn(test);
 		ct.addColumn(new Column("Id", Types.INTEGER, true, true));
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
-		assertEquals("CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, Id INTEGER PRIMARY KEY AUTO_INCREMENT, carac INTEGER AUTO_INCREMENT )", ct.toString());
+		assertEquals("CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, Id INTEGER PRIMARY KEY AUTO_INCREMENT, carac INTEGER )", ct.toString());
 		
 	}
 	
@@ -61,7 +61,7 @@ public class TestMySqlCreate {
 		ct.setName("Animales2");
 		ct.addColumn(new Column("Genero", Types.CHAR, true, false));
 		ct.addColumn(new Column("Id", Types.INTEGER, true, false));
-		assertEquals("CREATE TABLE Animales2 ( Genero TEXT, Id INTEGER, PRIMARY KEY (Genero, Id) )", ct.toString());
+		assertEquals("CREATE TABLE Animales2 ( Genero CHAR(50), Id INTEGER, PRIMARY KEY (Genero, Id) )", ct.toString());
 	}
 	
 	@Test
@@ -79,9 +79,9 @@ public class TestMySqlCreate {
 		ct.addColumn(test3);
 		ct.addColumn(new Column("Id", Types.INTEGER, true, true));
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
-		//System.out.println(ct.toString());
-		assertEquals("CREATE TABLE Animales4 ( Genero TEXT NOT NULL, Genero2 TEXT, Cientifico TEXT," +
-				" Id INTEGER PRIMARY KEY AUTOINCREMENT, carac INTEGER," +
+		System.out.println(ct.toString());
+		assertEquals("CREATE TABLE Animales4 ( Genero CHAR(50) NOT NULL, Genero2 CHAR(50), Cientifico CHAR(50)," +
+				" Id INTEGER PRIMARY KEY AUTO_INCREMENT, carac INTEGER," +
 				" FOREIGN KEY (Genero, Genero2) REFERENCES Entes(Genero, Genero2)," +
 				" FOREIGN KEY (Cientifico) REFERENCES Estudio(Cientifico2) )", ct.toString());
 		
@@ -95,7 +95,7 @@ public class TestMySqlCreate {
 		col.setDefaultValue("'RATA'");
 		ct.addColumn(col );
 		ct.addColumn(new Column("Id", Types.INTEGER, true, false));
-		assertEquals("CREATE TABLE Animales2 ( Genero TEXT UNIQUE DEFAULT 'RATA', Id INTEGER PRIMARY KEY )", ct.toString());
+		assertEquals("CREATE TABLE Animales2 ( Genero CHAR(50) UNIQUE DEFAULT 'RATA', Id INTEGER PRIMARY KEY )", ct.toString());
 	}
 	
 	@Test
@@ -139,23 +139,23 @@ public class TestMySqlCreate {
 		ct.addColumn(new Column("col35", Types.VARCHAR, false, false));
 		
 		assertEquals("CREATE TABLE Animales5 ( " +
-				"col1 INTEGER, " +
+				"col1 BIGINT, " +
 				"col2 BLOB, " +
-				"col3 INTEGER, " +
+				"col3 TINYINT(1), " +
 				"col4 BLOB, " +
-				"col5 INTEGER, " +
-				"col6 TEXT, " +
+				"col5 TINYINT(1), " +
+				"col6 CHAR(50), " +
 				"col7 CLOB, " +
 				"col8 DATALINK, " +
-				"col9 TEXT," +
-				"col10 NUMERIC, " +
+				"col9 DATE," +
+				"col10 DECIMAL, " +
 				"col11 DISTINCT, " +
-				"col12 REAL, " +
-				"col13 REAL, " +
+				"col12 DOUBLE, " +
+				"col13 FLOAT, " +
 				"col14 INTEGER, " +
 				"col15 JAVA_OBJECT, " +
 				"col16 TEXT, " +
-				"col17 LONGVARBINARY, " +
+				"col17 MEDIUMBLOB, " +
 				"col18 TEXT, " +
 				"col19 TEXT, " +
 				"col20 NCLOB, " +
@@ -166,14 +166,14 @@ public class TestMySqlCreate {
 				"col25 REAL, " +
 				"col26 REF, " +
 				"col27 ROWID, " +
-				"col28 INTEGER, " +
+				"col28 SMALLINT, " +
 				"col29 SQLXML, " +
 				"col30 STRUCT, " +
 				"col31 TIME, " +
 				"col32 TIMESTAMP, " +
-				"col33 INTEGER, " +
+				"col33 TINYINT, " +
 				"col34 BLOB, " +
-				"col35 TEXT )", ct.toString());
+				"col35 VARCHAR(50) )", ct.toString());
 	}
 
 }
