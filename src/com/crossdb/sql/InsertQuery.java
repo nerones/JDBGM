@@ -27,25 +27,14 @@ public abstract class InsertQuery extends DefaultUpdateableQuery {
 																	// sequence
 
 	/**
-	 * Returns the SQL statement.
-	 */
-	// String toString();
-	/**
 	 * Returns the last id inserted if this is specified.
 	 */
 	public abstract void returnID(boolean b);
+	
+	public abstract void setSelectStmt(SelectQuery select);
+	
+	public abstract void setFromDefault(boolean isFromDefault);
 
-	/**
-	 * Uses stmt to execute the query. This is so you can keep reusing the same
-	 * statement. Be sure to use new statements if you want more than one
-	 * resultset open at the same time.
-	 */
-	// int execute(java.sql.Statement stmt) throws SQLException ;
-	/**
-	 * This one takes a java.sql.Connection and then creates a statement and
-	 * executes.
-	 */
-	// int execute(Connection conn) throws SQLException ;
 
 	/**
 	 * Returns a java.sql.PreparedStatement object based on the query.

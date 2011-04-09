@@ -1,3 +1,9 @@
+
+package com.crossdb.sql;
+
+import java.util.List;
+import java.math.BigDecimal;
+
 /**
  * For queries that modify the contents of a table such as: InsertQuery and UpdateQuery
  *
@@ -11,11 +17,6 @@
  * Time: 1:01:05 PM
  * 
  */
-package com.crossdb.sql;
-
-import java.util.List;
-import java.math.BigDecimal;
-
 public interface UpdateableQuery extends UpdateStatement{
 
 	void addColumn(String column, String value);

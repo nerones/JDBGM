@@ -1,3 +1,9 @@
+
+package com.crossdb.sql;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * Queries that you set column values, Insert and Update, should extend this
  *
@@ -9,15 +15,6 @@
  * Time: 12:21:44 AM
  * 
  */
-package com.crossdb.sql;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.math.BigDecimal;
-
 public class DefaultUpdateableQuery implements UpdateableQuery
 {
     protected List columns; // = new ArrayList(); // SELECT columns
@@ -97,26 +94,6 @@ public class DefaultUpdateableQuery implements UpdateableQuery
         return columns;
     }
 
-    
-    /* *
-     * Dummy function so that it can implement ExecuteUpdate
-     * @param conn
-     * @return
-     * @throws SQLException
-     * /
-    public int execute(Connection conn) throws SQLException {
-        return 0;
-    }
-
-    /**
-     * Dummy function so that it can implement ExecuteUpdate
-     * @param stmt
-     * @return
-     * @throws SQLException
-     * /
-    public int execute(Statement stmt) throws SQLException {
-        return 0;
-    }
 
 
 

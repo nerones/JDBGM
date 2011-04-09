@@ -52,7 +52,7 @@ public class TestPostgreSQLCreate {
 		ct.addColumn(test);
 		ct.addColumn(new Column("Id", Types.INTEGER, true, true));
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
-		assertEquals("CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, Id INTEGER PRIMARY KEY AUTO_INCREMENT, carac INTEGER )", ct.toString());
+		assertEquals("CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, Id INTEGER PRIMARY KEY, carac INTEGER )", ct.toString());
 		
 	}
 	
@@ -81,7 +81,7 @@ public class TestPostgreSQLCreate {
 		ct.addColumn(new Column("carac", Types.INTEGER, false, true));
 		System.out.println(ct.toString());
 		assertEquals("CREATE TABLE Animales4 ( Genero CHAR(50) NOT NULL, Genero2 CHAR(50), Cientifico CHAR(50)," +
-				" Id INTEGER PRIMARY KEY AUTO_INCREMENT, carac INTEGER," +
+				" Id INTEGER PRIMARY KEY, carac INTEGER," +
 				" FOREIGN KEY (Genero, Genero2) REFERENCES Entes(Genero, Genero2)," +
 				" FOREIGN KEY (Cientifico) REFERENCES Estudio(Cientifico2) )", ct.toString());
 		

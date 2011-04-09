@@ -1,3 +1,6 @@
+
+package com.crossdb.sql;
+
 /**
  * Structure to hold column name and value pair for UpdateableQuery's
  *
@@ -7,8 +10,6 @@
  * Time: 6:50:18 PM
  * 
  */
-package com.crossdb.sql;
-
 public class ColumnValue
 {
     String name;
