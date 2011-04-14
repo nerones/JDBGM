@@ -2,6 +2,7 @@
 package com.crossdb.sql;
 
 /**
+ * Se puede configurar la sentencia INSERT con 
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz 2011
  * Date: Jun 27, 2002
@@ -14,7 +15,9 @@ public abstract class DefaultInsertQuery extends InsertQuery{
 
 	protected boolean return_id = false;
 	
-	protected boolean isFromDefault = false;
+	protected boolean isFromDefaultValues = false;
+	protected boolean isFromSelect = false;
+	protected boolean isFromValues = true;
 	
 	protected SelectQuery select = null;
 
@@ -29,14 +32,14 @@ public abstract class DefaultInsertQuery extends InsertQuery{
 	}
 
 	public void addAutoIncrementColumn(String column) {
-		ColumnValue c = new ColumnValue(column, null);
+		Column c = new Column(column, null);
 		c.setAutoIncrement(true);
 		columns.add(c);
 		// values.add(null);
 	}
 
 	public void addAutoIncrementColumn(String column, String sequence) {
-		ColumnValue c = new ColumnValue(column, null);
+		Column c = new Column(column, null);
 		c.setAutoIncrement(true);
 		c.setSequence(sequence);
 		columns.add(c);
@@ -48,17 +51,28 @@ public abstract class DefaultInsertQuery extends InsertQuery{
 	}
 	
 	public void setFromDefault(boolean isFromDefault){
-		this.isFromDefault = isFromDefault;
+		if (isFromDefault) {
+			isFromSelect = false;
+			isFromValues = false;
+		}
+		this.isFromDefaultValues = isFromDefault;
 	}
 	public boolean isFromDefault(){
-		return isFromDefault;
+		return isFromDefaultValues;
 	}
 	
 	public SelectQuery getSelectStmt(){
 		return select;
 	}
 	
+	public boolean isFromSelect(){
+		return isFromSelect;
+	}
+	
 	public void setSelectStmt(SelectQuery select){
+		isFromSelect = true;
+		isFromDefaultValues = false;
+		isFromValues = false;
 		this.select = select;
 	}
 

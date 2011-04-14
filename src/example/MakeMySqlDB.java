@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import com.crossdb.sql.Column;
-import com.crossdb.sql.ColumnValue;
+import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SelectQuery;
@@ -279,19 +279,19 @@ public class MakeMySqlDB {
 		InsertQuery insert = sqlFactory.getInsertQuery();
 		insert.setTable("alumnos");
 		ArrayList columnlist = new ArrayList();
-		ColumnValue columndni = new ColumnValue("dni", null);
+		Column columndni = new Column("dni", null);
 		columnlist.add(columndni);
-		ColumnValue columnNacimiento = new ColumnValue("fechaNacimiento", null);
+		Column columnNacimiento = new Column("fechaNacimiento", null);
 		columnlist.add(columnNacimiento);
-		ColumnValue columnEmail = new ColumnValue("email", null);
+		Column columnEmail = new Column("email", null);
 		columnlist.add(columnEmail);
-		ColumnValue columnDireccion = new ColumnValue("direccion", null);
+		Column columnDireccion = new Column("direccion", null);
 		columnlist.add(columnDireccion);
-		ColumnValue columnNombre = new ColumnValue("nombre", null);
+		Column columnNombre = new Column("nombre", null);
 		columnlist.add(columnNombre);
-		ColumnValue columnApellido = new ColumnValue("apellido", null);
+		Column columnApellido = new Column("apellido", null);
 		columnlist.add(columnApellido);
-		ColumnValue columnTelefono = new ColumnValue("telefono", null);
+		Column columnTelefono = new Column("telefono", null);
 		columnlist.add(columnTelefono);
 		insert.appendColumns(columnlist);
 		
@@ -321,7 +321,7 @@ public class MakeMySqlDB {
 		Vector<String> materias = Utils.openFile("DOC/Materias.txt");
 		insert = sqlFactory.getInsertQuery();
 		insert.setTable("materias");
-		ColumnValue col = new ColumnValue("nombre", null);
+		Column col = new Column("nombre", null);
 		ArrayList list = new ArrayList();
 		list.add(col);
 		insert.appendColumns(list);
@@ -367,11 +367,11 @@ public class MakeMySqlDB {
 		
 		insert = sqlFactory.getInsertQuery();
 		insert.setTable("aniolectivo");
-		ColumnValue idalumn = new ColumnValue("idAlumno", null);
+		Column idalumn = new Column("idAlumno", null);
 		insert.addColumn(idalumn);
-		ColumnValue idgrado = new ColumnValue("idgrado", null);
+		Column idgrado = new Column("idgrado", null);
 		insert.addColumn(idgrado);
-		ColumnValue anio = new ColumnValue("anio", null);
+		Column anio = new Column("anio", null);
 		insert.addColumn(anio);
 		for (int i = 0; i < idsalumnos.size(); i++) {
 			int[] anios = {2010,2009,2008};
@@ -406,9 +406,9 @@ public class MakeMySqlDB {
 		
 		insert = sqlFactory.getInsertQuery();
 		insert.setTable("materiasxanio");
-		ColumnValue cidAA = new ColumnValue("idAA", null);
+		Column cidAA = new Column("idAA", null);
 		insert.addColumn(cidAA);
-		ColumnValue idMateria = new ColumnValue("idMateria", null);
+		Column idMateria = new Column("idMateria", null);
 		insert.addColumn(idMateria);
 		for (int i = 0; i < idAA.size(); i++) {
 			int materia = ranGene.nextInt(idMAteria.size());
@@ -431,11 +431,11 @@ public class MakeMySqlDB {
 		
 		insert = sqlFactory.getInsertQuery();
 		insert.setTable("asistencias");
-		ColumnValue fecha = new ColumnValue("fecha", null);
+		Column fecha = new Column("fecha", null);
 		insert.addColumn(fecha);
-		ColumnValue asistencia = new ColumnValue("asistencia", null);
+		Column asistencia = new Column("asistencia", null);
 		insert.addColumn(asistencia);
-		ColumnValue cidMP = new ColumnValue("idMP", null);
+		Column cidMP = new Column("idMP", null);
 		insert.addColumn(cidMP);
 		for (int i = 0; i < 28; i++) {
 			for (int j = 0; j < idAA.size(); j++) {

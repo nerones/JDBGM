@@ -15,7 +15,7 @@ public class SQLiteSelectQuery extends DefaultSelectQuery {
         }
 		int i;
 		if(columns == null || columns.size() == 0){
-			ret.append("* ");
+			ret.append("*");
 		}
 		else{
 			// rifle through columns and spit out string'

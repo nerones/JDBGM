@@ -2,7 +2,7 @@ package com.spaceprogram.sql.mysql;
 
 /** This is an initial beta of a class that will represent a query string */
 
-import com.crossdb.sql.ColumnValue;
+import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultInsertQuery;
 import com.crossdb.sql.SQLDateTimeFormat;
 import com.crossdb.sql.SQLFormat;
@@ -18,7 +18,7 @@ public class MySQLInsertQuery extends DefaultInsertQuery{
 		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
 		for(int m = 0; m < columns.size(); m++){
 			
-			ColumnValue col = (ColumnValue)(columns.get(m));
+			Column col = (columns.get(m));
 			Object val = col.getValue(); //values.get(m);
 			String in_val;
 			if(val == null){

@@ -19,6 +19,8 @@
 package tests.singletests;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Types;
 
 import org.junit.Before;
@@ -27,9 +29,6 @@ import org.junit.Test;
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.nelsonx.sqlite.SQLiteCreateTableQuery;
-import com.spaceprogram.sql.mysql.MySQLCreateTableQuery;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Nelson Efrain A. Cruz

@@ -1,8 +1,8 @@
 
 package com.crossdb.sql;
 
-import java.util.List;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * For queries that modify the contents of a table such as: InsertQuery and UpdateQuery
@@ -34,18 +34,18 @@ public interface UpdateableQuery extends UpdateStatement{
 
 	void addColumn(String column, BigDecimal value);
 	
-	public void addColumn(ColumnValue column);
+	public void addColumn(Column column);
 
 	/**
 	 * Add the list of columns to the current list in the query.
 	 */
-	void appendColumns(List columns);
+	void appendColumns(ArrayList<Column> columns);
 
 	/**
 	 * 
 	 * @return List of ColumnValues
 	 */
-	List getColumns();
+	ArrayList<Column> getColumns();
 
 	/*
 	 * void addColumn(int column, String value); //void addColumn(String column,

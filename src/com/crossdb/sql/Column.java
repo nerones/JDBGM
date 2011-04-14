@@ -67,7 +67,7 @@ public class Column {
 	 * Tener en cuenta que en SQLite solo puede ser autoincrement si es clave
 	 * primaria
 	 */// TODO es soportado por SQLite pero solo cuando es INTEGER PRIMARY KEY eliminarlo?
-	private boolean auto_increment = false;
+	private boolean isAutoIncrement = false;
 	/*
 	 * variables de ajuste para AUTOINCREMENT no creo que sea soportado por SQLite
 	 */
@@ -88,6 +88,45 @@ public class Column {
 	 * Si la columna es del tipo UNIQUE
 	 */
 	private boolean unique = false;
+	
+	/*
+	 * un valor para la columna
+	 */
+	private Object value;
+	
+	private boolean noAlter;
+	
+	
+
+	/**
+	 * Crea una columna con un nombre y un valor, usado principalmente cuando creamos
+	 * una columna para agregar a una sentencia INSERT o UPDATE
+	 * 
+	 * @param columnName - el nombre de la columna
+	 * @param columnValue - el valor de la columna
+	 */
+	public Column(String columnName, Object columnValue) {
+		name = columnName;
+		value = columnValue;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+	
+	
+
+	public boolean isNoAlter() {
+		return noAlter;
+	}
+
+	public void setNoAlter(boolean noAlter) {
+		this.noAlter = noAlter;
+	}
 
 	/*
 	 * No se para que es el columnIndex
@@ -139,7 +178,7 @@ public class Column {
 		this.name = name;
 		this.type = type;
 		isPrimaryKey = isPK;
-		auto_increment = isAutoIncr;
+		isAutoIncrement = isAutoIncr;
 	}
 	
 	/**
@@ -188,11 +227,11 @@ public class Column {
 	 * @return true si es AUTOINCREMENT, false en caso contrarop
 	 */
 	public boolean isAutoIncrement() {
-		return auto_increment;
+		return isAutoIncrement;
 	}
 
 	public void setAutoIncrement(boolean b) {
-		auto_increment = b;
+		isAutoIncrement = b;
 	}
 
 	public void setStartWith(int sw) {

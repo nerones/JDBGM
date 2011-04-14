@@ -2,10 +2,13 @@ package com.thinkvirtual.sql.sqlserver;
 
 /** This is an initial beta of a class that will represent a query string */
 
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.*;
-import com.crossdb.sql.*;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.crossdb.sql.Column;
+import com.crossdb.sql.DefaultInsertQuery;
+import com.crossdb.sql.SQLDateTimeFormat;
+import com.crossdb.sql.SQLFormat;
 
 public class SQLServerInsertQuery extends DefaultInsertQuery {
 
@@ -18,7 +21,7 @@ public class SQLServerInsertQuery extends DefaultInsertQuery {
 		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
 		for(int m = 0; m < columns.size(); m++){
 
-			ColumnValue col = (ColumnValue)(columns.get(m));
+			Column col = (columns.get(m));
             if(col.isAutoIncrement()){
                 // ignore it, uses identity in database
 

@@ -8,11 +8,10 @@ package com.spaceprogram.sql.mysql;
 
 
 
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.*;
-
-import com.crossdb.sql.*;
+import com.crossdb.sql.Column;
+import com.crossdb.sql.DefaultUpdateQuery;
+import com.crossdb.sql.SQLDateTimeFormat;
+import com.crossdb.sql.SQLFormat;
 
 public class MySQLUpdateQuery extends DefaultUpdateQuery {
 
@@ -32,7 +31,7 @@ public class MySQLUpdateQuery extends DefaultUpdateQuery {
 		//int m2 = 0;
 		for (int m = 0; m < columns.size(); m++) {
 
-			ColumnValue col = (ColumnValue) (columns.get(m));
+			Column col = (columns.get(m));
 			Object val = col.getValue();  //values.get(m);
 			String in_val;
 			if (val == null) {

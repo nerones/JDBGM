@@ -3,7 +3,6 @@ package com.crossdb.sql;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 /**
  * Queries that you set column values, Insert and Update, should extend this
  *
@@ -17,13 +16,13 @@ import java.util.List;
  */
 public class DefaultUpdateableQuery implements UpdateableQuery
 {
-    protected List columns; // = new ArrayList(); // SELECT columns
+    protected ArrayList<Column> columns; // = new ArrayList(); // SELECT columns
 	//protected List values;
 
     public DefaultUpdateableQuery(){
 
 
-		columns = new ArrayList();
+		columns = new ArrayList<Column>();
 		//values = new ArrayList();
 
 	}
@@ -31,45 +30,45 @@ public class DefaultUpdateableQuery implements UpdateableQuery
 //	protected int no_alter_values = 0; // counts the number of no alter values
 
     public void addColumn(String column, String value){
-		ColumnValue c = new ColumnValue(column, value);
+		Column c = new Column(column, value);
 		columns.add(c);
 		//values.add(value);
 	}
 	public void addColumn(String column, float value){
-		ColumnValue c = new ColumnValue(column, new Float(value));
+		Column c = new Column(column, new Float(value));
 		columns.add(c);
 		//values.add(new Float(value));
 	}
 	public void addColumn(String column, double value){
-		ColumnValue c = new ColumnValue(column, new Double(value));
+		Column c = new Column(column, new Double(value));
 		columns.add(c);
 		//values.add(new Double(value));
 	}
 	public void addColumn(String column, int value){
-		ColumnValue c = new ColumnValue(column, new Integer(value));
+		Column c = new Column(column, new Integer(value));
 		columns.add(c);
 		//values.add(new Integer(value));
 	}
 	public void addColumn(String column, java.util.Date value){
-		ColumnValue c = new ColumnValue(column, value);
+		Column c = new Column(column, value);
 		columns.add(c);
 		//values.add(value);
 	}
 	public void addColumn(String column, boolean value){
-		columns.add(new ColumnValue(column, new Boolean(value)));
+		columns.add(new Column(column, new Boolean(value)));
 		//values.add(new Boolean(value));
 	}
 
     public void addColumn(String column, BigDecimal value) {
-        columns.add(new ColumnValue(column, value));
+        columns.add(new Column(column, value));
     }
     
-    public void addColumn(ColumnValue column) {
+    public void addColumn(Column column) {
         columns.add(column);
     }
 
     public void addColumnNoAlter(String column, String value){
-        ColumnValue c = new ColumnValue(column, value);
+        Column c = new Column(column, value);
         c.setNoAlter(true);
 		columns.add(c);
 
@@ -81,16 +80,16 @@ public class DefaultUpdateableQuery implements UpdateableQuery
     /**
      *  Add the list of columns to the current list in the query.
      */
-    public void appendColumns(List columns){
+    public void appendColumns(ArrayList<Column> columns){
         this.columns.addAll(columns);
 
     }
 
     /**
      *
-     * @return List of ColumnValue objects
+     * @return List of Column objects
      */
-    public List getColumns(){
+    public ArrayList<Column> getColumns(){
         return columns;
     }
 

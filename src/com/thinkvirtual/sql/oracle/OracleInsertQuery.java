@@ -6,11 +6,13 @@
 
 package com.thinkvirtual.sql.oracle;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import com.crossdb.sql.*;
+import com.crossdb.sql.Column;
+import com.crossdb.sql.DefaultInsertQuery;
+import com.crossdb.sql.SQLDateTimeFormat;
+import com.crossdb.sql.SQLFormat;
 
 public class OracleInsertQuery extends DefaultInsertQuery {
     private String sequenceSuffix = "_seq";
@@ -43,7 +45,7 @@ public class OracleInsertQuery extends DefaultInsertQuery {
 		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
 		for (int m = 0; m < columns.size(); m++) {
 
-			ColumnValue col = (ColumnValue) (columns.get(m));
+			Column col = (columns.get(m));
 			Object val = col.getValue();  //values.get(m);
 
 
@@ -101,7 +103,7 @@ public class OracleInsertQuery extends DefaultInsertQuery {
 		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
 		for (int m = 0; m < columns.size(); m++) {
 
-			ColumnValue col = (ColumnValue) (columns.get(m));
+			Column col = (columns.get(m));
 			Object val = col.getValue();  //values.get(m);
 			if (col.isAutoIncrement()) {
 				String seq_name = col.getSequence();

@@ -1,6 +1,6 @@
 package com.nelsonx.postgre;
 
-import com.crossdb.sql.ColumnValue;
+import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultUpdateQuery;
 import com.crossdb.sql.SQLDateTimeFormat;
 import com.crossdb.sql.SQLFormat;
@@ -16,7 +16,7 @@ public class PostgreSQLUpdateQuery extends DefaultUpdateQuery {
 		//int m2 = 0;
 		for (int m = 0; m < columns.size(); m++) {
 
-			ColumnValue col = (ColumnValue) (columns.get(m));
+			Column col = (columns.get(m));
 			Object val = col.getValue();  //values.get(m);
 			String in_val;
 			if (val == null) {
