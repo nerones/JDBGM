@@ -10,6 +10,7 @@ package com.crossdb.sql;
  * Time: 6:50:18 PM
  * 
  */
+@Deprecated
 public class ColumnValue
 {
     String name;

@@ -27,19 +27,19 @@ import org.junit.Test;
 
 import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SelectQuery;
-import com.nelsonx.sqlite.SQLiteInsertQuery;
 import com.nelsonx.sqlite.SQLiteSelectQuery;
+import com.spaceprogram.sql.mysql.MySQLInsertQuery;
+
 /**
  * @author Nelson Efrain A. Cruz
  *
  */
-public class TestSQLiteInsert {
-	
-	InsertQuery insert;
+public class TestMySQLInsert {
+InsertQuery insert;
 	
 	@Before
 	public void setup(){
-		insert = new SQLiteInsertQuery();
+		insert = new MySQLInsertQuery();
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class TestSQLiteInsert {
 		insert.addColumn("dos", "algo2");
 		insert.setFromDefault(true);
 		
-		String expected = "INSERT INTO tabla DEFAULT VALUES";
+		String expected = "INSERT INTO tabla () VALUES ()";
 		assertEquals(expected, insert.toString());
 		
 	}
@@ -91,7 +91,7 @@ public class TestSQLiteInsert {
 		insert.setTable("Perro");
 		insert.addColumn("Id", 522);
 		insert.setFromDefault(true);
-		String expected = "INSERT INTO Perro DEFAULT VALUES";
+		String expected = "INSERT INTO Perro () VALUES ()";
 		assertEquals(expected, insert.toString());
 		
 		SelectQuery select = new SQLiteSelectQuery();
@@ -104,5 +104,4 @@ public class TestSQLiteInsert {
 		expected = "INSERT INTO Perro (Id) VALUES (522)";
 		assertEquals(expected, insert.toString());
 	}
-
 }

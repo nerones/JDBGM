@@ -65,8 +65,10 @@ public class SQLiteInsertQuery extends DefaultInsertQuery {
 		
 		if (isFromSelect()){
 			query2 += ") " + getSelectStmt().toString();
+			//System.out.println("select");
 			return query2;
 		} else {
+			//System.out.println("values");
 			return query2 + query2b;
 		}
 		

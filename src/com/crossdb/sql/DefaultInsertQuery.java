@@ -1,29 +1,29 @@
-
 package com.crossdb.sql;
 
 /**
- * Se puede configurar la sentencia INSERT con 
+ * Se puede configurar la sentencia INSERT con
+ * 
  * @author Travis Reeder - travis@spaceprogram.com
- * @author Nelson Efrain A. Cruz 2011
- * Date: Jun 27, 2002
- * Time: 8:55:57 PM
+ * @author Nelson Efrain A. Cruz 2011 Date: Jun 27, 2002 Time: 8:55:57 PM
  * 
  */
-public abstract class DefaultInsertQuery extends InsertQuery{
-
+public abstract class DefaultInsertQuery extends InsertQuery {
+	// contemplado casi todos los casos exepto por un par de opciones de sqlite
 	protected String table;
 
-	protected boolean return_id = false;
-	
-	protected boolean isFromDefaultValues = false;
-	protected boolean isFromSelect = false;
-	protected boolean isFromValues = true;
-	
+	protected boolean return_id;
+	protected boolean isFromDefaultValues;
+	protected boolean isFromSelect;
+	protected boolean isFromValues;
+
 	protected SelectQuery select = null;
 
 	public DefaultInsertQuery() {
-
 		super();
+		return_id = false;
+		isFromDefaultValues = false;
+		isFromSelect = false;
+		isFromValues = true;
 
 	}
 
@@ -49,34 +49,40 @@ public abstract class DefaultInsertQuery extends InsertQuery{
 	public void returnID(boolean b) {
 		return_id = b;
 	}
-	
-	public void setFromDefault(boolean isFromDefault){
+
+	public void setFromDefault(boolean isFromDefault) {
 		if (isFromDefault) {
 			isFromSelect = false;
 			isFromValues = false;
 		}
 		this.isFromDefaultValues = isFromDefault;
 	}
-	public boolean isFromDefault(){
+
+	public boolean isFromDefault() {
 		return isFromDefaultValues;
 	}
-	
-	public SelectQuery getSelectStmt(){
+
+	public SelectQuery getSelectStmt() {
 		return select;
 	}
-	
-	public boolean isFromSelect(){
+
+	public boolean isFromSelect() {
 		return isFromSelect;
 	}
-	
-	public void setSelectStmt(SelectQuery select){
+
+	public void setSelectStmt(SelectQuery select) {
 		isFromSelect = true;
 		isFromDefaultValues = false;
 		isFromValues = false;
 		this.select = select;
 	}
+	
+	public void setFromValues(boolean isFromValues){
+		isFromSelect = false;
+		isFromDefaultValues = false;
+		this.isFromValues = true;
+	}
 
 	public abstract String toString();
-	
 
 }
