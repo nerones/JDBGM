@@ -10,6 +10,8 @@ package com.crossdb.sql;
 
 
 public abstract class DefaultUpdateQuery extends UpdateQuery {
+	
+	//TODO hacer pruebas sobre update, aunque parece no haber error, mover los where
 
 	protected String table;
 
