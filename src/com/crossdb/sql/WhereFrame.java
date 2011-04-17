@@ -21,7 +21,7 @@ package com.crossdb.sql;
 import java.util.Date;
 
 /**
- * Es una plantilla para agregar todas las posibles condiciones where
+ * Es una plantilla para agregar todas las posibles condiciones where pues hay varias clases que lo usan.
  * @author Nelson Efrain A. Cruz
  *
  */
