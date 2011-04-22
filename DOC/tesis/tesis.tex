@@ -1,7 +1,8 @@
 \documentclass[letter,fleqn,twoside]{book}
-\usepackage{graphicx,amsmath,amsfonts,psfrag,fancyhdr,layout,appendix,subfig}
+\usepackage{graphicx,amsmath,amsfonts,psfrag,fancyhdr,layout,appendix,subfig,listings}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
+
 \usepackage{makeidx}
 %\usepackage{ucs}
 %\usepackage[utf8]{inputenc}
@@ -33,7 +34,7 @@
 %Esto genera enlaces en el PDF
 % \usepackage{html}
 %Esto es para el conversor latex2html
-%\usepackage{color}
+\usepackage{color}
 %\pagecolor{white}
 
 %Este mejora las prestaciones de "\verbatim"
@@ -85,6 +86,8 @@
 %\DeclareMathSymbol{.}{\mathpunct}{letters}{"3B}
 %\DeclareMathSymbol{,}{\mathord}{letters}{"3B}
 %\DeclareMathSymbol{\decimal}{\mathord}{letters}{"3A}
+\definecolor{lightgray}{rgb}{0.83,0.83,0.83}
+\usepackage[colorlinks=true, linkcolor= black ]{hyperref}
 
 \begin{document}
 %Cambiar Cuadros por Tablas y lista de... Debe ir después de \begin{document}
@@ -95,18 +98,18 @@
 %%%%%%%%%%%%%
 \frontmatter
 %%%%%%%%%%%%%
-%\input{portada} %Se compila aparte y se junta con "gs".
+%\ input{portada} %Se compila aparte y se junta con "gs".
 %gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=tesiscompleta.pdf -dBATCH portada.pdf tesis.pdf
 \pagestyle{empty}
-%\include{jurado}
+%\ include{jurado}
 \clearfullypage
 \pagenumbering{roman}
-%\include{apoyo}
-%\input{licencia}
-%\include{edicion}
-\clearfullypage
-%\include{reconocimientos}
-%\include{russian}
+%\ include{apoyo}
+%\ input{licencia}
+%\ include{edicion}
+%\clearfullypage
+%\ include{reconocimientos}
+%\ include{russian}
 
 % Define pagestyle
 \pagestyle{fancy}
@@ -135,7 +138,7 @@
 \listoftables
 
 %\cleardoublepage
-%\include{resumen} 
+%\ include{resumen} 
 \cleardoublepage
 \include{resumenen} 
 % Adjustments headers
@@ -150,15 +153,19 @@
 \fancyhead[EL]{\emph{Capítulo \thechapter}}
 %\setcounter{page}{3}
 
-%\include{introduction}
-%\include{antecedentes}
-%\include{tvs}
-%\include{designsvt}
-%\include{lira}
-%\include{pcnc}
-%\include{exp}
-%\include{conclusion}
-%\include{futuro}
+\include{introduccion}
+\include{antecedentes}
+\include{disenio}
+\include{implementacion}
+\include{ejemplo}
+\include{conclusiones}
+\include{trabajofuturo}
+%\ include{designsvt}
+%\ include{lira}
+%\ include{pcnc}
+%\ include{exp}
+%\ include{conclusion}
+%\ include{futuro}
 
 \part*{\addcontentsline{toc}{part}{Apéndices}Apéndices}
 
@@ -168,9 +175,9 @@
 
 %%%%%%%%%%%%%
 \appendix
-%%%%%%%%%%%%%
-%\include{software}
-%\include{publicaciones}
+%%%%%%%%%%%%%%
+%\ include{software}
+%\ include{publicaciones}
 
 
 %%%%%%%%%%%%%

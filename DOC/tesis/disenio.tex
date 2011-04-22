@@ -1,0 +1,41 @@
+\chapter{Diseño}
+Acá un resumen del capitulo
+\section{Bases}
+Para diseñar JDBGM se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
+DAO esta pensada para encapsular el acceso a cualquier fuente de datos, es decir los datos podrían estar almacenados en un archivo de texto plano, una base de datos relacional, una base de datos no relacional o un archivo XML, pero en este caso se trabaja solo sobre motores de base de dato relacionales.  
+\section{JDBC y su envoltorio}
+y otro
+\section{Abstracción de SQL}
+Uno de los mayores problemas al intentar crear código SQL portable entre diferentes motores de bases de datos reside en que cada motor crea su propio dialecto de SQL. Las diferencias entre estos dialectos puede ser mínima pero aun así esto provoca que a una aplicación a la que se le quiera cambiar el motor de base de datos que usa se le deban revisar todas las sentencias SQL usadas.\\
+Así que para brindar una abstracción sobre la base de datos es necesario que las consultas SQL (sin hacer diferencias sobre DDL \footnote{Data Definition Lenguaje} y DML \footnote{Data Manipulation Lenguaje}) no sean manejadas de forma explicita es decir que no seria conveniente, por ejemplo, manejar las consultas como cadenas de caracteres ya que esta es una estructura estática dependiente del DBMS que se este usando. Por lo que para poder manejar adecuadamente las consultas se considero usar una estructura de datos un poco mas compleja que contenga la consulta de manera desglosada. Es decir que en ves de tener una sentencia como la siguiente:
+\begin{verbatim}
+nombre_comando [parametro] opcion1 [parametro] opcion2 [parametro]; 
+\end{verbatim}
+
+Se tendría una estructura de datos como la siguiente:
+
+\lstset{frame=single, rulesepcolor=\color{black}, backgroundcolor=\color{lightgray}}
+\begin{lstlisting}[language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize, title=Pseudocodigo de la estructura de dato que contiene la sentencia]
+class Sentencia{
+	nombre_comando;
+	opcion1;
+	opcion2;
+	devolver_sentencia;
+}
+\end{lstlisting}
+
+Hay que tener en cuenta que el tipo de datos que se quiere manejar aparte de contener los parámetros de la sentencia debe brindar métodos para armar la sentencia, asignarles valores a los atributos y ser capaz de definir el comportamiento especifico que pueda tener la sentencia. Cuando se dice que el tipo de dato, mas en concreto la clase, que represente la sentencia sea capaz de armar la sentencia se refiere a que sea capaz de devolver la cadena de caracteres que represente una sentencia SQL valida para algún DBMS.\\
+En el caso especifico que se esta tratando se cubrirá un subconjunto de todas las sentencias posibles que define SQL. Este conjunto estará formado por:
+\begin{enumerate}
+\item CREATE TABLE - Permite crear tablas 
+\item ALTER TABLE - Modifica la estructura de una tablas \footnote{Solo se da un soporte básico para esta sentencia}
+\item UPDATE - Modifica las filas de una tabla 
+\item INSERT - Inserta nuevas filas a una tabla
+\item DELETE - Elimina columnas de una tabla
+\item SELECT - Realiza consulta sobre las tablas
+\end{enumerate}
+
+Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado tenemos a las sentencias que devuelven datos mas allá de una información que indique el éxito o fracaso de la interpretación de la sentencia en el DBMS 
+
+
+
