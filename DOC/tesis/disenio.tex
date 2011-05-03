@@ -8,14 +8,14 @@ y otro
 \section{Abstracción de SQL}
 Uno de los mayores problemas al intentar crear código SQL portable entre diferentes motores de bases de datos reside en que cada motor crea su propio dialecto de SQL. Las diferencias entre estos dialectos puede ser mínima pero aun así esto provoca que a una aplicación a la que se le quiera cambiar el motor de base de datos que usa se le deban revisar todas las sentencias SQL usadas.\\
 Así que para brindar una abstracción sobre la base de datos es necesario que las consultas SQL (sin hacer diferencias sobre DDL \footnote{Data Definition Lenguaje} y DML \footnote{Data Manipulation Lenguaje}) no sean manejadas de forma explicita es decir que no seria conveniente, por ejemplo, manejar las consultas como cadenas de caracteres ya que esta es una estructura estática dependiente del DBMS que se este usando. Por lo que para poder manejar adecuadamente las consultas se considero usar una estructura de datos un poco mas compleja que contenga la consulta de manera desglosada. Es decir que en ves de tener una sentencia como la siguiente:
-\begin{verbatim}
-nombre_comando [parametro] opcion1 [parametro] opcion2 [parametro]; 
-\end{verbatim}
+\begin{Verbatim}
+  nombre_comando [parametro] opcion1 [parametro] opcion2 [parametro]; 
+\end{Verbatim}
 
 Se tendría una estructura de datos como la siguiente:
 
 \lstset{frame=single, rulesepcolor=\color{black}, backgroundcolor=\color{lightgray}}
-\begin{lstlisting}[language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize, title=Pseudocodigo de la estructura de dato que contiene la sentencia]
+\begin{lstlisting}[language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize, title=Pseudocódigo de la estructura de dato que contiene la sentencia]
 class Sentencia{
 	nombre_comando;
 	opcion1;
@@ -38,144 +38,118 @@ En el caso especifico que se esta tratando se cubrirá un subconjunto de todas l
 Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado tenemos a las sentencias que devuelven datos mas allá de una información que indique el éxito o fracaso de la interpretación de la sentencia en el DBMS o sea sentencias como SELECT, por otro lado tenemos aquellas que solo devuelven información del exito o fracaso de la interpretación de la sentencia.
 
 \subsection{Diseño de CREATE TABLE}
-Esta sentencia es usada para crear tablas en una base de datos relacional, su sintaxis como se la define en el estandar SQL es la siguiente:
-\begin{verbatim}
- CREATE [ <table scope> ] TABLE <table name> <table contents source>
-[ ON COMMIT <table commit action> ROWS ]
+Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
+\begin{Verbatim}
+  CREATE TABLE <table name> (
+  { <column name> [ <column type> ][ PRYMARY KEY ][ REFERENCES <foreign table> ] }...
+  )
+  [ PRIMARY KEY <indexed columns> ]
+  [ FOREIGN KEY <columns and referenced table> ]
+\end{Verbatim}
+Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definicion de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con SQLite el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar \verb= CREATE TABLE= tal como la entiende SQLite \footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con MySQL y PostgreSQL:
 
-<table contents source> ::=
-<table element list>
-| <typed table clause>
-| <as subquery clause>
+\begin{Verbatim}[frame=leftline, framesep=3mm]
+  CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
+  [ IF NOT EXISTS ] <table contents source>
 
-<table scope> ::= <global or local> TEMPORARY
+  <table contents source> ::=
+    <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+  | AS <select stmt>
+\end{Verbatim}
 
-<global or local> ::=
-  GLOBAL
-| LOCAL
+Los parámetros \verb= TEMPORARY= y \verb= TEMP= se usan indistintamente para crear una tabla temporaria en SQLite, lo cual es soportados por los 3 DBMS con la salvedad que en MySQL solo se acepta la palabra reservada\verb= TEMPORARY=. El parámetro\verb= IF NOT EXISTS= indica que de existir una tabla del mismo nombre la sentencia \verb= CREATE TABLE= no tiene efecto sobre la base de datos, este parámetro no es soportado por PostgreSQL por lo que sera omitido. Por ultimo hay que tener en cuenta que al ser SQLite un motor "serverless" siempre se esta trabajando o sobre la base de dato principal o sobre una temporaria por lo que este para el parámetro\verb= <database name>= solo acepta \verb= "main"= ó \verb= "temp"= de modo que en un principio el nombre de la base de dato no se tomara en cuenta y cualquier tabla que se cree sera en la base de dato actual.
 
-<table element list> ::=
-<left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+\begin{Verbatim}
+  <table element> ::=
+    <column definition>
+  | <table constraint definition>
 
-<table element> ::=
-<column definition>
-| <table constraint definition>
-| <like clause>
+  <column definition> ::=
+  <column name> [ <data type> | <domain name> ]
+  [ DEFAULT <default option> ]
+  [ <column constraint definition>... ]
+  [ COLLATE <colation name> ]
 
-<column definition> ::=
-<column name> [ <data type or domain name> ]
-[ <default clause> | <identity column specification> | <generation clause> ]
-[ <column constraint definition>... ]
-[ <collate clause> ]
-
-<data type or domain name> ::=
-<data type>
-| <domain name>
-
-<column constraint definition> ::=
-[ <constraint name definition> ] <column constraint> [ <constraint characteristics> ]
-
-<column constraint> ::=
-  NOT NULL
-| <unique specification>
-| <references specification>
-| <check constraint definition>
-
-<identity column specification> ::=
-GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY
-[ <left paren> <common sequence generator options> <right paren> ]
-
-<generation clause> ::= <generation rule> AS <generation expression>
-
-<generation rule> ::= GENERATED ALWAYS
-
-<generation expression> ::= <left paren> <value expression> <right paren>
-
-\end{verbatim}
-Se ovbiaron las definiciones de algunas de las opciones de CREATE TABLE puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar. Mas especificamente podemos empezar con SQLite el cual, sin restarle importancia, es el que menos caracteristicas implementa devido a su "pequeñez" por lo cual pasamos a observar CREATE TABLE tal como la entiende SQLite \footnote{para ver la sintaxis usada ir a QQQQQQQQ}:
-\begin{verbatim}
-CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
-[ IF NOT EXISTS ] <table contents source>
-
-<table contents source> ::=
-  <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
-| AS <select stmt>
-
-<table element> ::=
-  <column definition>
-| <table constraint definition>
-
-<column definition> ::=
-<column name> [ <data type> | <domain name> ]
-[ DEFAULT <default option> ]
-[ <column constraint definition>... ]
-[ COLLATE <colation name> ]
-
-<default option>::=
-  <signed number>
-| <literal value>
-| <left paren> <expr> <left paren>
+  <default option>::=
+    <signed number>
+  | <literal value>
+  | <left paren> <expr> <left paren>
   
-<column constraint definition> ::=
-[ CONSTRAINT <name> ] <column constraint>
+  <column constraint definition> ::=
+  [ CONSTRAINT <name> ] <column constraint>
 
-<column constraint> ::=
-  NOT NULL <conflict cause>
-| UNIQUE <conflict cause>
-| PRIMARY KEY [ ASC | DESC ] <conflict cause> [ AUTOINCREMENT ]
-| <references specification>
-| CHECK <left paren> <expr> <right paren>
+  <column constraint> ::=
+    NOT NULL <conflict cause>
+  | UNIQUE <conflict cause>
+  | PRIMARY KEY [ ASC | DESC ] <conflict cause> [ AUTOINCREMENT ]
+  | <references specification>
+  | CHECK <left paren> <expr> <right paren>
+\end{Verbatim}
 
-<table constraint definition> ::=
-[ CONSTRAINT <name> ] <table constraint>
+La siguiente sección a estudiar es la definición de columnas y restricciones de columna que se diferencian de las restricciones de tabla en que las primeras se definen junta a la definición de columna y solo se pueden hacer sobre una única columna, en cambio las restricciones de tabla se hacen después de las definiciones de columnas y estas pueden referirse a un grupo de columnas.\\
+Como primer diferencia veremos las tipos de datos tienen diferentes nombres y significados, pero esto sera tratado mas adelante\footnote{referenciar a alguna parte de la tesis}. 
 
-<table constraint> ::=
-  [ UNIQUE | PRIMARY KEY ] <left paren> <unique column list> <right paren> <conflict cause>
-| <referential constraint definition>
-| CHECK <left paren> <expr> <right paren>
+\begin{Verbatim}
+  <table constraint definition> ::=
+  [ CONSTRAINT <name> ] <table constraint>
 
-<unique column list> ::= <column name list>
+  <table constraint> ::=
+    [ UNIQUE | PRIMARY KEY ] <left paren> <unique column list> <right paren> <conflict cause>
+  | <referential constraint definition>
+  | CHECK <left paren> <expr> <right paren>
 
-<referential constraint definition> ::=
-FOREIGN KEY <left paren> <referencing columns> <right paren>
-<references specification>
+  <unique column list> ::= <column name list>
 
-<references specification> ::=
-REFERENCES <referenced table and columns>
-[ MATCH <name> ] [ <referential triggered action> ]
-[ <constraint characteristics> ]
+  <referential constraint definition> ::=
+  FOREIGN KEY <left paren> <referencing columns> <right paren>
+  <references specification>
 
-<match type> ::=
-FULL
-| PARTIAL
-| SIMPLE
+  <references specification> ::=
+  REFERENCES <referenced table and columns>
+  [ MATCH <name> ] [ <referential triggered action> ]
+  [ <constraint characteristics> ]
 
-<referencing columns> ::= <reference column list>
+  <match type> ::=
+  FULL
+  | PARTIAL
+  | SIMPLE
 
-<referenced table and columns> ::=
-<table name> [ <left paren> <reference column list> <right paren> ]
+  <referencing columns> ::= <reference column list>
 
-<reference column list> ::= <column name list>
+  <referenced table and columns> ::=
+  <table name> [ <left paren> <reference column list> <right paren> ]
 
-<referential triggered action> ::=
- <update rule> [ <delete rule> ]
-| <delete rule> [ <update rule> ]
+  <reference column list> ::= <column name list>
 
-<update rule> ::= ON UPDATE <referential action>
+  <referential triggered action> ::=
+    <update rule> [ <delete rule> ]
+  | <delete rule> [ <update rule> ]
 
-<delete rule> ::= ON DELETE <referential action>
+  <update rule> ::= ON UPDATE <referential action>
 
-<referential action> ::=
-  CASCADE
-| SET NULL
-| SET DEFAULT
-| RESTRICT
-| NO ACTION
+  <delete rule> ::= ON DELETE <referential action>
 
-<constraint characteristics> ::=
-[ NOT ] DEFERRABLE [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
+  <referential action> ::=
+    CASCADE
+  | SET NULL
+  | SET DEFAULT
+  | RESTRICT
+  | NO ACTION
 
-\end{verbatim}
+   <constraint characteristics> ::=
+  [ NOT ] DEFERRABLE [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
+\end{Verbatim}
+
+Así que finalmente tenemos las siguiente sintaxis para nuestro proyecto
+\begin{Verbatim}
+  CREATE [ TEMPORARY ] TABLE <database name> <dot> <table name> 
+  <table contents source>
+
+  <table contents source> ::=
+    <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+  | AS <select stmt>
+
+\end{Verbatim}
 
 \subsection{Diseño de UPDATE e INSERT}
 
