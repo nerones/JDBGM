@@ -3,8 +3,12 @@ Acá un resumen del capitulo
 \section{Bases}
 Para diseñar JDBGM se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
 DAO esta pensada para encapsular el acceso a cualquier fuente de datos, es decir los datos podrían estar almacenados en un archivo de texto plano, una base de datos relacional, una base de datos no relacional o un archivo XML, pero en este caso se trabaja solo sobre motores de base de dato relacionales.  
+
+
 \section{JDBC y su envoltorio}
 y otro
+
+
 \section{Abstracción de SQL}
 Uno de los mayores problemas al intentar crear código SQL portable entre diferentes motores de bases de datos reside en que cada motor crea su propio dialecto de SQL. Las diferencias entre estos dialectos puede ser mínima pero aun así esto provoca que a una aplicación a la que se le quiera cambiar el motor de base de datos que usa se le deban revisar todas las sentencias SQL usadas.\\
 Así que para brindar una abstracción sobre la base de datos es necesario que las consultas SQL (sin hacer diferencias sobre DDL \footnote{Data Definition Lenguaje} y DML \footnote{Data Manipulation Lenguaje}) no sean manejadas de forma explicita es decir que no seria conveniente, por ejemplo, manejar las consultas como cadenas de caracteres ya que esta es una estructura estática dependiente del DBMS que se este usando. Por lo que para poder manejar adecuadamente las consultas se considero usar una estructura de datos un poco mas compleja que contenga la consulta de manera desglosada. Es decir que en ves de tener una sentencia como la siguiente:
@@ -46,7 +50,7 @@ Esta sentencia es usada para crear tablas en una base de datos relacional, un re
   [ PRIMARY KEY <indexed columns> ]
   [ FOREIGN KEY <columns and referenced table> ]
 \end{Verbatim}
-Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definicion de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con SQLite el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar \verb= CREATE TABLE= tal como la entiende SQLite \footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con MySQL y PostgreSQL:
+Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definicion de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar\verb= CREATE TABLE= tal como la entiende \s\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m y \p:
 
 \begin{Verbatim}[frame=leftline, framesep=3mm]
   CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
@@ -57,7 +61,7 @@ Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= p
   | AS <select stmt>
 \end{Verbatim}
 
-Los parámetros \verb= TEMPORARY= y \verb= TEMP= se usan indistintamente para crear una tabla temporaria en SQLite, lo cual es soportados por los 3 DBMS con la salvedad que en MySQL solo se acepta la palabra reservada\verb= TEMPORARY=. El parámetro\verb= IF NOT EXISTS= indica que de existir una tabla del mismo nombre la sentencia \verb= CREATE TABLE= no tiene efecto sobre la base de datos, este parámetro no es soportado por PostgreSQL por lo que sera omitido. Por ultimo hay que tener en cuenta que al ser SQLite un motor "serverless" siempre se esta trabajando o sobre la base de dato principal o sobre una temporaria por lo que este para el parámetro\verb= <database name>= solo acepta \verb= "main"= ó \verb= "temp"= de modo que en un principio el nombre de la base de dato no se tomara en cuenta y cualquier tabla que se cree sera en la base de dato actual.
+Los parámetros\verb= TEMPORARY= y\verb= TEMP= se usan indistintamente para crear una tabla temporaria en \s, lo cual es soportados por los 3 DBMS con la salvedad que en \m solo se acepta la palabra reservada\verb= TEMPORARY=. El parámetro\verb= IF NOT EXISTS= indica que de existir una tabla del mismo nombre la sentencia \verb= CREATE TABLE= no tiene efecto sobre la base de datos, este parámetro no es soportado por \p por lo que sera omitido. Por ultimo hay que tener en cuenta que al ser \s un motor "serverless" siempre se esta trabajando o sobre la base de dato principal o sobre una temporaria por lo que este para el parámetro\verb= <database name>= solo acepta\verb= "main"= ó\verb= "temp"= de modo que en un principio el nombre de la base de dato no se tomara en cuenta y cualquier tabla que se cree sera en la base de dato actual.
 
 \begin{Verbatim}
   <table element> ::=
@@ -87,7 +91,12 @@ Los parámetros \verb= TEMPORARY= y \verb= TEMP= se usan indistintamente para cr
 \end{Verbatim}
 
 La siguiente sección a estudiar es la definición de columnas y restricciones de columna que se diferencian de las restricciones de tabla en que las primeras se definen junta a la definición de columna y solo se pueden hacer sobre una única columna, en cambio las restricciones de tabla se hacen después de las definiciones de columnas y estas pueden referirse a un grupo de columnas.\\
-Como primer diferencia veremos las tipos de datos tienen diferentes nombres y significados, pero esto sera tratado mas adelante\footnote{referenciar a alguna parte de la tesis}. 
+
+Como primer diferencia veremos las tipos de datos tienen diferentes nombres y significados, pero esto sera tratado mas adelante\footnote{referenciar a alguna parte de la tesis}. La clausula\verb= DEFAULT= en este caso esta limitada por \m que solo acepta valores constantes, es decir no se podria usar funciones como \verb= NOW()= con la excepción de que se puede poner\verb= CURRENT_TIMESTAMP= como\verb= DEFAULT= para una columna del tipo\verb= TIMESTAMP=.\\
+
+El parámetro\verb= COLLATE= también presenta diferencias, pero es en este caso es \p el que limita ya que no acepta\verb= COLLATE= en la definición de columna por lo que no sera adoptada en la especificación de \cc. En \p se puede especificar el ``collate'' a usar sobre todas las tablas en la creación de la base de datos. \verb= UNIQUE= y \verb= PRIMARY KEY= como restricción de columna no acepta ningún modificador en \m, por lo tanto se obviara el modificador\verb= <conflict cause>= de\s y otros que acepta \p. El parametro \verb= NOT NULL= tampoco acepta ningún modificador en \m, su contra parte el parámetro\verb= NULL= puede ser omitido ya que de no agregarse se toma por defecto que la columna puede aceptar valores nulos. Por ultimo hay que señalar que \m si bien implementa\verb= CHEK <expre>= este no es reconocido en la definición de columna.\\
+
+En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m una ultima diferencia la podemos ver en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando.  
 
 \begin{Verbatim}
   <table constraint definition> ::=
@@ -103,18 +112,15 @@ Como primer diferencia veremos las tipos de datos tienen diferentes nombres y si
   <referential constraint definition> ::=
   FOREIGN KEY <left paren> <referencing columns> <right paren>
   <references specification>
+\end{Verbatim}
 
+De las restricciones de tabla la única a la que no se le podrá especificar un nombre de restricción con \verb=CONSTRAINT <name>= es la restricción \verb=CHECK (expr)=. Los parámetros \verb=UNIQUE= y \verb=PRIMARY KEY= que se especifican como restricción de tabla solo comparten en común entre la especificación de los 3 DBMS que encierran entre paréntesis a las columnas que se indican con dicha restricción. Resta por analizar la especificación de clave foránea (\verb=FK=):    
+
+\begin{Verbatim}
   <references specification> ::=
   REFERENCES <referenced table and columns>
-  [ MATCH <name> ] [ <referential triggered action> ]
+  [ MATCH { FULL | PARTIAL | SIMPLE } ] [ <referential triggered action> ]
   [ <constraint characteristics> ]
-
-  <match type> ::=
-  FULL
-  | PARTIAL
-  | SIMPLE
-
-  <referencing columns> ::= <reference column list>
 
   <referenced table and columns> ::=
   <table name> [ <left paren> <reference column list> <right paren> ]
@@ -139,15 +145,75 @@ Como primer diferencia veremos las tipos de datos tienen diferentes nombres y si
    <constraint characteristics> ::=
   [ NOT ] DEFERRABLE [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 \end{Verbatim}
+Los parámetros \verb=MATCH { FULL | PARTIAL | SIMPLE }= son reconocidos en los 3 DBMS, pero en \s no tienen ningún efecto, es decir que estos se pueden especificar pero siempre se tendra que la \verb=FK= se procesara con \verb=MATCH SIMPLE=, con lo que de momento sera parte de la especificación pero hay que tener siempre en cuenta que \s lo procesara de manera diferente. Por ultimo quedan dos diferencias, la primera es que la opción \verb=SET DEFAULT= de \verb=<referential action>= no es soportada por \m; segundo que \verb=<constraint characteristics>= no es soportada por \m.\\
 
-Así que finalmente tenemos las siguiente sintaxis para nuestro proyecto
-\begin{Verbatim}
+%------------------------TODO-----------------------------------
+%revisar lo de SET DEFAULT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+%----------------------------Especificación de CREATE TABLE------------
+
+Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para el proyecto\\
+
+\begin{Verbatim}[frame=single, label=sintaxis para CREATE TABLE]
   CREATE [ TEMPORARY ] TABLE <database name> <dot> <table name> 
   <table contents source>
 
   <table contents source> ::=
     <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
   | AS <select stmt>
+  
+  <table element> ::=
+    <column definition>
+  | <table constraint definition>
+
+  <column definition> ::=
+  <column name> [ <data type> | <domain name> ]
+  [ DEFAULT <constant> ]
+  [ <column constraint>... ]
+  
+  <column constraint> ::=
+    NOT NULL
+  | UNIQUE
+  | PRIMARY KEY
+  | <references specification>
+
+  <table constraint definition> ::=
+  [ CONSTRAINT <name> ] <table constraint>
+
+  <table constraint> ::=
+    [ UNIQUE | PRIMARY KEY ] <left paren> <unique column list> <right paren>
+  | <referential constraint definition>
+  | CHECK <left paren> <expr> <right paren>
+
+  <unique column list> ::= <column name list>
+
+  <referential constraint definition> ::=
+  FOREIGN KEY <left paren> <referencing columns> <right paren>
+  <references specification>
+  
+  <references specification> ::=
+  REFERENCES <referenced table and columns>
+  [ MATCH { FULL | PARTIAL | SIMPLE } ] [ <referential triggered action> ]
+
+  <referenced table and columns> ::=
+  <table name> [ <left paren> <reference column list> <right paren> ]
+
+  <reference column list> ::= <column name list>
+
+  <referential triggered action> ::=
+    <update rule> [ <delete rule> ]
+  | <delete rule> [ <update rule> ]
+
+  <update rule> ::= ON UPDATE <referential action>
+
+  <delete rule> ::= ON DELETE <referential action>
+
+  <referential action> ::=
+    CASCADE
+  | SET NULL
+  | RESTRICT
+  | NO ACTION
 
 \end{Verbatim}
 
