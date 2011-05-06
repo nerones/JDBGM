@@ -219,6 +219,25 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 \end{Verbatim}
 
 \subsection{Diseño de UPDATE e INSERT}
+Esta sentencia es usada para actualizar los datos de una tabla, es decir
+
+\begin{Verbatim}
+  <update statement: positioned> ::=
+  UPDATE <target table> [ [ AS ] <correlation name> ]
+  SET <set clause list>
+  WHERE CURRENT OF <cursor name>
+  
+  <update statement: searched> ::=
+  UPDATE <target table> [ [ AS ] <correlation name> ]
+  SET <set clause list>
+  [ WHERE <search condition> ]
+
+
+\end{Verbatim}
+
+\begin{Verbatim}
+•
+\end{Verbatim}
 
 \subsection{Diseño de ALTER}
 
