@@ -218,29 +218,108 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 
 \end{Verbatim}
 
-\subsection{Diseño de UPDATE e INSERT}
-Esta sentencia es usada para actualizar los datos de una tabla, es decir
+\subsection{Diseño de UPDATE}
+DMS\\
+
+Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s: 
 
 \begin{Verbatim}
-  <update statement: positioned> ::=
-  UPDATE <target table> [ [ AS ] <correlation name> ]
-  SET <set clause list>
-  WHERE CURRENT OF <cursor name>
-  
-  <update statement: searched> ::=
-  UPDATE <target table> [ [ AS ] <correlation name> ]
+  <update statement> ::=
+  UPDATE [ OR <or option> ] <target table> 
   SET <set clause list>
   [ WHERE <search condition> ]
-
-
+  
+  <or option> ::=
+    ROLLBACK
+  | ABORT
+  | REPLACE
+  | FAIL
+  | IGNORE
 \end{Verbatim}
+
+En este punto encontramos la primer diferencia con los demas DBMS, el elemento \verb=<OR option>= que nos permite especificar que acción tomar si no es posible realizar la acción de \verb=UPDATE= sobre la tabla, es un añadido de \s que no esta presente en las especificaciones de los otros dos DBMS y tampoco aparece en la especificación de SQL.
 
 \begin{Verbatim}
-•
+  <target table> ::=
+  [ <database name> <dot> ] <table name>
+  [ INDEXED BY <index name> ]
+  [ NOT INDEXED ]
+  
+  <set clause list> ::= <set clause> [ { <comma> <set clause> }... ]
+
+  <set clause> ::=
+  <column name> <equals operator> <expr>
+  
+  -----ONLY AVALAYBLE IF ACTIVATED DURING COMPILATION---------
+  
+  ORDER BY ... completar
+
+\end{Verbatim}
+Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son reconocidos por \m y \p por lo que serán ignorados en la especificación de el proyecto. Lo demás es de idéntica sintaxis. La especificación final de \jj.
+\begin{Verbatim}[frame=single, label=sintaxis para UPDATE]
+  <update statement> ::=
+  UPDATE <target table> 
+  SET <set clause list>
+  [ WHERE <search condition> ]
+  
+  <target table> ::=
+  [ <database name> <dot> ] <table name>
+  
+  <set clause list> ::= <set clause> [ { <comma> <set clause> }... ]
+
+  <set clause> ::=
+  <column name> <equals operator> <expr>    
 \end{Verbatim}
 
-\subsection{Diseño de ALTER}
+\subsection{Diseño de INSERT}
+La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
+
+\begin{Verbatim}[frame=single, label=sintaxis para INSERT]
+  <insert statement> ::=
+  INSERT INTO <insertion target> <insert columns and source>
+
+  <insertion target> ::= [ <database name> <dot> ] <table name>
+
+  <insert columns and source> ::=
+    <from subquery>
+  | <from constructor>
+  | DEFAULT VALUES
+
+  <from subquery> ::=
+  [ <left paren> <insert column list> <right paren> ]
+  <query expression>
+  
+  <from constructor> ::=
+  [ <left paren> <insert column list> <right paren> ]
+  VALUES <left paren> <exp> [ { <comma> <exp> }... ] <right paren>
+
+  <insert column list> ::= <column name list>
+\end{Verbatim}
+
+\subsection{Diseño de ALTER TABLE}
+
+\begin{Verbatim}
+  <alter table statement> ::= ALTER TABLE <table name> <alter table action>
+  
+  <alter table action> ::=
+    <add column definition>
+  | <alter column definition>
+  | <drop column definition>
+  | <add table constraint definition>
+  | <drop table constraint definition>
+\end{Verbatim}
+\begin{Verbatim}[frame=single, label=sintaxis para ALTER TABLE]
+fg
+\end{Verbatim}
+
 
 \subsection{Diseño de DELETE}
 
+\begin{Verbatim}[frame=single, label=sintaxis para DELETE]
+dfd
+\end{Verbatim}
+
 \subsection{Diseño de SELECT}
+\begin{Verbatim}[frame=single, label=sintaxis para SELECT]
+fgfgfgfg
+\end{Verbatim}
