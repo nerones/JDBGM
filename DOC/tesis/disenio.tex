@@ -1,12 +1,27 @@
 \chapter{Diseño}
+
 Acá un resumen del capitulo
+
+
+
+
+
+
 \section{Bases}
 Para diseñar JDBGM se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
 DAO esta pensada para encapsular el acceso a cualquier fuente de datos, es decir los datos podrían estar almacenados en un archivo de texto plano, una base de datos relacional, una base de datos no relacional o un archivo XML, pero en este caso se trabaja solo sobre motores de base de dato relacionales.  
 
 
+
+
+
+
 \section{JDBC y su envoltorio}
 y otro
+
+
+
+
 
 
 \section{Abstracción de SQL}
@@ -40,6 +55,9 @@ En el caso especifico que se esta tratando se cubrirá un subconjunto de todas l
 \end{enumerate}
 
 Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado tenemos a las sentencias que devuelven datos mas allá de una información que indique el éxito o fracaso de la interpretación de la sentencia en el DBMS o sea sentencias como SELECT, por otro lado tenemos aquellas que solo devuelven información del exito o fracaso de la interpretación de la sentencia.
+
+
+
 
 \subsection{Diseño de CREATE TABLE}
 Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
@@ -218,6 +236,9 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 
 \end{Verbatim}
 
+
+
+
 \subsection{Diseño de UPDATE}
 DMS\\
 
@@ -271,6 +292,9 @@ Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son
   <column name> <equals operator> <expr>    
 \end{Verbatim}
 
+
+
+
 \subsection{Diseño de INSERT}
 La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
 
@@ -296,30 +320,107 @@ La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT=
   <insert column list> ::= <column name list>
 \end{Verbatim}
 
-\subsection{Diseño de ALTER TABLE}
 
-\begin{Verbatim}
-  <alter table statement> ::= ALTER TABLE <table name> <alter table action>
+
+
+\subsection{Diseño de ALTER TABLE}
+\verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, solo deja renombrar las tablas y agregar nuevas tablas a la columna. Por lo que la sintaxis final elegida es la misma que soporta \s:
+%\begin{Verbatim}
+%  <alter table statement> ::= 
+%  ALTER TABLE [ <database name><dot> ] <table name> <alter table action>
+%  
+%  <alter table action> ::=
+%    RENAME TO <new table name>
+%  | ADD [ COLUMN ] <column def>
+%\end{Verbatim}
+\begin{Verbatim}[frame=single, label=sintaxis para ALTER TABLE]
+<alter table statement> ::= 
+  ALTER TABLE [ <database name><dot> ] <table name> <alter table action>
   
   <alter table action> ::=
-    <add column definition>
-  | <alter column definition>
-  | <drop column definition>
-  | <add table constraint definition>
-  | <drop table constraint definition>
+    RENAME TO <new table name>
+  | ADD [ COLUMN ] <column def>
 \end{Verbatim}
-\begin{Verbatim}[frame=single, label=sintaxis para ALTER TABLE]
-fg
-\end{Verbatim}
+
+
 
 
 \subsection{Diseño de DELETE}
+La sintaxis de \verb=DELETE= entendida por \s es la siguiente
+\begin{Verbatim}
+  <delete statement> ::=
+  DELETE FROM <target table> [ WHERE <search condition> ]
+
+  <target table> ::=
+  [ <data base name><dot> ] <table name>
+  [ INDEXED BY <index name> ]
+  [ NOT INDEXED ]
+\end{Verbatim}
+En ella podemos encontrar una diferencia con las demás motores de bases de datos, elementos que serán omitidos. Esta diferencia es que no es posible usar los elementos \verb=INDEXED BY <index name>= y \verb=NOT INDEXED= en \p y \m, además cabe aclarar que no se están agregando elementos que si son soportados por los otros motores. Así que finalmente nos queda la siguiente sintaxis:
+
 
 \begin{Verbatim}[frame=single, label=sintaxis para DELETE]
-dfd
+  <delete statement> ::=
+  DELETE FROM <target table> [ WHERE <search condition> ]
+  
+  <target table> ::=
+  [ <data base name><dot> ] <table name>
+  
 \end{Verbatim}
 
+
+
+
 \subsection{Diseño de SELECT}
+Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas analizamos a continuación \verb=SELECT= tal como es conocido por \s:
+
+\begin{Verbatim}
+  <query specification> ::=
+  <select core> [ { <compound operator> <select core> }... ]
+  [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
+  [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]  
+  
+  <select core> ::=
+  SELECT [ DISTINCT | ALL ] <result column> [ { <comma><result column> }... ] 
+  [ FROM <join source> ]
+  [ WhERE <exp> ]
+  [ GROUP BY <group list> ]
+  
+  <group list> ::=
+  <ordering term> [ { <comma><ordering term> }... ]
+  [ HAVING <expr> ]
+  
+  
+  <result column> ::=
+    <asterisk>
+  | <table name><dot><asterisk>
+  | <expr> [ [ AS ] <column alias> ]
+  
+  <join source> ::=
+  <single source> [ { <join op> <single source> <join constraint> }... ]
+  
+  <single source> ::=
+    [ <data base name> ] <table name> [ [ AS ] <table alias> ] [ <index option> ]
+  | <left paren> <select stmt> <right paren> [ [ AS ] <table alias> ]
+  | <left paren> <join source> <right paren>
+  
+  <index option> ::=
+    INDEXED BY <index name> 
+  | NOT INDEXED
+  
+  <join op> ::=
+    <comma>
+  | [ NATURAL ] [ LEFT [OUTER] | INNER | CROSS ] JOIN
+  
+  <ordering term> ::=
+  <expr> [ COLLATE <collation name> ] [ ASC | DESC ]
+  
+  <compound operator> ::=
+    UNION [ ALL ]
+  | INTERSECT 
+  | EXCEPT
+\end{Verbatim}
+
 \begin{Verbatim}[frame=single, label=sintaxis para SELECT]
 fgfgfgfg
 \end{Verbatim}
