@@ -59,6 +59,30 @@ Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado 
 
 
 
+\subsection{Tipos de datos}
+Lo primero que se busca es encontrar las diferencias en la base de las consultas, como son los tipos de datos. Entre los tres \dd encontramos que si bien los tipos de datos deben ser básicamente los mismos, hay diferencias con tipos de datos especializados, así que veamos una tabla comparativa:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
+\hline Integer & INT, LONGINT & • \\ 
+\hline  &  &  \\ 
+\hline  &  &  \\ 
+\hline  &  &  \\ 
+\hline  &  &  \\ 
+\hline  &  &  \\ 
+\hline 
+\end{tabular} 
+\end{center}
+
+
+
+
+\subsection{Funciones}
+
+
+
+
 \subsection{Diseño de CREATE TABLE}
 Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
 \begin{Verbatim}
@@ -410,7 +434,7 @@ Hasta este punto la sintaxis usada es compatible con los otros dos motores, por 
   <index option> ::=
     INDEXED BY <index name> 
   | NOT INDEXED
-  
+  %not in postgre
   <join op> ::=
     <comma>
   | [ NATURAL ] [ LEFT [OUTER] | INNER | CROSS ] JOIN
@@ -421,19 +445,48 @@ Hasta este punto la sintaxis usada es compatible con los otros dos motores, por 
   
   <ordering term> ::=
   <expr> [ COLLATE <collation name> ] [ ASC | DESC ]
-  %no COLLATE en mysql
+  %no COLLATE en mysql no ASC DESC en postgre
   <compound operator> ::=
     UNION [ ALL ]
   | INTERSECT 
   | EXCEPT
   %solo union para Mysql
 \end{Verbatim}
+Son pocas las incompatibilidades que podemos encontrar, pero existen, la primera incompatibilidad es que el elemento \verb=<index option>= no es aceptado por \p; segundo en el elemento \verb=<ordering item>= nos encontramos con que \m no soporta establecer la opcion \verb=COLLATE= y \p no acepta la anterior ni los elementos \verb=ASC, DESC=; por ultimo \m solo acepta \verb=UNION [ ALL ]= para el elemento \verb=<compound operator>=. Así que nuestra sintaxis final quedaría de la siguiente manera:  
 
 \begin{Verbatim}[frame=single, label=sintaxis para SELECT]
   <query specification> ::=
-  <select core> [ { <compound operator> <select core> }... ]
+  <select core> [ { UNION [ ALL ] <select core> }... ]
   [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
   [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]
   
+  <select core> ::=
+  SELECT [ DISTINCT | ALL ] <result column> [ { <comma><result column> }... ] 
+  [ FROM <join source> ]
+  [ WHERE <exp> ]
+  [ GROUP BY <group list> ]
   
+  <group list> ::=
+  <expr> [ { <comma><expr> }... ] [ HAVING <expr> ]
+  
+  <result column> ::=
+    <asterisk>
+  | <table name><dot><asterisk>
+  | <expr> [ [ AS ] <column alias> ]
+  
+  <join source> ::=
+  <single source> [ { <join op> <single source> <join constraint> }... ]
+  
+  <single source> ::=
+    [ <data base name> ] <table name> [ [ AS ] <table alias> ]
+  | <left paren> <select stmt> <right paren> [ [ AS ] <table alias> ]
+  | <left paren> <join source> <right paren>
+
+  <join op> ::=
+    <comma>
+  | [ NATURAL ] [ LEFT [OUTER] | INNER | CROSS ] JOIN
+  
+  <join constraint> ::=
+    [ ON <expr> ]
+  | USING <left paren> <comma><column name> <right paren>
 \end{Verbatim}
