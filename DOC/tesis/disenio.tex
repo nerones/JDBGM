@@ -379,17 +379,20 @@ Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posi
   <select core> [ { <compound operator> <select core> }... ]
   [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
   [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]  
-  
+\end{Verbatim}
+
+Hasta este punto la sintaxis usada es compatible con los otros dos motores, por lo que sera aceptada tal cual, así que se siguen buscando diferencias:
+
+\begin{Verbatim}
   <select core> ::=
   SELECT [ DISTINCT | ALL ] <result column> [ { <comma><result column> }... ] 
   [ FROM <join source> ]
-  [ WhERE <exp> ]
+  [ WHERE <exp> ]
   [ GROUP BY <group list> ]
   
   <group list> ::=
   <ordering term> [ { <comma><ordering term> }... ]
   [ HAVING <expr> ]
-  
   
   <result column> ::=
     <asterisk>
@@ -412,15 +415,25 @@ Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posi
     <comma>
   | [ NATURAL ] [ LEFT [OUTER] | INNER | CROSS ] JOIN
   
+  <join constraint> ::=
+    [ ON <expr> ]
+  | USING <left paren> <comma><column name> <right paren>
+  
   <ordering term> ::=
   <expr> [ COLLATE <collation name> ] [ ASC | DESC ]
-  
+  %no COLLATE en mysql
   <compound operator> ::=
     UNION [ ALL ]
   | INTERSECT 
   | EXCEPT
+  %solo union para Mysql
 \end{Verbatim}
 
 \begin{Verbatim}[frame=single, label=sintaxis para SELECT]
-fgfgfgfg
+  <query specification> ::=
+  <select core> [ { <compound operator> <select core> }... ]
+  [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
+  [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]
+  
+  
 \end{Verbatim}
