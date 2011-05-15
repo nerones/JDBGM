@@ -65,12 +65,16 @@ Lo primero que se busca es encontrar las diferencias en la base de las consultas
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline \s & \m & \p \\ 
-\hline Integer & INT, LONGINT & • \\ 
-\hline  &  &  \\ 
-\hline  &  &  \\ 
-\hline  &  &  \\ 
-\hline  &  &  \\ 
-\hline  &  &  \\ 
+\hline NULL &  &  \\ 
+\hline  & TINYINT &  \\ 
+  & SMALLINT & SMALLINT \\ 
+ INTEGER & MEDIUMINT &  \\
+  & INT & INTEGER \\
+  & BIGINT & BIGINT \\
+\hline  &  &  \\  
+ REAL &  &  \\ 
+ TEXT &  &  \\ 
+ BLOB &  &  \\ 
 \hline 
 \end{tabular} 
 \end{center}
