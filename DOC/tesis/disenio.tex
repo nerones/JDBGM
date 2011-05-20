@@ -60,27 +60,43 @@ Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado 
 
 
 \subsection{Tipos de datos}
-Lo primero que se busca es encontrar las diferencias en la base de las consultas, como son los tipos de datos. Entre los tres \dd encontramos que si bien los tipos de datos deben ser básicamente los mismos, hay diferencias con tipos de datos especializados, así que veamos una tabla comparativa:
+Las primeras diferencias las encontramos en las definiciones de tipos de datos que usan los \dd. La mayor diferencia la encontramos en el modo que \s maneja los tipos de datos, la mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo declarado de de dato en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento (\textit{storage clases}) que son un poco mas genéricas que los tipos de datos definidos usualmente, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER= que maneja \m.\\
 
+ En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que aun una columna puede almacenar cualquiera de los topos de datos definidos (storage class para \s). A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero con un cuadro comparativo:       
+\begin{table}
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline \s & \m & \p \\ 
-\hline NULL &  &  \\ 
 \hline  & TINYINT &  \\ 
   & SMALLINT & SMALLINT \\ 
  INTEGER & MEDIUMINT &  \\
   & INT & INTEGER \\
-  & BIGINT & BIGINT \\
+  & BIGINT & BIGINT \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos enteros}
+\end{table}
+
+Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\  
+\hline REAL & FLOAT &  \\ 
+  & REAL & REAL \\
+  & DOUBLE PRECISION & DOUBLE PRECISION \\
+\hline NUMERIC & NUMERIC & NUMERIC \\
+  & DECIMAL & DECIMAL \\
 \hline  &  &  \\  
- REAL &  &  \\ 
  TEXT &  &  \\ 
  BLOB &  &  \\ 
 \hline 
 \end{tabular} 
 \end{center}
-
-
-
+\caption{Comparación de los tipos de datos reales}
+\end{table}
 
 \subsection{Funciones}
 
