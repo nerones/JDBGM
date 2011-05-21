@@ -60,27 +60,45 @@ Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado 
 
 
 \subsection{Tipos de datos}
-Las primeras diferencias las encontramos en las definiciones de tipos de datos que usan los \dd. La mayor diferencia la encontramos en el modo que \s maneja los tipos de datos, la mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo declarado de de dato en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento (\textit{storage clases}) que son un poco mas genéricas que los tipos de datos definidos usualmente, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER= que maneja \m.\\
+Las primeras diferencias las encontramos en las definiciones de tipos de datos que usan los \dd, de estas la mas notoria es el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo declarado de de dato en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento (\textit{storage clases}) que son un poco mas genéricas que los tipos de datos definidos usualmente, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER= que maneja \m.\\
 
- En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que aun una columna puede almacenar cualquiera de los topos de datos definidos (storage class para \s). A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero con un cuadro comparativo:       
-\begin{table}
+ En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s).\\
+ 
+\cc debe proveer una interfaz única en la que se establezcan los tipos de datos disponibles para usar, estos tipos de datos deben ser elegidos en base a las compatibilidades entre los diferentes motores que soporta para lograr un uso genérico sobre cualquiera de los motores, en principio se podrían elegir todos los tipos de datos definidos en los motores, uniendo a aquellos que sean equivalentes en un solo tipo y dejando que después \cc se encargue de mapear los datos a los soportados por un motor en concreto, recordando que algunos de los datos declarados no son directamente soportados por todos los \dd. Pero esto podría acarrear confusiones pues veamos, el tipo de dato entero mas chico (el que ocupa menos espacio en disco para representarse) en \m es \verb=TINYINT= que ocupa solo 1 byte, en cambio en \p el mas chico es \verb=SMALLINT= que ocupa 2 bytes entonces en el caso de que en los tipos de datos especificados para \cc se encuentren estos dos no habría problemas al usarlos pues si se llegara a especificar una columna con tipo de dato \verb=TINYINT= mientras se trabaja sobre una base de datos con \p no habría mas que mapear internamente el tipo de dato a \verb=SMALLINT=, pero en esta situación el programador podría no enterarse de que en realidad la columna que el esta usando ocupa 2 bytes por dato lo que en casos en que el espacio en disco duro sea un tema sensible podría llevar a serias confusiones, entonces lo mejor es que en la especificación de \cc solo se incluyan los tipos que no lleven a este tipo de confusiones. A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero mediante un cuadro comparativo:
+        
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
-\hline \s & \m & \p \\ 
-\hline  & TINYINT &  \\ 
-  & SMALLINT & SMALLINT \\ 
- INTEGER & MEDIUMINT &  \\
-  & INT & INTEGER \\
-  & BIGINT & BIGINT \\  
+\hline \s      & \m        & \p \\ 
+\hline         & TINYINT   &  \\ 
+               & SMALLINT  & SMALLINT \\ 
+       INTEGER & MEDIUMINT &  \\
+               & INT       & INTEGER \\
+               & BIGINT    & BIGINT \\  
 \hline 
 \end{tabular} 
 \end{center}
 \caption{Comparación de los tipos de datos enteros}
 \end{table}
 
-Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s
+Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de contener todos los tipos de datos declarados en los otros dos motores, en \m se definen mas tipos de datos enteros que  difieren únicamente en el espacio que utiliza para almacenarse en disco, el mas chico usa  solo 1 Byte para almacenarse, mientras que el mas grande usa 8 Bytes. En \s el dato es almacenado en disco con la menor cantidad posible de Byts pero tan pronto como es cargado en memoria es convertido a un entero de 8 bytes con signo\footnote{Cuando al representarse un numero se usa el signo ($\pm$) se achica el rango de numero que se puede representar}. Lo que nos  interesa a nosotros es elegir un subconjunto de estos tipos que sean aplicables a los tres motores, en este caso es \p el que define menos tipos de datos, teniendo en cuenta que \s presenta un tipo de dato que envuelve a todos los demás, por lo que tomaremos esos tipos como los elegidos para \jj
 
-\begin{table}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s   & \m               & \p \\  
+\hline REAL & FLOAT            &  \\ 
+            & REAL             & REAL \\
+            & DOUBLE PRECISION & DOUBLE PRECISION \\
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos reales}
+\end{table}
+
+En el caso de los tipos de números reales, o no exactos si se quiere
+
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline \s & \m & \p \\  
@@ -97,6 +115,9 @@ Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s
 \end{center}
 \caption{Comparación de los tipos de datos reales}
 \end{table}
+
+
+
 
 \subsection{Funciones}
 
