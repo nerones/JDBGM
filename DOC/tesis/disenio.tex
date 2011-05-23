@@ -114,25 +114,47 @@ NUMERIC  & DATETIME &  \\
 \caption{Comparación de los tipos de datos reales exactos y fechas}
 \end{table}
 
-Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora segun el formato que estemos utilizando.   
+Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora según el formato que estemos utilizando.   
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline \s & \m & \p \\ 
-\hline  &  &  \\  
- TEXT &  &  \\ 
- BLOB &  &  \\ 
+\hline  & CHAR(n) & CHAR(n) \\  
+    & VARCHAR(n) & VARCHAR(n) \\ 
+  TEXT   & TINYTEXT &  \\  
+    & TEXT & TEXT \\  
+    & MEDIUMTEXT &  \\  
+    & LONGTEXT &  \\  
 \hline 
 \end{tabular} 
 \end{center}
-\caption{Comparación de los tipos de datos reales}
+\caption{Comparación de los tipos de datos cadenas de texto}
 \end{table}
 
+Para el caso de los tipos de datos tenemos como siempre \s con una clase de almacenamiento bastante genérica que cubre todos los tipos de datos definidos en los demás motores. La diferencia que encontramos con los otros dos motores es que el tipo \verb=TEXT= que en \m tiene 4 variantes que varían en el limite de almacenamiento, siendo el ultimo sin limite (\verb=LONGTEXT=) en cambio en \p existe solo \verb=TEXT= y que es para almacenamiento de texto sin limite, así que como antes tomaremos los tipos de datos que define \p como los elegidos para \cc. 
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
+\hline  & BINARY &  \\  
+ & VARBINARY &  \\ 
+ BLOB & TINYBLOB & bytea \\ 
+ & BLOB &  \\ 
+ & MEDIUMBLOB &  \\
+& LONGBLOB &  \\ 
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos binarios}
+\end{table}
+Faltan los tipos monetarios, booleanos
 
 
 
 \subsection{Funciones}
+
 
 
 
