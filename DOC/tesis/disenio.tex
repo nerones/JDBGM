@@ -81,32 +81,45 @@ Las primeras diferencias las encontramos en las definiciones de tipos de datos q
 \caption{Comparación de los tipos de datos enteros}
 \end{table}
 
-Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de contener todos los tipos de datos declarados en los otros dos motores, en \m se definen mas tipos de datos enteros que  difieren únicamente en el espacio que utiliza para almacenarse en disco, el mas chico usa  solo 1 Byte para almacenarse, mientras que el mas grande usa 8 Bytes. En \s el dato es almacenado en disco con la menor cantidad posible de Byts pero tan pronto como es cargado en memoria es convertido a un entero de 8 bytes con signo\footnote{Cuando al representarse un numero se usa el signo ($\pm$) se achica el rango de numero que se puede representar}. Lo que nos  interesa a nosotros es elegir un subconjunto de estos tipos que sean aplicables a los tres motores, en este caso es \p el que define menos tipos de datos, teniendo en cuenta que \s presenta un tipo de dato que envuelve a todos los demás, por lo que tomaremos esos tipos como los elegidos para \jj
+Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de contener todos los tipos de datos declarados en los otros dos motores, en \m se definen mas tipos de datos enteros que  difieren únicamente en el espacio que utiliza para almacenarse en disco, el mas chico usa  solo 1 Byte para almacenarse, mientras que el mas grande usa 8 Bytes. En \s el dato es almacenado en disco con la menor cantidad posible de Bytes pero tan pronto como es cargado en memoria es convertido a un entero de 8 bytes con signo\footnote{Cuando al representarse un numero se usa el signo ($\pm$) se achica el rango de numero que se puede representar}. Lo que nos  interesa a nosotros es elegir un subconjunto de estos tipos que sean aplicables a los tres motores, en este caso es \p el que define menos tipos de datos, teniendo en cuenta que \s presenta un tipo de dato que envuelve a todos los demás, por lo que tomaremos esos tipos como los elegidos para \jj
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline \s   & \m               & \p \\  
-\hline REAL & FLOAT            &  \\ 
-            & REAL             & REAL \\
+\hline      & FLOAT            &  \\ 
+       REAL & REAL             & REAL \\
             & DOUBLE PRECISION & DOUBLE PRECISION \\
 \hline 
 \end{tabular} 
 \end{center}
-\caption{Comparación de los tipos de datos reales}
+\caption{Comparación de los tipos de datos reales aproximados}
 \end{table}
 
-En el caso de los tipos de números reales, o no exactos si se quiere
+En el caso de los tipos de números reales tenemos básicamente dos clases de tipos, los que guardan los datos de forma exacta y otros no exactos que se guardan en el formato punto flotante. Para el caso de los tipos de datos con punto flotante tomare los datos definidos para \p como los elegidos para \cc, el tipo \verb=FLOAT= definido en \m es similar a \verb=REAL=, y nuevamente el tipo \verb=REAL= de \s es capaz de contener los otros tipos. 
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline \s & \m & \p \\  
-\hline REAL & FLOAT &  \\ 
-  & REAL & REAL \\
-  & DOUBLE PRECISION & DOUBLE PRECISION \\
-\hline NUMERIC & NUMERIC & NUMERIC \\
+\hline  & NUMERIC & NUMERIC \\
   & DECIMAL & DECIMAL \\
+NUMERIC  & DATETIME &  \\
+  & TIMESTAMP & TIMESTAMP \\
+  & DATE & DATE \\
+  & TIME & TIME \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos reales exactos y fechas}
+\end{table}
+
+Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora segun el formato que estemos utilizando.   
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
 \hline  &  &  \\  
  TEXT &  &  \\ 
  BLOB &  &  \\ 
