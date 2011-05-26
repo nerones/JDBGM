@@ -33,8 +33,8 @@ Así que para brindar una abstracción sobre la base de datos es necesario que l
 
 Se tendría una estructura de datos como la siguiente:
 
-\lstset{frame=single, rulesepcolor=\color{black}, backgroundcolor=\color{lightgray}}
-\begin{lstlisting}[language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize, title=Pseudocódigo de la estructura de dato que contiene la sentencia]
+%\lstset{frame=single, rulesepcolor=\color{black}, backgroundcolor=\color{lightgray}, language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize}
+\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
 class Sentencia{
 	nombre_comando;
 	opcion1;
@@ -149,9 +149,22 @@ Para el caso de los tipos de datos tenemos como siempre \s con una clase de alma
 \end{center}
 \caption{Comparación de los tipos de datos binarios}
 \end{table}
+
+En el caso de los tipos de datos binarios tenemos.
 Faltan los tipos monetarios, booleanos
 
-
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
+\hline 1 o 0 & 1 o 0 & BOOLEAN \\  
+\hline NUMERIC & NUMERIC & MONETARY \\  
+&  &  \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de tipos de datos varios}
+\end{table}
 
 \subsection{Funciones}
 
@@ -358,7 +371,7 @@ Esta sentencia es usada para actualizar los datos de una tabla, es decir para mo
   | IGNORE
 \end{Verbatim}
 
-En este punto encontramos la primer diferencia con los demas DBMS, el elemento \verb=<OR option>= que nos permite especificar que acción tomar si no es posible realizar la acción de \verb=UPDATE= sobre la tabla, es un añadido de \s que no esta presente en las especificaciones de los otros dos DBMS y tampoco aparece en la especificación de SQL.
+En este punto encontramos la primer diferencia con los demas DBMS, el elemento \verb=<or option>= que nos permite especificar que acción tomar si no es posible realizar la acción de \verb=UPDATE= sobre la tabla, es un añadido de \s que no esta presente en las especificaciones de los otros dos DBMS y tampoco aparece en la especificación de SQL.
 
 \begin{Verbatim}
   <target table> ::=
@@ -377,6 +390,7 @@ En este punto encontramos la primer diferencia con los demas DBMS, el elemento \
 
 \end{Verbatim}
 Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son reconocidos por \m y \p por lo que serán ignorados en la especificación de el proyecto. Lo demás es de idéntica sintaxis. La especificación final de \jj.
+
 \begin{Verbatim}[frame=single, label=sintaxis para UPDATE]
   <update statement> ::=
   UPDATE <target table> 

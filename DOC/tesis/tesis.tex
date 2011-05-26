@@ -1,8 +1,8 @@
 \documentclass[letter,fleqn,twoside]{book}
-\usepackage{graphicx,amsmath,amsfonts,psfrag,fancyhdr,layout,appendix,subfig,listings,xspace}
+\usepackage{graphicx,amsmath,amsfonts,psfrag,fancyhdr,layout,appendix,subfig,xspace}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
-
+\usepackage{listings}
 \usepackage{makeidx}
 %\usepackage{ucs}
 %\usepackage[utf8]{inputenc}
@@ -16,8 +16,7 @@
 
 %This change labels of subfig
 \renewcommand{\thesubfigure}{\alph{subfigure}\arabic{subfiggroup}}
-\captionsetup[subfigure]{labelformat=simple,labelsep=colon,
-                         listofformat=subsimple}
+\captionsetup[subfigure]{labelformat=simple,labelsep=colon, listofformat=subsimple}
 %\captionsetup{lofdepth=2} This is in order to list the subfigures in the LOF
 \makeatletter
  \renewcommand{\p@subfigure}{}
@@ -47,12 +46,15 @@
 \usepackage{color}
 %\pagecolor{white}
 \definecolor{lightgray}{rgb}{0.83,0.83,0.83}
+\definecolor{darkgray1}{gray}{0.98}
 \definecolor{darkgray}{gray}{0.40}
 %Este mejora las prestaciones de "\verbatim"
 %\usepackage{verbatim}
 \usepackage{fancyvrb}
-\fvset{gobble=2, frame=leftline, framesep=3mm, fontsize=\small, formatcom=\color{darkgray}
-}
+\fvset{gobble=2, frame=leftline, framesep=3mm, fontsize=\small, formatcom=\color{darkgray}}
+
+\lstset{frame=shadowbox, rulesepcolor=\color{lightgray}, backgroundcolor=\color{darkgray1}, language=Java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize, xleftmargin= 
+14pt}
 %Definición de margenes
 \usepackage[left=4.5cm,top=2.8cm,right=2cm,bottom=2.5cm]{geometry}
 \sloppy
