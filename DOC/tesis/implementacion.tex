@@ -24,6 +24,7 @@ Para la implementación de las especificaciones declaradas anteriormente nos enc
 \item Métodos para armar la sentencia.
 
 \end{itemize}
+
 Se puede hacer una distinción en como funcionan las funciones, o mas bien como responde JDBC cuando procesa determinada sentencia SQL. Por un lado están aquellos que solo necesitan reportar la cantidad de filas afectadas por la sentencia después están aquellos que necesitan devolver información después de ejecutada la sentencia, estas ultimas sentencias son precisamente las que realizan consultas sobre la base de datos siendo las sentencias \verb=SELECT= las únicas que hacen esto. Por otro lado las sentencias \verb=UPDATE=, \verb=INSERT= y \verb=DELETE= solo precisan reportar la cantidad de columnas que fueron afectadas por la consulta, en cambio las sentencias \verb=ALTER TABLE= y \verb=CREATE TABLE= que sirven para modificar las tablas (son parte del DDL de SQL) no afectan directamente a las columnas pero por convención se tomo que JDBC devuelva 0 como numero de columnas afectadas por lo que en este caso se las agrupara en el mismo conjunto. Para que \jj pueda hacer distinción de estos dos tipos de consultas se utilizaron dos interfaces las cuales pueden ser tomadas como tipos genéricos, la \figpage{fig:crossdb-base} muestra estas interfaces.\\
 
 \begin{figure}
@@ -34,7 +35,6 @@ Se puede hacer una distinción en como funcionan las funciones, o mas bien como 
 \end{figure}
 
 De este modo estamos usando las interfaces como un tipo genérico, es decir si en la firma de cualquier método declaramos algo similar a lo siguiente \verb=metodoA(UpdateStatement param)= el parámetro param podrá ser cualquier clase que implemente directa o indirectamente mediante herencia la interfase \verb=UpdateStatement=, en nuestro caso estas no se implementara directamente esa interfaz sino que se crearan otras interfaces "hijas" de \verb=UpdateStatement=.\\
-En la \figpage{fig:query} tenemos una vista mas completa de como se compone la estructura de estos tipos, es la mas simple pues solo tiene una clase hija la única que sirve para hacer consultas sobre la base de datos la sentencia \verb=SELECT=. Como ya dijimos la primer interface sirve para distinguir a nivel mas genérico el tipo de sentencia SQL que se esta tratando, la interfase hija directa de \verb=UpdateStatement= si ya define un comportamiento especifico para las funciones de las sentencias \verb=SELECT=. La clase abstracta \verb=DefaultSelectQuery= brinda una implementación base para los métodos definidos en \verb=SelectQuery=, para comprender por que hago esto es necesario recordar que la clase que represente una sentencia contiene toda la información necesaria para generar una sentencia valida y esta información es la misma que se precisa para cualquier sentencia SQL de un \dd en concreto (además ya definimos una sintaxis que es totalmente soportada) la diferencia esta en el modo que se escriben las sentencias, la sintaxis, por ello el único método que debería ser especifico a un \dd seria aquel que esta encargado de armar la sentencia. Despues de la clase abstracta si por fin tenemos implementaciones especificas para un motor en particular \verb=SpecificSelectQuery=, de estas clases tendremos tantas como motores estén soportados por el proyecto.    
 
 \begin{figure}
   \centering
@@ -43,23 +43,134 @@ En la \figpage{fig:query} tenemos una vista mas completa de como se compone la e
   \label{fig:query}
 \end{figure}
 
+En la \figpage{fig:query} tenemos una vista mas completa de como se compone la estructura de estos tipos, es la mas simple pues solo tiene una clase hija la única que sirve para hacer consultas sobre la base de datos la sentencia \verb=SELECT=. Como ya dijimos la primer interface sirve para distinguir a nivel mas genérico el tipo de sentencia SQL que se esta tratando, la interfase hija directa de \verb=QueryStatement= si ya define un comportamiento especifico para las funciones de las sentencias \verb=SELECT=. La clase abstracta \verb=DefaultSelectQuery= brinda una implementación base para los métodos definidos en \verb=SelectQuery=, para comprender por que hago esto es necesario recordar que la clase que represente una sentencia contiene toda la información necesaria para generar una sentencia valida y esta información es la misma que se precisa para cualquier sentencia SQL de un \dd en concreto (además ya definimos una sintaxis que es totalmente soportada) la diferencia esta en el modo que se escriben las sentencias, la sintaxis, por ello el único método que debería ser especifico a un \dd seria aquel que esta encargado de armar la sentencia. Después de la clase abstracta si por fin tenemos implementaciones especificas para un motor en particular \verb=SpecificSelectQuery=, de estas clases tendremos tantas como motores estén soportados por el proyecto.\\
 
 \begin{figure}
   \centering
     \includegraphics[width=\textwidth]{figuras/crossdb-update.png}
-  \caption{Mi Figura}
+  \caption{Estructura de}
   \label{fig:update}
 \end{figure}
 
+En la \figpage{fig:update} tenemos una descripción de como se componen los otros tipos de sentencias, esta es algo mas elaborada, como antes la primer interfaz, funciona como tipo genérico, en las clases hijas de esta vemos algo parecido al caso de \verb=QueryStatement= salvo por la interfaz \verb=UpdateableQuery= que agrupa comportamiento común a \verb=Updatequery= e \verb=InsertQuery=, también se brinda un comportamiento predeterminado mediante \verb=DefaultUpdateStatement= pero el cual al brindar una implementación base tiene que ser a la fuerza una clase abstracta\footnote{Una clase abstracta se puede ver como una interfaz que fuerza la implementación de su comportamiento} así que las clases que definen el comportamiento especifico de \verb=UpdateQuery= e \verb=InsertQuery= son clases abstractas y no interfaces, pero el resultado es el mismo. A continuación un análisis mas detallado de como se componen las interfaces finales y las clases que las implementan además de una vista a su implementación.
 
-Que se convertirá en una interfaz como la siguiente:
 
 
-\begin{lstlisting}[title=Pseudocódigo interfaz para CREATE]
-class CreateStatement{
-	setTable(name);
-	setTable(name, databaseName);
-	addColumn(columnName, value);
-	addWhereClause(whereClause);
+
+\subsection{Implementación de AlterTableQuery}
+Todas las interfaces menos \verb=SelectQuery= descienden de \verb=UpdateStatement=, esta es una interfaz que no define comportamiento alguno solo sirve para categorizar las interfaces hijas en cuanto a pertenencia o no a el grupo de las sentencias que no devuelven información de la base de datos si no sobre la base de datos, su implementación a continuación:
+
+\begin{lstlisting}[title=interfaz UpdateStatement]
+package com.crossdb.sql;
+
+public interface UpdateStatement {
+
+}
+\end{lstlisting}
+
+
+
+
+\subsection{Implementación de DeleteQuery}
+
+
+
+
+\subsection{Implementación de UpdateQuery e InsertQuery}
+
+
+
+
+\subsection{Implementación de CreateTableQuery}
+
+
+
+
+\subsection{Implementación de selectQuery}
+
+Esta interfaz es la única que desciende de la interfaz padre \verb=QueryStatement= la cual podemos ver en su totalidad ya que se trata de una interfaz muy simple:
+
+\begin{lstlisting}[title=código interfaz QueryStatement]
+package com.crossdb.sql;
+
+public interface QueryStatement {
+
+}
+\end{lstlisting}
+
+Como ya se dijo no necesita definir ningún comportamiento, salvo por la pertenencia a un grupo que es en este caso la de el tipo de sentencias que ejecutan consultas sobre la base de datos. La interfaz hija si ya define comportamientos específicos que servirán para poblar de datos y armar las sentencias \verb=SELECT= las métodos mas importantes de su implementación la podemos ver a continuación:
+
+\begin{lstlisting}[title=código interfaz UpdateStatement]
+package com.crossdb.sql;
+
+import java.util.Date;
+import com.crossdb.sql.optimization.OptimizationHint;
+
+public interface SelectQuery extends QueryStatement {
+
+	void addColumn(String column);
+
+	void addFunctionColumn(String function, String column);
+
+	void sumColumn(String column);
+
+	void countColumn(String column);
+
+	void countColumn(String table, String column);
+
+	void averageColumn(String column);
+
+	void averageColumn(String table, String column);
+
+	void minColumn(String column);
+
+	void minColumn(String table, String column);
+
+	void maxColumn(String column);
+
+	void maxColumn(String table, String column);
+
+	void addTable(String table);
+
+	void addTable(int joinType, String table);
+
+	void addTable(int join_type, String table, WhereCondition cond);
+
+	void addTable(Join join);
+
+	void addWhereCondition(String x, int comparison, String y);
+
+	void addWhereCondition(String x, int comparison, int y);
+
+	void addWhereCondition(String x, int comparison, long y);
+
+	void addWhereCondition(String x, int comparison, Date y);
+
+	void addWhereCondition(String and_or, String x, int comparison, String y);
+
+	void addWhereCondition(String and_or, String x, int comparison, int y);
+
+	void addWhereCondition(String and_or, String x, int comparison, long y);
+
+	void addWhereCondition(String and_or, String x, int comparison, Date y);
+
+	void addWhereString(String x, int comparison, String y);
+
+	void addWhereString(String and_or, String x, int comparison, String y);
+
+	void addWhereCondition(WhereCondition cond);
+
+	void addWhereClause(IWhereClause wc);
+
+	void addOrderBy(String order_by);
+
+	void addGroupBy(String group_by);
+
+	void union(SelectQuery sq);
+
+	void setDistinct(boolean distinct);
+
+	void setLimit(int offset, int rowCount);
+
 }
 \end{lstlisting}
