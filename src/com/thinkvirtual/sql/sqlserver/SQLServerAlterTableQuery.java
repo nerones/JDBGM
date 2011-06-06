@@ -22,9 +22,18 @@ public class SQLServerAlterTableQuery extends DefaultAlterTableQuery{
 	WhereClause wclause = new WhereClause();
 	
 	public SQLServerAlterTableQuery(){
+		super(new DataTypes() {
+			
+			@Override
+			public String getAsString(int type, int size) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
 		query1 = "";
 		drops = new ArrayList();
 		adds = new ArrayList();
+		
 	}
 	
 	

@@ -74,5 +74,7 @@ public interface CreateTableQuery extends UpdateStatement{
 	 * default sequence names.
 	 */
 	// void setSequence(String sequence_table_name);
+	
+	String columnToString(Column column);
 
 }

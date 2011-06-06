@@ -23,25 +23,16 @@ public interface AlterTableQuery extends UpdateStatement{
 	void addColumn(Column c);
 	
 	/**
-	 * Adds a column to be dropped.
+	 *Establece un nuevo nombre para la tabla, e implica que la sentencia renombrara
+	 *la tabla que se declaro con {@link #setTable(String)} . 
+	 * @param table El nuevo nombre de la tabla
 	 */
-	void dropColumn(String c);
+	void newTableName(String table);
 	
-	/**
-	Returns the SQL statement.
-	 */
-	//String toString();
+	String columnToString(Column column);
 	
-	/**
-	Returns the number of rows affected
-	 * /
-	int execute(Connection conn)throws SQLException ;
-	
-		/**
-	Uses stmt to execute the query.  This is so you can keep reusing the same
-	statement.  Be sure to use new statements if you want more than one resultset
-	open at the same time.
-	 * /
-	int execute(java.sql.Statement stmt) throws SQLException;
-	*/
+//	/**
+//	 * Adds a column to be dropped.
+//	 */
+//	void dropColumn(String c);
 }

@@ -7,23 +7,19 @@
 package com.crossdb.sql;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
 
 public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 
 	protected String query1;
 	protected String table;
-	protected List drops;
-	protected List adds;
-	WhereClause wclause = new WhereClause();
+	protected String newTableName;
+	protected ArrayList<Column> adds;
+	protected DataTypes datatype;
 
-	public DefaultAlterTableQuery() {
+	public DefaultAlterTableQuery(DataTypes datatype) {
 		query1 = "";
-		drops = new ArrayList();
-		adds = new ArrayList();
+		adds = new ArrayList<Column>();
+		this.datatype = datatype;
 	}
 
 	public void setTable(String table) {
@@ -35,22 +31,31 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 
 	}
 
-	public void dropColumn(String colname) {
-		drops.add(colname);
+	public void newTableName(String table){
+		newTableName = table;
 	}
-
-	public abstract String toString();
-
-	/*
-	public int execute(Statement stmt) throws SQLException {
-		return stmt.executeUpdate(toString());
-	}
-
-	public int execute(Connection conn) throws SQLException {
-		Statement stmt = conn.createStatement();
-		int ret = execute(stmt);
-		stmt.close();
+	
+	public String columnToString(Column column){
+		String ret = column.getName() + " "
+		+ datatype.getAsString(column);
+		if (column.isNullable() == 0) {
+			ret += " NOT NULL ";
+		}
+		/**
+		 * should this shiza be in MySQLDataTypes??
+		 * 
+		 */
+		if (column.getDefaultValue() != null) {
+			if (column.getType() == java.sql.Types.VARCHAR
+					|| column.getType() == java.sql.Types.CHAR) {
+				ret += " DEFAULT '" + column.getDefaultValue() + "' ";
+			} else
+				ret += " DEFAULT " + column.getDefaultValue();
+		}
 		return ret;
+		
 	}
-	*/
+	
+	public abstract String toString();
+	
 }

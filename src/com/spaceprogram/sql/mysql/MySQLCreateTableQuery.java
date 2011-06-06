@@ -16,7 +16,7 @@ import com.crossdb.sql.DefaultCreateTableQuery;
 public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 
     public MySQLCreateTableQuery() {
-        super();
+        super(new MySQLDataTypes());
     }
 
 	public String toString() {
@@ -28,7 +28,7 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 			Column df = (Column) (columns.get(j));
 			query1 += df.getName() + " ";
 
-			query1 += MySQLDataTypes.getAsString(df);
+			query1 += datatype.getAsString(df);
 
 			// if (df.isAutoIncrement()) {
 			// //una tabla de mysql solo puede tener una columna auto_increment

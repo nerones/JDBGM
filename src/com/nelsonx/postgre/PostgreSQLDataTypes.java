@@ -1,10 +1,10 @@
 package com.nelsonx.postgre;
 
-import com.crossdb.sql.Column;
+import com.crossdb.sql.DataTypes;
 
-public class PostgreSQLDataTypes {
+public class PostgreSQLDataTypes extends DataTypes{
 	
-	public static String getAsString(int type, int size) {
+	public String getAsString(int type, int size) {
 		String query1;
 		switch (type) {
 		case java.sql.Types.BIGINT:
@@ -73,16 +73,5 @@ public class PostgreSQLDataTypes {
 		return query1;
 
 	}
-
-    public static String getAsString(Column col) {
-        return getAsString(col.getType(), col.getSize());
-    }
-
-    /**
-     For columns that don't have a size
-     */
-    public static String getAsString(int type) {
-        return getAsString(type, 0);
-    }
 
 }

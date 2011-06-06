@@ -68,7 +68,18 @@ public interface UpdateStatement {
 }
 \end{lstlisting}
 
+\begin{lstlisting}[title=interfaz AlterTableQuery]
+package com.crossdb.sql;
 
+public interface AlterTableQuery extends UpdateStatement{
+	
+	void setTable(String table);
+	
+	void addColumn(Column c);
+	
+	void dropColumn(String c);
+}
+\end{lstlisting}
 
 
 \subsection{Implementación de DeleteQuery}

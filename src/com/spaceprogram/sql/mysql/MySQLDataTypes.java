@@ -17,11 +17,11 @@ package com.spaceprogram.sql.mysql;
 
 import com.crossdb.sql.*;
 
-public class MySQLDataTypes {
+public class MySQLDataTypes extends DataTypes{
 
     /**
      */
-    public static String getAsString(int type, int size) {
+    public String getAsString(int type, int size) {
         String query1;
         switch (type) {
             case java.sql.Types.BIGINT:
@@ -88,19 +88,6 @@ public class MySQLDataTypes {
                 query1 = "VARCHAR("+size+")";
         }
         return query1;
-
-
-    }
-
-    public static String getAsString(Column col) {
-        return getAsString(col.getType(), col.getSize());
-    }
-
-    /**
-     For columns that don't have a size
-     */
-    public static String getAsString(int type) {
-        return getAsString(type, 0);
     }
 }
 

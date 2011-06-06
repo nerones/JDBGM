@@ -1,10 +1,10 @@
 package com.nelsonx.sqlite;
 
-import com.crossdb.sql.Column;
+import com.crossdb.sql.DataTypes;
 
-public class SQLiteDataTypes {
+public class SQLiteDataTypes extends DataTypes{
 	// TODO fix data types
-	public static String getAsString(int type, int size) {
+	public String getAsString(int type, int size) {
         String query1;
         switch (type) {
             case java.sql.Types.BIGINT:
@@ -71,17 +71,6 @@ public class SQLiteDataTypes {
         return query1;
 
 
-    }
-
-    public static String getAsString(Column col) {
-        return getAsString(col.getType(), col.getSize());
-    }
-
-    /**
-     For columns that don't have a size
-     */
-    public static String getAsString(int type) {
-        return getAsString(type, 0);
     }
 
 }

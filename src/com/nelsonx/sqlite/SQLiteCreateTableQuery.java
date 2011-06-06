@@ -3,10 +3,19 @@ package com.nelsonx.sqlite;
 import java.util.ArrayList;
 
 import com.crossdb.sql.Column;
+import com.crossdb.sql.DataTypes;
 import com.crossdb.sql.DefaultCreateTableQuery;
 import com.spaceprogram.sql.mysql.MySQLDataTypes;
 
 public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
+
+	/**
+	 * @param datatype
+	 */
+	public SQLiteCreateTableQuery() {
+		super(new SQLiteDataTypes());
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public String toString() {
@@ -17,7 +26,7 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 			Column df = (Column) (columns.get(j));
 			query1 += df.getName() + " ";
 
-			query1 += SQLiteDataTypes.getAsString(df);
+			query1 += datatype.getAsString(df);
 
 //			if (df.isAutoIncrement() )
 //				// TODO limpiar por aca

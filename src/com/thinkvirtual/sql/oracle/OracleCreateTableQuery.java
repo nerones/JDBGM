@@ -7,6 +7,7 @@ package com.thinkvirtual.sql.oracle;
  */
 
 import com.crossdb.sql.Column;
+import com.crossdb.sql.DataTypes;
 import com.crossdb.sql.DefaultCreateTableQuery;
 import com.crossdb.sql.CreateTableQuery;
 
@@ -16,7 +17,20 @@ import java.sql.Statement;
 
 public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 
-
+	/**
+	 * @param datatype
+	 */
+	public OracleCreateTableQuery() {
+		super(new DataTypes() {
+			
+			@Override
+			public String getAsString(int type, int size) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
+		// TODO Auto-generated constructor stub
+	}
 	Statement stmt;
 
 

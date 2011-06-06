@@ -2,6 +2,8 @@ package com.crossdb.sql;
 
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
+
+import com.spaceprogram.sql.mysql.MySQLDataTypes;
 // TODO review the documentation
 /**
  * Generic column class.
@@ -54,8 +56,8 @@ public class Column {
 	 */
 	private String foreignTable = null;
 	/**
-	 * Clave primaria de la tabla a la que apunta la columna en el caso de que
-	 * se trate de una columna que sea clave foranea
+	 * Nombre de la columna que es clave primaria de la tabla a la que apunta esta columna, 
+	 * en el caso de que se trate de una columna que sea clave foranea
 	 */
 	private String foreignPrimaryKey = null;
 
@@ -89,7 +91,7 @@ public class Column {
 	 */
 	private boolean unique = false;
 	
-	/*
+	/**
 	 * un valor para la columna
 	 */
 	private Object value;
@@ -412,5 +414,38 @@ public class Column {
 		this.foreignTable = foreignTable;
 		foreignPrimaryKey = name;
 	}
+	
+//	public String toString(DataTypes datatype){
+//		String query1 = "";
+//		
+//		query1 += getName() + " ";
+//
+//		query1 += datatype.getAsString(this);
+//		// if (df.isAutoIncrement()) {
+//		// //una tabla de mysql solo puede tener una columna auto_increment
+//		// query1 += " AUTO_INCREMENT";// primary key NOT NULL";
+//		if (isUnique()) query1 += " UNIQUE";
+//		if (isPrimaryKey() && !isCompositePK()){
+//			query1 += " PRIMARY KEY";
+//			if (isAutoIncrement()) query1 += " AUTO_INCREMENT";
+//		} 
+//		if (isNullable() == 0)
+//			query1 += " NOT NULL";
+//		if (getDefaultValue() != null) {
+//			// "datetime")){
+//				// Can't use functions like Now() in defaults in mysql
+//			
+//			if (getType() == java.sql.Types.VARCHAR
+//					|| getType() == java.sql.Types.CHAR) {
+//				query1 += " DEFAULT '" + getDefaultValue() + "' ";
+//			} else if (!(getType() == java.sql.Types.TIMESTAMP)) { 
+//				query1 += " DEFAULT " + getDefaultValue();
+//			}
+//
+//		}
+//		
+//		
+//		return query1;
+//	}
 
 }

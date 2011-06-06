@@ -3,10 +3,19 @@ package com.nelsonx.postgre;
 import java.util.ArrayList;
 
 import com.crossdb.sql.Column;
+import com.crossdb.sql.DataTypes;
 import com.crossdb.sql.DefaultCreateTableQuery;
 import com.spaceprogram.sql.mysql.MySQLDataTypes;
 
 public class PostgreSQLCreateTableQuery extends DefaultCreateTableQuery {
+
+	/**
+	 * @param datatype
+	 */
+	public PostgreSQLCreateTableQuery() {
+		super(new PostgreSQLDataTypes());
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public String toString() {
@@ -17,7 +26,7 @@ public class PostgreSQLCreateTableQuery extends DefaultCreateTableQuery {
 			Column df = (Column) (columns.get(j));
 			query1 += df.getName() + " ";
 
-			query1 += PostgreSQLDataTypes.getAsString(df);
+			query1 += datatype.getAsString(df);
 
 			// if (df.isAutoIncrement()) {
 			// //una tabla de mysql solo puede tener una columna auto_increment

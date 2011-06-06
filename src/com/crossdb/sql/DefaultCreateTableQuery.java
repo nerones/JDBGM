@@ -22,6 +22,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected boolean isTemporary = false;
     protected boolean hasFK = false; 
     protected ArrayList<String[]> foreignKeys = new ArrayList<String[]>();
+    protected DataTypes datatype;
     /**
      * Cuenta la cantidad de columnas que forman la clave Primaria (pk) tener en
      * cuenta que si su valor final es 0 se trata de una pk formada por una única
@@ -36,8 +37,9 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
      */
     protected String compositePrimaryKey = "";
 
-    public DefaultCreateTableQuery() {
+    public DefaultCreateTableQuery(DataTypes datatype) {
         columns = new ArrayList<Column>();
+        this.datatype = datatype;
     }
 
     public void setName(String name) {
@@ -97,6 +99,35 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     
     public void setTemporary(boolean istemporary){
     	isTemporary = istemporary;
+    }
+    
+    public String columnToString(Column column){
+		String query1 = column.getName() + " ";
+
+		query1 += datatype.getAsString(column);
+
+		// if (df.isAutoIncrement()) {
+		// //una tabla de mysql solo puede tener una columna auto_increment
+		// query1 += " AUTO_INCREMENT";// primary key NOT NULL";
+		if (column.isUnique()) query1 += " UNIQUE";
+		if (column.isPrimaryKey() && !isCompositePK()){
+			query1 += " PRIMARY KEY";
+			if (column.isAutoIncrement()) query1 += " AUTO_INCREMENT";
+		} 
+		if (column.isNullable() == 0)
+			query1 += " NOT NULL";
+		if (column.getDefaultValue() != null) {
+			if (column.getType() == java.sql.Types.VARCHAR
+					|| column.getType() == java.sql.Types.CHAR) {
+				query1 += " DEFAULT '" + column.getDefaultValue() + "' ";}
+			else if (!(column.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
+				// Can't use functions like Now() in defaults in mysql
+				query1 += " DEFAULT " + column.getDefaultValue();
+			}
+
+		}
+    	
+    	return query1;
     }
     
     public abstract String toString();

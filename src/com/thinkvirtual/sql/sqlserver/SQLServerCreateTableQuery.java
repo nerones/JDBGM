@@ -16,17 +16,27 @@ package com.thinkvirtual.sql.sqlserver;
 import java.util.*;
 
 import com.crossdb.sql.Column;
+import com.crossdb.sql.DataTypes;
+import com.crossdb.sql.DefaultCreateTableQuery;
 
 import java.sql.SQLException;
 import java.sql.Connection;
 
-public class SQLServerCreateTableQuery implements com.crossdb.sql.CreateTableQuery {
+public class SQLServerCreateTableQuery extends DefaultCreateTableQuery {
 
     String name;
     List columns;
     boolean auto_defaults = true;
 
     public SQLServerCreateTableQuery() {
+    	super(new DataTypes() {
+			
+			@Override
+			public String getAsString(int type, int size) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
         columns = new ArrayList();
     }
 
