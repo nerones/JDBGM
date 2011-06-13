@@ -7,7 +7,12 @@
 package com.crossdb.sql;
 
 import java.util.ArrayList;
-
+/**
+ * Implementación base de {@link AlterTableQuery} de la cual debe heredar cualquier
+ * implementación especifica para algún DBMS.
+ * @author Nelson Efrain A. Cruz
+ *
+ */
 public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 
 	protected String query1;
@@ -16,6 +21,11 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 	protected ArrayList<Column> adds;
 	protected DataTypes datatype;
 
+	/**
+	 * Constructor que toma el conversor de tipos de datos para poder mapear adecuadamente
+	 * los tipos de datos genericos a los de un DBMS en concreto.
+	 * @param datatype un conversor de tipos de datos especifico para algún DBMS.
+	 */
 	public DefaultAlterTableQuery(DataTypes datatype) {
 		query1 = "";
 		adds = new ArrayList<Column>();

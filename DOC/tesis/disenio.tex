@@ -1,4 +1,4 @@
-\chapter{Diseño}
+\chapter{Diseño}\label{cap:disenio}
 
 Acá un resumen del capitulo
 
@@ -457,6 +457,19 @@ La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT=
   | ADD [ COLUMN ] <column def>
 \end{Verbatim}
 
+Además de estas limitaciones hay algunas mas, al agregar nuevas columnas la definición de estas puede tomar cualquiera de las opciones disponibles en la definición de \verb=CREATE TABLE= excepto por las siguientes:
+
+\begin{enumerate}
+
+\item La columna no puede ser clave primaria o \verb=UNIQUE=.
+
+\item La columna no puede tener como valor por defecto \verb=CURRENT_TIME=, \verb=CURRENT_DATE=, \verb=CURRENT_TIMESTAMP=, o una expresión entre paréntesis.
+
+\item Si la columna no puede tener valor nulo se ha de especificar un valor por defecto diferente de \verb=NULL=
+
+\item If foreign key constraints are enabled and a column with a REFERENCES clause is added, the column must have a default value of NULL.
+
+\end{enumerate}
 
 
 

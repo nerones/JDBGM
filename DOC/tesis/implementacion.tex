@@ -52,13 +52,25 @@ En la \figpage{fig:query} tenemos una vista mas completa de como se compone la e
   \label{fig:update}
 \end{figure}
 
-En la \figpage{fig:update} tenemos una descripción de como se componen los otros tipos de sentencias, esta es algo mas elaborada, como antes la primer interfaz, funciona como tipo genérico, en las clases hijas de esta vemos algo parecido al caso de \verb=QueryStatement= salvo por la interfaz \verb=UpdateableQuery= que agrupa comportamiento común a \verb=Updatequery= e \verb=InsertQuery=, también se brinda un comportamiento predeterminado mediante \verb=DefaultUpdateStatement= pero el cual al brindar una implementación base tiene que ser a la fuerza una clase abstracta\footnote{Una clase abstracta se puede ver como una interfaz que fuerza la implementación de su comportamiento} así que las clases que definen el comportamiento especifico de \verb=UpdateQuery= e \verb=InsertQuery= son clases abstractas y no interfaces, pero el resultado es el mismo. A continuación un análisis mas detallado de como se componen las interfaces finales y las clases que las implementan además de una vista a su implementación.
+En la \figpage{fig:update} tenemos una descripción de como se componen los otros tipos de sentencias, esta es algo mas elaborada, como antes la primer interfaz, funciona como tipo genérico, en las clases hijas de esta vemos algo parecido al caso de \verb=QueryStatement= salvo por la interfaz \verb=UpdateableQuery= que agrupa comportamiento común a \verb=Updatequery= e \verb=InsertQuery=, también se brinda un comportamiento predeterminado mediante \verb=DefaultUpdateStatement= pero el cual al brindar una implementación base tiene que ser a la fuerza una clase abstracta\footnote{Una clase abstracta se puede ver como una interfaz que fuerza la implementación de su comportamiento} así que las clases que definen el comportamiento especifico de \verb=UpdateQuery= e \verb=InsertQuery= son clases abstractas y no interfaces, pero el resultado es el mismo. A continuación un análisis mas detallado de como se componen las interfaces finales y las clases que las implementan además de una vista a su implementación y las clases que sirven como componente de las principales.
 
+\subsection{Clases extras}
+Para la adecuada implementación de las clases que representaran a las sentencias seleccionadas en el capitulo \ref{cap:disenio} es necesario crear algunas clases extras que brindan funcionalidades comunes a varias clases o bien funcionalidades extras no propias de duchas clases, a continuación un listado de ellas:
+\begin{enumerate}
+\item \verb=Column=
+\item \verb=DataTypes=
+\item \verb=Formatter=
+\item \verb=WhereClause=
+\item \verb=WhereCondition=
+\item \verb=Join=
+\item \verb=Table=
+\item Clases constructoras de Objetos (\textit{Factories})
 
+\end{enumerate}
 
 
 \subsection{Implementación de AlterTableQuery}
-Todas las interfaces menos \verb=SelectQuery= descienden de \verb=UpdateStatement=, esta es una interfaz que no define comportamiento alguno solo sirve para categorizar las interfaces hijas en cuanto a pertenencia o no a el grupo de las sentencias que no devuelven información de la base de datos si no sobre la base de datos, su implementación a continuación:
+Todas las interfaces menos \verb=SelectQuery= descienden de \verb=UpdateStatement=, esta es una interfaz que no define comportamiento alguno solo sirve para categorizar las interfaces hijas en cuanto a pertenencia o no a el grupo de las sentencias que no devuelven datos de la base de datos si no sobre la base de datos, su implementación a continuación:
 
 \begin{lstlisting}[title=interfaz UpdateStatement]
 package com.crossdb.sql;
@@ -67,6 +79,8 @@ public interface UpdateStatement {
 
 }
 \end{lstlisting}
+
+La interfaz \verb=AlterTable= si ya define el comportamiento para las clases hijas de la misma que servirán para armar las sentencias \verb=ALTER TABLE=, al ser la sintaxis soportada muy limitada la interfaz es bastante simple. Se definen los métodos necesarios para poblar la sentencia de datos y despúes armarla. La función que devuelve la sentencia propiamente dicha sera la típica \verb=toString()= pero redefinida para que devuelva adecuadamente la sentencia SQL adecuada. 
 
 \begin{lstlisting}[title=interfaz AlterTableQuery]
 package com.crossdb.sql;
@@ -77,11 +91,18 @@ public interface AlterTableQuery extends UpdateStatement{
 	
 	void addColumn(Column c);
 	
-	void dropColumn(String c);
+	void newTableName(String table);
 }
 \end{lstlisting}
+Hay algunas cosas a tener presentes por ejemplo el método \verb=addColumn(Column)= utiliza la clase \verb=Column= que representa una columna tal como se definió en \ref{nada}. Además las funciones \verb=addColumn(Column)= y \verb=newTableName(String)= que respectivamente sirven para añadir columnas a la tabla y renombrar la misma son mutuamente excluyentes en el sentido que una sentencia solo puede realizar unas de las acciones previamente nombradas a la vez, por lo que si en un mismo objeto se llamase a las dos funciones solo tendrá efecto la ultima en ser llamada.\\
 
-
+En cuanto a la implementación base \verb=DefaultALterTableQuery= hay poco que comentar pues únicamente agrega los atributos necesarios para implementar las funciones definidas en \verb=AlterTableQuery=, las hijas de esta clase ya serán especificas para un \dd concreto, en nuestra implementación contamos con tres a saber:
+\begin{itemize}
+\item \verb=MySQLAlterTableQuery=
+\item \verb=SQLiteAlterTableQuery=
+\item \verb=PostgreSQLAlterTableQuery=
+\end{itemize}
+Cuya única misión es implementar, o re-implementar si se quiere, el método \verb=toString()= que entregara la sentencia SQL en forma de cadena de texto dentro de un objeto String.
 \subsection{Implementación de DeleteQuery}
 
 
