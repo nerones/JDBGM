@@ -1,0 +1,15 @@
+bin/
+*.aux
+*.idx
+*.lof
+*.log
+*.lot
+*.toc
+ejemplos/
+*.pdf
+*.out
+*.db
+mysql-connector-java-5.1.13-bin.jar
+AsistenciaAlumnos
+doc
+data-sql/
