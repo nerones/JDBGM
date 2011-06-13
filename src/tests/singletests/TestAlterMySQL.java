@@ -51,6 +51,7 @@ public class TestAlterMySQL {
 		at.setTable("tabla");
 		at.addColumn(new Column("columna", java.sql.Types.DECIMAL, false, true));
 		assertEquals("ALTER TABLE tabla ADD columna DECIMAL", at.toString());
+		//sdsdsd
 	}
 
 }
