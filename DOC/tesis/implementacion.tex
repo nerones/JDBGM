@@ -55,15 +55,22 @@ En la \figpage{fig:query} tenemos una vista mas completa de como se compone la e
 En la \figpage{fig:update} tenemos una descripción de como se componen los otros tipos de sentencias, esta es algo mas elaborada, como antes la primer interfaz, funciona como tipo genérico, en las clases hijas de esta vemos algo parecido al caso de \verb=QueryStatement= salvo por la interfaz \verb=UpdateableQuery= que agrupa comportamiento común a \verb=Updatequery= e \verb=InsertQuery=, también se brinda un comportamiento predeterminado mediante \verb=DefaultUpdateStatement= pero el cual al brindar una implementación base tiene que ser a la fuerza una clase abstracta\footnote{Una clase abstracta se puede ver como una interfaz que fuerza la implementación de su comportamiento} así que las clases que definen el comportamiento especifico de \verb=UpdateQuery= e \verb=InsertQuery= son clases abstractas y no interfaces, pero el resultado es el mismo. A continuación un análisis mas detallado de como se componen las interfaces finales y las clases que las implementan además de una vista a su implementación y las clases que sirven como componente de las principales.
 
 \subsection{Clases extras}
-Para la adecuada implementación de las clases que representaran a las sentencias seleccionadas en el capitulo \ref{cap:disenio} es necesario crear algunas clases extras que brindan funcionalidades comunes a varias clases o bien funcionalidades extras no propias de duchas clases, a continuación un listado de ellas:
+Para la adecuada implementación de las clases que representaran a las sentencias seleccionadas en el capitulo \ref{cap:disenio} es necesario crear algunas clases extras que brindan funcionalidades comunes a varias clases o bien funcionalidades extras no propias de duchas clases, a continuación un listado de aquellas mas relevantes:
 \begin{enumerate}
-\item \verb=Column=
-\item \verb=DataTypes=
+\item \verb=Column= Representa una columna de una tabla para ello posee atributos tales como nombre de columna, banderas que indican si es clave primaria o foranea y todos los demás atributos que sirven para definir la columna en una sentencia \verb=CREATE TABLE=. Entre sus métodos no se incluye ninguno que sirva para convertir la columna en una cadena  de texto que sirva para definirla en una sentencia SQL pues a pesar de que la sintaxis de la definición de columna no varia, salvo por los tipos de datos, si varia el uso sobre ella pues la sentencia \verb=ALTER TABLE= también puede definir columnas en su sintaxis pero con ciertas restricciones como se ve en la sección \ref{sec:altertable} y para evitar confusiones cada clase (clase que represente una sentencia) que haga uso de un objeto columna deberá implementar las restricciones sobre la construcción de la sentencia ignorando los atributos que no use. 
+
+\item \verb=DataTypes= Es una clase abstracta que define el comportamiento de las clases que serán encargadas de mapear los tipos de datos genéricos usados en \cc a los tipos de datos concretos para cada motor, la clase define un solo método \verb=getAsString(Column col)= que a partir de un objeto \verb=Column= tomado como parámetro devuelve una cadena de texto que contiene el tipo de datos especifico. Aparte se tiene un método abstracto que tiene por objetivo concreto mapear el tipo de dato genérico con el tipo especifico.  
+
+4932716
 \item \verb=Formatter=
-\item \verb=WhereClause=
-\item \verb=WhereCondition=
-\item \verb=Join=
+
+\item \verb=WhereCondition= Es una clase muy simple que tiene por objetivo la representación de las condiciones $ x = y $ que se usan dentro de una cláusula WHERE. La clase puede contener los nombres de las tablas a comparar, si es que se comparan valores de mas de una tabla, los nombres de los campos a comparar y (de haber) algún valor contra el que comparar.
+
+\item \verb=WhereClause=  Representa una cláusula \verb=WHERE= como por ejemplo \verb|WHERE x = y | , la cláusula where esta formada por diferentes condiciones del tipo \verb=WhereCondition= e incluir cláusulas \verb=WhereClause= anidadas como por ejemplo \verb|WHERE (x = y AND (x=z OR x=b))|. Entonces cada conjunto de paréntesis puede ser visto como una cláusula \verb=WHERE=, y básicamente podemos ver a \verb=WhereClause= como una lista de condiciones y/o cláusulas \verb=WHERE=.
+\item \verb=Join= Básicamente representa las condiciones de \verb=JOIN= para las sentencias \verb=SELECT=.
+
 \item \verb=Table=
+
 \item Clases constructoras de Objetos (\textit{Factories})
 
 \end{enumerate}
