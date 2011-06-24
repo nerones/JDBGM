@@ -19,13 +19,18 @@ public class MySQLAlterTableQuery extends DefaultAlterTableQuery {
 
 	public String toString() {
 		String ret = "ALTER TABLE " + table + " ";
-		for (int i = 0; i < adds.size(); i++) {
-			Column col = (Column) (adds.get(i));
-			ret += "ADD " + columnToString(col);
-			ret += ",";
+		if (isAlterTableName()) {
+			ret += "RENAME TO " + newTableName;
+			return ret;
+		} else {
+			for (int i = 0; i < adds.size(); i++) {
+				Column col = (Column) (adds.get(i));
+				ret += "ADD " + columnToString(col);
+				ret += ",";
+			}
+			ret = ret.substring(0, ret.length() - 1);
+			return ret;
 		}
-		ret = ret.substring(0, ret.length() - 1);
-		return ret;
 	}
 
 }

@@ -38,11 +38,13 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 
 	public void addColumn(Column col) {
 		adds.add(col);
+		newTableName = null;
 
 	}
 
 	public void newTableName(String table){
 		newTableName = table;
+		adds.clear();
 	}
 	
 	public String columnToString(Column column){
@@ -67,5 +69,10 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 	}
 	
 	public abstract String toString();
+	
+	public boolean isAlterTableName(){
+		if ( newTableName != null ) return true;
+		else return false;
+	}
 	
 }
