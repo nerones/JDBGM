@@ -15,6 +15,7 @@ package com.crossdb.sql;
 
 import java.util.List;
 
+@Deprecated
 public class Table {
 
 	String name;

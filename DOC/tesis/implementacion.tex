@@ -54,22 +54,21 @@ En la \figpage{fig:query} tenemos una vista mas completa de como se compone la e
 
 En la \figpage{fig:update} tenemos una descripción de como se componen los otros tipos de sentencias, esta es algo mas elaborada, como antes la primer interfaz, funciona como tipo genérico, en las clases hijas de esta vemos algo parecido al caso de \verb=QueryStatement= salvo por la interfaz \verb=UpdateableQuery= que agrupa comportamiento común a \verb=Updatequery= e \verb=InsertQuery=, también se brinda un comportamiento predeterminado mediante \verb=DefaultUpdateStatement= pero el cual al brindar una implementación base tiene que ser a la fuerza una clase abstracta\footnote{Una clase abstracta se puede ver como una interfaz que fuerza la implementación de su comportamiento} así que las clases que definen el comportamiento especifico de \verb=UpdateQuery= e \verb=InsertQuery= son clases abstractas y no interfaces, pero el resultado es el mismo. A continuación un análisis mas detallado de como se componen las interfaces finales y las clases que las implementan además de una vista a su implementación y las clases que sirven como componente de las principales.
 
-\subsection{Clases extras}
+\subsection{Clases extras}\label{sec:extras}
 Para la adecuada implementación de las clases que representaran a las sentencias seleccionadas en el capitulo \ref{cap:disenio} es necesario crear algunas clases extras que brindan funcionalidades comunes a varias clases o bien funcionalidades extras no propias de duchas clases, a continuación un listado de aquellas mas relevantes:
 \begin{enumerate}
+
 \item \verb=Column= Representa una columna de una tabla para ello posee atributos tales como nombre de columna, banderas que indican si es clave primaria o foranea y todos los demás atributos que sirven para definir la columna en una sentencia \verb=CREATE TABLE=. Entre sus métodos no se incluye ninguno que sirva para convertir la columna en una cadena  de texto que sirva para definirla en una sentencia SQL pues a pesar de que la sintaxis de la definición de columna no varia, salvo por los tipos de datos, si varia el uso sobre ella pues la sentencia \verb=ALTER TABLE= también puede definir columnas en su sintaxis pero con ciertas restricciones como se ve en la sección \ref{sec:altertable} y para evitar confusiones cada clase (clase que represente una sentencia) que haga uso de un objeto columna deberá implementar las restricciones sobre la construcción de la sentencia ignorando los atributos que no use. 
 
 \item \verb=DataTypes= Es una clase abstracta que define el comportamiento de las clases que serán encargadas de mapear los tipos de datos genéricos usados en \cc a los tipos de datos concretos para cada motor, la clase define un solo método \verb=getAsString(Column col)= que a partir de un objeto \verb=Column= tomado como parámetro devuelve una cadena de texto que contiene el tipo de datos especifico. Aparte se tiene un método abstracto que tiene por objetivo concreto mapear el tipo de dato genérico con el tipo especifico.  
 
-4932716
 \item \verb=Formatter=
 
 \item \verb=WhereCondition= Es una clase muy simple que tiene por objetivo la representación de las condiciones $ x = y $ que se usan dentro de una cláusula WHERE. La clase puede contener los nombres de las tablas a comparar, si es que se comparan valores de mas de una tabla, los nombres de los campos a comparar y (de haber) algún valor contra el que comparar.
 
 \item \verb=WhereClause=  Representa una cláusula \verb=WHERE= como por ejemplo \verb|WHERE x = y | , la cláusula where esta formada por diferentes condiciones del tipo \verb=WhereCondition= e incluir cláusulas \verb=WhereClause= anidadas como por ejemplo \verb|WHERE (x = y AND (x=z OR x=b))|. Entonces cada conjunto de paréntesis puede ser visto como una cláusula \verb=WHERE=, y básicamente podemos ver a \verb=WhereClause= como una lista de condiciones y/o cláusulas \verb=WHERE=.
-\item \verb=Join= Básicamente representa las condiciones de \verb=JOIN= para las sentencias \verb=SELECT=.
 
-\item \verb=Table=
+\item \verb=Join= Básicamente representa las condiciones de \verb=JOIN= para las sentencias \verb=SELECT=.
 
 \item Clases constructoras de Objetos (\textit{Factories})
 
@@ -101,7 +100,7 @@ public interface AlterTableQuery extends UpdateStatement{
 	void newTableName(String table);
 }
 \end{lstlisting}
-Hay algunas cosas a tener presentes por ejemplo el método \verb=addColumn(Column)= utiliza la clase \verb=Column= que representa una columna tal como se definió en \ref{nada}. Además las funciones \verb=addColumn(Column)= y \verb=newTableName(String)= que respectivamente sirven para añadir columnas a la tabla y renombrar la misma son mutuamente excluyentes en el sentido que una sentencia solo puede realizar unas de las acciones previamente nombradas a la vez, por lo que si en un mismo objeto se llamase a las dos funciones solo tendrá efecto la ultima en ser llamada.\\
+Hay algunas cosas a tener presentes por ejemplo el método \verb=addColumn(Column)= utiliza la clase \verb=Column= que representa una columna tal como se definió en \ref{sec:extras}. Además las funciones \verb=addColumn(Column)= y \verb=newTableName(String)= que respectivamente sirven para añadir columnas a la tabla y renombrar la misma son mutuamente excluyentes en el sentido que una sentencia solo puede realizar unas de las acciones previamente nombradas a la vez, por lo que si en un mismo objeto se llamase a las dos funciones solo tendrá efecto la ultima en ser llamada.\\
 
 En cuanto a la implementación base \verb=DefaultALterTableQuery= hay poco que comentar pues únicamente agrega los atributos necesarios para implementar las funciones definidas en \verb=AlterTableQuery=, las hijas de esta clase ya serán especificas para un \dd concreto, en nuestra implementación contamos con tres a saber:
 \begin{itemize}
@@ -110,8 +109,51 @@ En cuanto a la implementación base \verb=DefaultALterTableQuery= hay poco que c
 \item \verb=PostgreSQLAlterTableQuery=
 \end{itemize}
 Cuya única misión es implementar, o re-implementar si se quiere, el método \verb=toString()= que entregara la sentencia SQL en forma de cadena de texto dentro de un objeto String.
-\subsection{Implementación de DeleteQuery}
 
+
+
+
+\subsection{Implementación de DeleteQuery}
+La sintaxis soportada para \verb=DeleteQuery= es muy limitada por lo que es posible observar casi todo el código de la Interfaz principal para estas sentencias:
+
+\begin{lstlisting}[title=código interfaz QueryStatement]
+package com.crossdb.sql;
+
+public interface DeleteQuery extends UpdateStatement{
+
+	void setTable(String table);
+
+	void addWhereCondition(String x, int comparison, String y);
+
+	void addWhereCondition(String x, int comparison, int y);
+
+	void addWhereCondition(String x, int comparison, java.util.Date y);
+
+	void addWhereCondition(String and_or, String x, int comparison, String y);
+
+	void addWhereCondition(String and_or, String x, int comparison, int y);
+
+	void addWhereCondition(String and_or, String x, int comparison,
+			java.util.Date y);
+
+	void addWhereCondition(WhereCondition cond);
+
+	void addWhereClause(WhereClause wc);
+
+	void addWhereString(String x, int comparison, String y);
+
+	void addWhereString(String and_or, String x, int comparison, String y);
+
+	void addWhereNotNull(String col);
+
+	void addWhereNotNull(String and_or, String col);
+
+	void addWhereIsNull(String col);
+
+	void addWhereIsNull(String and_or, String col);
+
+}
+\end{lstlisting}
 
 
 

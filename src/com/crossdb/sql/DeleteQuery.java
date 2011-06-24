@@ -48,20 +48,4 @@ public interface DeleteQuery extends UpdateStatement{
 
 	void addWhereIsNull(String and_or, String col);
 
-	/**
-	 * Returns the SQL statement.
-	 */
-	//String toString();
-
-	/**
-	 * Returns the number of rows affected
-	 */
-	// int execute(Connection conn)throws SQLException ;
-	/**
-	 * Uses stmt to execute the query. This is so you can keep reusing the same
-	 * statement. Be sure to use new statements if you want more than one
-	 * resultset open at the same time.
-	 */
-	// int execute(java.sql.Statement stmt) throws SQLException ;
-
 }
