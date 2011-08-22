@@ -70,7 +70,8 @@ public class DefaultUpdateableQuery implements UpdateableQuery {
 	public void addColumn(Column column) {
 		columns.add(column);
 	}
-
+	
+	
 	public void addColumnNoAlter(String column, String value) {
 		Column c = new Column(column, value);
 		c.setNoAlter(true);
