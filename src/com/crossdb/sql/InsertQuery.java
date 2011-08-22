@@ -1,7 +1,7 @@
 package com.crossdb.sql;
 
 /**
- * Esta clase representa una sentencia del tipo {@code INSERT} 
+ * Esta clase representa una sentencia del tipo {@code INSERT} en ella se puede
  * 
  * <p>
  * This represents an SQL Insert query.
