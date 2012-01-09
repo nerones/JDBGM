@@ -2,6 +2,14 @@ package com.crossdb.sql;
 
 /**
  * Esta clase representa una sentencia del tipo {@code INSERT} en ella se puede
+ * elegir que los datos provengan de:
+ * 	*Valores por defecto
+ * 	*Valores ingresados explicitamente
+ * 	*Valores provenientes de una consulta
+ * Pero solo se puede elegir una de estas tres opciones, de llegarse a llamar mas
+ * de una vez a cualquiera de los metodos {@link #setFromDefault(boolean)}, {@link #setFromValues(boolean)} y
+ * {@link #setSelectStmt(SelectQuery)} solo tendra efecto el ultimo de los que fuera
+ * llamado.
  * 
  * <p>
  * This represents an SQL Insert query.
