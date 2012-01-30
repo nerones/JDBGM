@@ -1,9 +1,5 @@
 package com.crossdb.sql;
 
-
-
-// import java.util.List;
-// import java.sql.*;
 /**
  * Description: There are some oddities with this class that are here to support
  * all databases. The main one is that you can specify a sequence table for dbs

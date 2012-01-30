@@ -10,7 +10,9 @@ import com.crossdb.sql.optimization.OptimizationHint;
  * quieren devolver todas las columnas resultantes, o sea SELECT * FROM...
  * <p>
  * Además provee una interfaz para agregar los comandos correspondientes a la
- * sentencia SQL todo: move all the addWhere functions to WhereClause and
+ * sentencia SQL 
+ * 
+ * todo: move all the addWhere functions to WhereClause and
  * deprecate them in this so that they can all be used in any query like delete
  * and update.
  * <p>
