@@ -5,19 +5,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
- * For queries that modify the contents of a table such as: InsertQuery and UpdateQuery
- *
- * In this way, you can use the two almost interchangeably.
- *
- * setTable(), addColumn
- *
+ * Esta interfaz definirá el comportamiento de las consultas que modificaran el contenido
+ * de tablas ya existentes como ser {@link InsertQuery} y {@link UpdateQuery}. Los métodos
+ * comunes que definirá está interfaz son {@link #setTable(String)} y {@link #addColumn(Column)},
+ * esta ultima función es polimorfica y acepta distintos tipos de argumentos en pos de un
+ * agregado de columnas mas sencillo.
+ * 
  * @author Travis Reeder - travis@spaceprogram.com
  * @version 0.1
- * Date: Aug 20, 2002
- * Time: 1:01:05 PM
  * 
  */
 public interface UpdateableQuery extends UpdateStatement{
+	
+	void setTable(String table);
 
 	void addColumn(String column, String value);
 
@@ -37,7 +37,8 @@ public interface UpdateableQuery extends UpdateStatement{
 	public void addColumn(Column column);
 
 	/**
-	 * Add the list of columns to the current list in the query.
+	 * Agrega una lista de columnas a la consulta actual en ves de agregar de a una columna
+	 * por ves.
 	 */
 	void appendColumns(ArrayList<Column> columns);
 

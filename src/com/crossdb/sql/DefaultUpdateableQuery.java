@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @version 0.1 Date: Sep 4, 2002 Time: 12:21:44 AM
  * 
  */
-public class DefaultUpdateableQuery implements UpdateableQuery {
+public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 	protected ArrayList<Column> columns; // SELECT columns
 
 	// protected List values;
