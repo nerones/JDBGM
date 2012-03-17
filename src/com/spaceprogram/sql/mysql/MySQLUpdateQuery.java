@@ -32,7 +32,7 @@ public class MySQLUpdateQuery extends DefaultUpdateQuery {
 		for (int m = 0; m < columns.size(); m++) {
 
 			Column col = (columns.get(m));
-			Object val = col.getValue();  //values.get(m);
+			Object val = col.getColumnValue();  //values.get(m);
 			String in_val;
 			if (val == null) {
 				in_val = null;

@@ -17,7 +17,7 @@ public class SQLiteUpdateQuery extends DefaultUpdateQuery {
 		for (int m = 0; m < columns.size(); m++) {
 
 			Column col = (columns.get(m));
-			Object val = col.getValue();
+			Object val = col.getColumnValue();
 			String in_val;
 			if (val == null) {
 				in_val = null;

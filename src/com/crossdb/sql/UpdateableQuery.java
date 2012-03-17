@@ -10,13 +10,16 @@ import java.util.ArrayList;
  * comunes que definirá está interfaz son {@link #setTable(String)} y {@link #addColumn(Column)},
  * esta ultima función es polimorfica y acepta distintos tipos de argumentos en pos de un
  * agregado de columnas mas sencillo.
+ * <p>
+ * Hay que tener en cuenta que la función addColumn()...
  * 
  * @author Travis Reeder - travis@spaceprogram.com
- * @version 0.1
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
+ * @version 0.2
  * 
  */
 public interface UpdateableQuery extends UpdateStatement{
-	
+	// TODO revisar la docuemtnación de las funciones addColumn
 	void setTable(String table);
 
 	void addColumn(String column, String value);
@@ -43,7 +46,7 @@ public interface UpdateableQuery extends UpdateStatement{
 	void appendColumns(ArrayList<Column> columns);
 
 	/**
-	 * 
+	 * Obtiene un {@link ArrayList} que contiene las columnas que seran modificadas por 
 	 * @return List of ColumnValues
 	 */
 	ArrayList<Column> getColumns();
@@ -55,10 +58,17 @@ public interface UpdateableQuery extends UpdateStatement{
 	 * addColumn(int column, java.util.Date value); void addColumn(int column,
 	 * boolean value);
 	 */
+	// TODO sería buena idea enfatizar algunas palabras con negritas
 	/**
 	 * This one is used for passing in a string value and not altering it on the
 	 * insert. ie: Not putting single quotes around it or escaping anything.
 	 * Just goes in exactly as it is in value.
+	 * <p>
+	 * Esta función es usada para pasar cadenas de texto que no serán alteradas cuando
+	 * se este armando la correspondiente consulta. Puede contener cualquier valor y
+	 * este sera pasado al DBMS sin ninguna alteración. Hay que tener cuidado ya que
+	 * por el momento no se toma ninguna contramedida en caso de que se este inyectando
+	 * código malicioso.
 	 */
 	void addColumnNoAlter(String column, String value);
 }

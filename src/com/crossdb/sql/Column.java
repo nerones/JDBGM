@@ -2,11 +2,9 @@ package com.crossdb.sql;
 
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
-
-import com.spaceprogram.sql.mysql.MySQLDataTypes;
 // TODO review the documentation
 /**
- * Generic column class.
+ * Clase que representa una columna  de una tabla en una base de datos relacional.
  * 
  * Note: This was taken from DataField.
  * 
@@ -15,8 +13,6 @@ import com.spaceprogram.sql.mysql.MySQLDataTypes;
  * </p>
  * 
  * @author Travis Reeder - travis@spaceprogram.com
- * 
- * @version 0.1
  * @author Jorge P&eacute;rez Burgos
  * @author jorge.perez@adaptia.net - http://www.adaptia.net (C) 2003
  * @author Nelson Efrain A. Cruz
@@ -24,7 +20,7 @@ import com.spaceprogram.sql.mysql.MySQLDataTypes;
  */
 public class Column {
 
-	private String name = null;
+	private String columnName = null;
 	/**
 	 * Indica si la columna acepta valores nulos.
 	 */
@@ -38,14 +34,15 @@ public class Column {
 	/**
 	 * Tamaño por defecto para las cadenas (CHAR, VARCHAR)
 	 */
-	private int size = 50; // default 50
+	private int varcharSize = 50; // default 50
+	
 	private int columnIndex = 0;
 	/**
-	 * Indica si es clave primaria o no.
+	 * Indica si la columna es clave primaria o no.
 	 */
 	private boolean isPrimaryKey = false;
 	/**
-	 * Indica si es clave foranea o no.
+	 * Indica si la columna  es clave foranea o no.
 	 */
 	private boolean isForeignKey = false;
 	// If a column is foreign key we need the the foreign table and the foreign
@@ -94,8 +91,10 @@ public class Column {
 	/**
 	 * un valor para la columna
 	 */
-	private Object value;
-	
+	private Object columnValue;
+	/**
+	 * Sirve para identificar si el valor que toma la ciolumna no ha de ser alterado
+	 */
 	private boolean noAlter;
 	
 	
@@ -108,26 +107,8 @@ public class Column {
 	 * @param columnValue - el valor de la columna
 	 */
 	public Column(String columnName, Object columnValue) {
-		name = columnName;
-		value = columnValue;
-	}
-
-	public Object getValue() {
-		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
-	}
-	
-	
-
-	public boolean isNoAlter() {
-		return noAlter;
-	}
-
-	public void setNoAlter(boolean noAlter) {
-		this.noAlter = noAlter;
+		this.columnName = columnName;
+		this.columnValue = columnValue;
 	}
 
 	/*
@@ -138,13 +119,14 @@ public class Column {
 	}
 
 	/**
-	 * Crea una columna con el nombre indicado en name
+	 * Crea una columna con el nombre indicado en name y los demas valores a sus
+	 * valores por defecto.
 	 * 
 	 * @param name
 	 *            - el nombre de la columna.
 	 */
 	public Column(String name) {
-		this.name = name;
+		this.columnName = name;
 	}
 
 	/**
@@ -158,7 +140,7 @@ public class Column {
 	 *            {@link java.sql.Types}
 	 */
 	public Column(String name, int type) {
-		this.name = name;
+		this.columnName = name;
 		this.type = type;
 	}
 
@@ -177,10 +159,28 @@ public class Column {
 	 *            si tiene activa la opción de autoincrementar
 	 */
 	public Column(String name, int type, boolean isPK, boolean isAutoIncr) {
-		this.name = name;
+		this.columnName = name;
 		this.type = type;
 		isPrimaryKey = isPK;
 		isAutoIncrement = isAutoIncr;
+	}
+	
+	public Object getColumnValue() {
+		return columnValue;
+	}
+
+	public void setColumnValue(Object value) {
+		this.columnValue = value;
+	}
+	
+	
+
+	public boolean isNoAlter() {
+		return noAlter;
+	}
+
+	public void setNoAlter(boolean noAlter) {
+		this.noAlter = noAlter;
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class Column {
 	 * @return el nombre de la columna
 	 */
 	public String getName() {
-		return name;
+		return columnName;
 	}
 
 	/**
@@ -280,19 +280,21 @@ public class Column {
 		this.unique = unique;
 	}
 
+	
+	public int getDefaultSize() {
+		return varcharSize;
+	}
+
 	/**
-	 * For varchars size
+	 * Pone un valor por defecto para los tipos de datos que lo soporten.
+	 * @param s
 	 */
-	public int getSize() {
-		return size;
+	public void setDefaultSize(int s) {
+		varcharSize = s;
 	}
 
-	public void setSize(int s) {
-		size = s;
-	}
-
-	public void setName(String n) {
-		name = n;
+	public void setColumnName(String n) {
+		columnName = n;
 	}
 
 	public void setPrimaryKey(boolean b) {
@@ -327,12 +329,13 @@ public class Column {
 	 * Especifica el tipo de datos de la columna y de ser necesario el tamaño para
 	 * tipos de dato como CHAR, de no ser necesario especificar un tamaño para el tipo
 	 * ha de usarse {@link #setType(int)}.
+	 * 
 	 * @param t - el tipo de dato tomado de {@link Types}
 	 * @param size - el tamaño del tipo
 	 */
 	public void setType(int t, int size) {
 		type = t;
-		this.size = size;
+		this.varcharSize = size;
 	}
 
 	public void setDefaultValue(String s) {
@@ -354,22 +357,27 @@ public class Column {
 	}
 
 	/**
-	 * Sets the foreignPrimaryKey.
+	 * Agrega el nombre de la clave primaria de la tabla foranea.
 	 * 
 	 * @param foreignPrimaryKey
 	 *            The foreignPrimaryKey to set
+	 * @see #setForeignPrimaryKey(String)
 	 */
-	public void setForeignPrimaryKey(String foreignPrimaryKey) {
+	private void setForeignPrimaryKey(String foreignPrimaryKey) {
 		this.foreignPrimaryKey = foreignPrimaryKey;
 	}
 
 	/**
-	 * Sets the foreignTable.
+	 * 
+	 * Agrega el nombre de la tabla a la que apunta la clave foranea de ser la columna
+	 * una clave foranea. Tener en cuenta que se debe poner en verdadero {@link #isForeignKey} y este
+	 * metodo no lo hace por eso
+	 * se debe usar algunos de los métodos {@link #setForeignKey(String)} o {@link #setForeignKey(String, String)}
 	 * 
 	 * @param foreignTable
 	 *            The foreignTable to set
 	 */
-	public void setForeignTable(String foreignTable) {
+	private void setForeignTable(String foreignTable) {
 		this.foreignTable = foreignTable;
 	}
 
@@ -390,8 +398,8 @@ public class Column {
 	 */
 	public void setForeignKey(String foreignTable, String foreignPK) {
 		isForeignKey = true;
-		this.foreignTable = foreignTable;
-		foreignPrimaryKey = foreignPK;
+		setForeignTable(foreignTable);
+		setForeignPrimaryKey(foreignPK);
 	}
 
 	/**
@@ -411,8 +419,8 @@ public class Column {
 	 */
 	public void setForeignKey(String foreignTable) {
 		isForeignKey = true;
-		this.foreignTable = foreignTable;
-		foreignPrimaryKey = name;
+		setForeignTable(foreignTable);
+		setForeignPrimaryKey(columnName);
 	}
 	
 //	public String toString(DataTypes datatype){

@@ -1,11 +1,10 @@
 package com.crossdb.sql;
 
 /**
- * Se puede configurar la sentencia INSERT con
  * 
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz 2011 Date: Jun 27, 2002 Time: 8:55:57 PM
- * 
+ * @version 0.2
  */
 public abstract class DefaultInsertQuery extends InsertQuery {
 	// contemplado casi todos los casos exepto por un par de opciones de sqlite

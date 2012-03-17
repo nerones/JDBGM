@@ -26,7 +26,7 @@ public class SQLServerInsertQuery extends DefaultInsertQuery {
                 // ignore it, uses identity in database
 
             }else{
-                Object val = col.getValue(); //values.get(m);
+                Object val = col.getColumnValue(); //values.get(m);
                 String in_val;
                 if(val == null){
                     in_val = null;

@@ -12,8 +12,6 @@ package com.crossdb.sql;
  * llamado.
  * 
  * <p>
- * This represents an SQL Insert query.
- * <p>
  * Note: You should ALWAYS specify an auto_increment column using
  * addAutoIncrementColumn() if you are using one of course.
  * <p>

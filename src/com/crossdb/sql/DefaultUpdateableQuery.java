@@ -3,18 +3,18 @@ package com.crossdb.sql;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+// TODO: Would be nice to be able to setup a query like this then just call doUpdate or doInsert to do either? Or getInsertQuery or getUpdateQuery from UpdateableQuery
+// TODO: Revisar si son innecesarias las interfaces y quedarse solo con las clases abstractas.
 /**
- * Queries that you set column values, Insert and Update, should extend this
- * 
- * TODO: Would be nice to be able to setup a query like this then just call
- * doUpdate or doInsert to do either? Or getInsertQuery or getUpdateQuery from
- * UpdateableQuery
+ * Implementación base, ninguna otra clase debiera implementar {@link UpdateableQuery}
  * 
  * @author Travis Reeder - travis@spaceprogram.com
- * @version 0.1 Date: Sep 4, 2002 Time: 12:21:44 AM
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
+ * @version 0.2
  * 
  */
 public abstract class DefaultUpdateableQuery implements UpdateableQuery {
+	
 	protected ArrayList<Column> columns; // SELECT columns
 
 	// protected List values;
@@ -82,18 +82,12 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 
 	}
 
-	/**
-	 * Add the list of columns to the current list in the query.
-	 */
+
 	public void appendColumns(ArrayList<Column> columns) {
 		this.columns.addAll(columns);
 
 	}
 
-	/**
-	 * 
-	 * @return List of Column objects
-	 */
 	public ArrayList<Column> getColumns() {
 		return columns;
 	}
