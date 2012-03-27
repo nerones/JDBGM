@@ -1,0 +1,596 @@
+\chapter{Especificación}\label{cap:especificacion}
+
+Acá un resumen del capitulo
+
+
+
+
+
+
+\section{Bases}
+Para diseñar JDBGM se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
+DAO esta pensada para encapsular el acceso a cualquier fuente de datos, es decir los datos podrían estar almacenados en un archivo de texto plano, una base de datos relacional, una base de datos no relacional o un archivo XML, pero en este caso se trabaja solo sobre motores de base de dato relacionales.  
+
+
+
+
+
+
+\section{JDBC y su envoltorio}
+y otro
+
+
+
+
+
+
+\section{Abstracción de SQL}
+Uno de los mayores problemas al intentar portar código SQL entre diferentes motores de bases de datos reside en que cada motor crea su propio dialecto de SQL. Las diferencias entre estos dialectos puede ser mínima pero aun así esto provoca que a una aplicación a la que se le quiera cambiar el motor de base de datos que usa actualmente se le deban revisar todas las sentencias SQL usadas.\\
+Así que para brindar una abstracción sobre la base de datos es necesario que las consultas SQL (sin hacer diferencias sobre DDL \footnote{Data Definition Lenguaje} y DML \footnote{Data Manipulation Lenguaje}) no sean manejadas de forma explicita es decir que no seria conveniente, por ejemplo, manejar las consultas como cadenas de caracteres ya que esta es una estructura estática dependiente del DBMS que se este usando. Por lo que para poder manejar adecuadamente las consultas se considero usar una estructura de datos un poco mas compleja que contenga la consulta de manera desglosada. Es decir que en ves de tener una sentencia como la siguiente:
+\begin{Verbatim}
+  nombre_comando [parametro] opcion1 [parametro] opcion2 [parametro]; 
+\end{Verbatim}
+
+Se tendría una estructura de datos como la siguiente:
+
+%\lstset{frame=single, rulesepcolor=\color{black}, backgroundcolor=\color{lightgray}, language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize}
+\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
+class Sentencia{
+	nombre_comando;
+	opcion1;
+	opcion2;
+	devolver_sentencia;
+}
+\end{lstlisting}
+
+Hay que tener en cuenta que el tipo de datos que se quiere manejar aparte de contener los parámetros de la sentencia debe brindar métodos para armar la sentencia, asignarles valores a los atributos y ser capaz de definir el comportamiento especifico que pueda tener la sentencia. Cuando se dice que el tipo de dato, mas en concreto la clase, que represente la sentencia sea capaz de armar la sentencia se refiere a que sea capaz de devolver la cadena de caracteres que represente una sentencia SQL valida para algún DBMS.\\
+En el caso especifico que se esta tratando se cubrirá un subconjunto de todas las sentencias posibles que define SQL. Este conjunto estará formado por:
+\begin{enumerate}
+\item CREATE TABLE - Permite crear tablas 
+\item ALTER TABLE - Modifica la estructura de una tablas \footnote{Solo se da un soporte básico para esta sentencia}
+\item UPDATE - Modifica las filas de una tabla 
+\item INSERT - Inserta nuevas filas a una tabla
+\item DELETE - Elimina columnas de una tabla
+\item SELECT - Realiza consulta sobre las tablas
+\end{enumerate}
+
+Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado tenemos a las sentencias que devuelven datos mas allá de una información que indique el éxito o fracaso de la interpretación de la sentencia en el DBMS o sea sentencias como SELECT, por otro lado tenemos aquellas que solo devuelven información del exito o fracaso de la interpretación de la sentencia.
+
+
+
+
+\subsection{Tipos de datos}
+Las primeras diferencias las encontramos en las definiciones de tipos de datos que usan los \dd, de estas la mas notoria es el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo declarado de de dato en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento (\textit{storage clases}) que son un poco mas genéricas que los tipos de datos definidos usualmente, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER= que maneja \m.\\
+
+ En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s).\\
+ 
+\cc debe proveer una interfaz única en la que se establezcan los tipos de datos disponibles para usar, estos tipos de datos deben ser elegidos en base a las compatibilidades entre los diferentes motores que soporta para lograr un uso genérico sobre cualquiera de los motores, en principio se podrían elegir todos los tipos de datos definidos en los motores, uniendo a aquellos que sean equivalentes en un solo tipo y dejando que después \cc se encargue de mapear los datos a los soportados por un motor en concreto, recordando que algunos de los datos declarados no son directamente soportados por todos los \dd. Pero esto podría acarrear confusiones pues veamos, el tipo de dato entero mas chico (el que ocupa menos espacio en disco para representarse) en \m es \verb=TINYINT= que ocupa solo 1 byte, en cambio en \p el mas chico es \verb=SMALLINT= que ocupa 2 bytes entonces en el caso de que en los tipos de datos especificados para \cc se encuentren estos dos no habría problemas al usarlos pues si se llegara a especificar una columna con tipo de dato \verb=TINYINT= mientras se trabaja sobre una base de datos con \p no habría mas que mapear internamente el tipo de dato a \verb=SMALLINT=, pero en esta situación el programador podría no enterarse de que en realidad la columna que el esta usando ocupa 2 bytes por dato lo que en casos en que el espacio en disco duro sea un tema sensible podría llevar a serias confusiones, entonces lo mejor es que en la especificación de \cc solo se incluyan los tipos que no lleven a este tipo de confusiones. A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero mediante un cuadro comparativo:
+        
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s      & \m        & \p \\ 
+\hline         & TINYINT   &  \\ 
+               & SMALLINT  & SMALLINT \\ 
+       INTEGER & MEDIUMINT &  \\
+               & INT       & INTEGER \\
+               & BIGINT    & BIGINT \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos enteros}
+\end{table}
+
+Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de contener todos los tipos de datos declarados en los otros dos motores, en \m se definen mas tipos de datos enteros que  difieren únicamente en el espacio que utiliza para almacenarse en disco, el mas chico usa  solo 1 Byte para almacenarse, mientras que el mas grande usa 8 Bytes. En \s el dato es almacenado en disco con la menor cantidad posible de Bytes pero tan pronto como es cargado en memoria es convertido a un entero de 8 bytes con signo\footnote{Cuando al representarse un numero se usa el signo ($\pm$) se achica el rango de numero que se puede representar}. Lo que nos  interesa a nosotros es elegir un subconjunto de estos tipos que sean aplicables a los tres motores, en este caso es \p el que define menos tipos de datos, teniendo en cuenta que \s presenta un tipo de dato que envuelve a todos los demás, por lo que tomaremos esos tipos como los elegidos para \jj
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s   & \m               & \p \\  
+\hline      & FLOAT            &  \\ 
+       REAL & REAL             & REAL \\
+            & DOUBLE PRECISION & DOUBLE PRECISION \\
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos reales aproximados}
+\end{table}
+
+En el caso de los tipos de números reales tenemos básicamente dos clases de tipos, los que guardan los datos de forma exacta y otros no exactos que se guardan en el formato punto flotante. Para el caso de los tipos de datos con punto flotante tomare los datos definidos para \p como los elegidos para \cc, el tipo \verb=FLOAT= definido en \m es similar a \verb=REAL=, y nuevamente el tipo \verb=REAL= de \s es capaz de contener los otros tipos. 
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\  
+\hline  & NUMERIC & NUMERIC \\
+  & DECIMAL & DECIMAL \\
+NUMERIC  & DATETIME &  \\
+  & TIMESTAMP & TIMESTAMP \\
+  & DATE & DATE \\
+  & TIME & TIME \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos reales exactos y fechas}
+\end{table}
+
+Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora según el formato que estemos utilizando.   
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
+\hline  & CHAR(n) & CHAR(n) \\  
+    & VARCHAR(n) & VARCHAR(n) \\ 
+  TEXT   & TINYTEXT &  \\  
+    & TEXT & TEXT \\  
+    & MEDIUMTEXT &  \\  
+    & LONGTEXT &  \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos cadenas de texto}
+\end{table}
+
+Para el caso de los tipos de datos tenemos como siempre \s con una clase de almacenamiento bastante genérica que cubre todos los tipos de datos definidos en los demás motores. La diferencia que encontramos con los otros dos motores es que el tipo \verb=TEXT= que en \m tiene 4 variantes que varían en el limite de almacenamiento, siendo el ultimo sin limite (\verb=LONGTEXT=) en cambio en \p existe solo \verb=TEXT= y que es para almacenamiento de texto sin limite, así que como antes tomaremos los tipos de datos que define \p como los elegidos para \cc. 
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
+\hline  & BINARY &  \\  
+ & VARBINARY &  \\ 
+ BLOB & TINYBLOB & bytea \\ 
+ & BLOB &  \\ 
+ & MEDIUMBLOB &  \\
+& LONGBLOB &  \\ 
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de los tipos de datos binarios}
+\end{table}
+
+En el caso de los tipos de datos binarios tenemos.
+Faltan los tipos monetarios, booleanos
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline \s & \m & \p \\ 
+\hline 1 o 0 & 1 o 0 & BOOLEAN \\  
+\hline NUMERIC & NUMERIC & MONETARY \\  
+&  &  \\  
+\hline 
+\end{tabular} 
+\end{center}
+\caption{Comparación de tipos de datos varios}
+\end{table}
+
+\subsection{Funciones}
+
+
+
+
+
+\subsection{Diseño de CREATE TABLE}
+Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
+\begin{Verbatim}
+  CREATE TABLE <table name> (
+  { <column name> [ <column type> ][ PRYMARY KEY ][ REFERENCES <foreign table> ] }...
+  )
+  [ PRIMARY KEY <indexed columns> ]
+  [ FOREIGN KEY <columns and referenced table> ]
+\end{Verbatim}
+Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definicion de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar\verb= CREATE TABLE= tal como la entiende \s\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m y \p:
+
+\begin{Verbatim}[frame=leftline, framesep=3mm]
+  CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
+  [ IF NOT EXISTS ] <table contents source>
+
+  <table contents source> ::=
+    <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+  | AS <select stmt>
+\end{Verbatim}
+
+Los parámetros\verb= TEMPORARY= y\verb= TEMP= se usan indistintamente para crear una tabla temporaria en \s, lo cual es soportados por los 3 DBMS con la salvedad que en \m solo se acepta la palabra reservada\verb= TEMPORARY=. El parámetro\verb= IF NOT EXISTS= indica que de existir una tabla del mismo nombre la sentencia \verb= CREATE TABLE= no tiene efecto sobre la base de datos, este parámetro no es soportado por \p por lo que sera omitido. Por ultimo hay que tener en cuenta que al ser \s un motor "serverless" siempre se esta trabajando o sobre la base de dato principal o sobre una temporaria por lo que este para el parámetro\verb= <database name>= solo acepta\verb= "main"= ó\verb= "temp"= de modo que en un principio el nombre de la base de dato no se tomara en cuenta y cualquier tabla que se cree sera en la base de dato actual.
+
+\begin{Verbatim}
+  <table element> ::=
+    <column definition>
+  | <table constraint definition>
+
+  <column definition> ::=
+  <column name> [ <data type> | <domain name> ]
+  [ DEFAULT <default option> ]
+  [ <column constraint definition>... ]
+  [ COLLATE <colation name> ]
+
+  <default option>::=
+    <signed number>
+  | <literal value>
+  | <left paren> <expr> <left paren>
+  
+  <column constraint definition> ::=
+  [ CONSTRAINT <name> ] <column constraint>
+
+  <column constraint> ::=
+    NOT NULL <conflict cause>
+  | UNIQUE <conflict cause>
+  | PRIMARY KEY [ ASC | DESC ] <conflict cause> [ AUTOINCREMENT ]
+  | <references specification>
+  | CHECK <left paren> <expr> <right paren>
+\end{Verbatim}
+
+La siguiente sección a estudiar es la definición de columnas y restricciones de columna que se diferencian de las restricciones de tabla en que las primeras se definen junta a la definición de columna y solo se pueden hacer sobre una única columna, en cambio las restricciones de tabla se hacen después de las definiciones de columnas y estas pueden referirse a un grupo de columnas.\\
+
+Como primer diferencia veremos las tipos de datos tienen diferentes nombres y significados, pero esto sera tratado mas adelante\footnote{referenciar a alguna parte de la tesis}. La clausula\verb= DEFAULT= en este caso esta limitada por \m que solo acepta valores constantes, es decir no se podria usar funciones como \verb= NOW()= con la excepción de que se puede poner\verb= CURRENT_TIMESTAMP= como\verb= DEFAULT= para una columna del tipo\verb= TIMESTAMP=.\\
+
+El parámetro\verb= COLLATE= también presenta diferencias, pero es en este caso es \p el que limita ya que no acepta\verb= COLLATE= en la definición de columna por lo que no sera adoptada en la especificación de \cc. En \p se puede especificar el ``collate'' a usar sobre todas las tablas en la creación de la base de datos. \verb= UNIQUE= y \verb= PRIMARY KEY= como restricción de columna no acepta ningún modificador en \m, por lo tanto se obviara el modificador\verb= <conflict cause>= de\s y otros que acepta \p. El parametro \verb= NOT NULL= tampoco acepta ningún modificador en \m, su contra parte el parámetro\verb= NULL= puede ser omitido ya que de no agregarse se toma por defecto que la columna puede aceptar valores nulos. Por ultimo hay que señalar que \m si bien implementa\verb= CHEK <expre>= este no es reconocido en la definición de columna.\\
+
+En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m una ultima diferencia la podemos ver en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando.  
+
+\begin{Verbatim}
+  <table constraint definition> ::=
+  [ CONSTRAINT <name> ] <table constraint>
+
+  <table constraint> ::=
+    [ UNIQUE | PRIMARY KEY ] <left paren> <unique column list> <right paren> <conflict cause>
+  | <referential constraint definition>
+  | CHECK <left paren> <expr> <right paren>
+
+  <unique column list> ::= <column name list>
+
+  <referential constraint definition> ::=
+  FOREIGN KEY <left paren> <referencing columns> <right paren>
+  <references specification>
+\end{Verbatim}
+
+De las restricciones de tabla la única a la que no se le podrá especificar un nombre de restricción con \verb=CONSTRAINT <name>= es la restricción \verb=CHECK (expr)=. Los parámetros \verb=UNIQUE= y \verb=PRIMARY KEY= que se especifican como restricción de tabla solo comparten en común entre la especificación de los 3 DBMS que encierran entre paréntesis a las columnas que se indican con dicha restricción. Resta por analizar la especificación de clave foránea (\verb=FK=):    
+
+\begin{Verbatim}
+  <references specification> ::=
+  REFERENCES <referenced table and columns>
+  [ MATCH { FULL | PARTIAL | SIMPLE } ] [ <referential triggered action> ]
+  [ <constraint characteristics> ]
+
+  <referenced table and columns> ::=
+  <table name> [ <left paren> <reference column list> <right paren> ]
+
+  <reference column list> ::= <column name list>
+
+  <referential triggered action> ::=
+    <update rule> [ <delete rule> ]
+  | <delete rule> [ <update rule> ]
+
+  <update rule> ::= ON UPDATE <referential action>
+
+  <delete rule> ::= ON DELETE <referential action>
+
+  <referential action> ::=
+    CASCADE
+  | SET NULL
+  | SET DEFAULT
+  | RESTRICT
+  | NO ACTION
+
+   <constraint characteristics> ::=
+  [ NOT ] DEFERRABLE [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
+\end{Verbatim}
+Los parámetros \verb=MATCH { FULL | PARTIAL | SIMPLE }= son reconocidos en los 3 DBMS, pero en \s no tienen ningún efecto, es decir que estos se pueden especificar pero siempre se tendra que la \verb=FK= se procesara con \verb=MATCH SIMPLE=, con lo que de momento sera parte de la especificación pero hay que tener siempre en cuenta que \s lo procesara de manera diferente. Por ultimo quedan dos diferencias, la primera es que la opción \verb=SET DEFAULT= de \verb=<referential action>= no es soportada por \m; segundo que \verb=<constraint characteristics>= no es soportada por \m.\\
+
+%------------------------TODO-----------------------------------
+%revisar lo de SET DEFAULT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+%----------------------------Especificación de CREATE TABLE------------
+
+Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para el proyecto\\
+
+\begin{Verbatim}[frame=single, label=sintaxis para CREATE TABLE]
+  CREATE [ TEMPORARY ] TABLE <database name> <dot> <table name> 
+  <table contents source>
+
+  <table contents source> ::=
+    <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+  | AS <select stmt>
+  
+  <table element> ::=
+    <column definition>
+  | <table constraint definition>
+
+  <column definition> ::=
+  <column name> [ <data type> | <domain name> ]
+  [ DEFAULT <constant> ]
+  [ <column constraint>... ]
+  
+  <column constraint> ::=
+    NOT NULL
+  | UNIQUE
+  | PRIMARY KEY
+  | <references specification>
+
+  <table constraint definition> ::=
+  [ CONSTRAINT <name> ] <table constraint>
+
+  <table constraint> ::=
+    [ UNIQUE | PRIMARY KEY ] <left paren> <unique column list> <right paren>
+  | <referential constraint definition>
+  | CHECK <left paren> <expr> <right paren>
+
+  <unique column list> ::= <column name list>
+
+  <referential constraint definition> ::=
+  FOREIGN KEY <left paren> <referencing columns> <right paren>
+  <references specification>
+  
+  <references specification> ::=
+  REFERENCES <referenced table and columns>
+  [ MATCH { FULL | PARTIAL | SIMPLE } ] [ <referential triggered action> ]
+
+  <referenced table and columns> ::=
+  <table name> [ <left paren> <reference column list> <right paren> ]
+
+  <reference column list> ::= <column name list>
+
+  <referential triggered action> ::=
+    <update rule> [ <delete rule> ]
+  | <delete rule> [ <update rule> ]
+
+  <update rule> ::= ON UPDATE <referential action>
+
+  <delete rule> ::= ON DELETE <referential action>
+
+  <referential action> ::=
+    CASCADE
+  | SET NULL
+  | RESTRICT
+  | NO ACTION
+
+
+\end{Verbatim}
+
+
+
+
+\subsection{Diseño de UPDATE}
+DMS\\
+
+Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s: 
+
+\begin{Verbatim}
+  <update statement> ::=
+  UPDATE [ OR <or option> ] <target table> 
+  SET <set clause list>
+  [ WHERE <search condition> ]
+  
+  <or option> ::=
+    ROLLBACK
+  | ABORT
+  | REPLACE
+  | FAIL
+  | IGNORE
+\end{Verbatim}
+
+En este punto encontramos la primer diferencia con los demas DBMS, el elemento \verb=<or option>= que nos permite especificar que acción tomar si no es posible realizar la acción de \verb=UPDATE= sobre la tabla, es un añadido de \s que no esta presente en las especificaciones de los otros dos DBMS y tampoco aparece en la especificación de SQL.
+
+\begin{Verbatim}
+  <target table> ::=
+  [ <database name> <dot> ] <table name>
+  [ INDEXED BY <index name> ]
+  [ NOT INDEXED ]
+  
+  <set clause list> ::= <set clause> [ { <comma> <set clause> }... ]
+
+  <set clause> ::=
+  <column name> <equals operator> <expr>
+  
+  -----ONLY AVALAYBLE IF ACTIVATED DURING COMPILATION---------
+  
+  ORDER BY ... completar
+
+\end{Verbatim}
+Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son reconocidos por \m y \p por lo que serán ignorados en la especificación de el proyecto. Lo demás es de idéntica sintaxis. La especificación final de \jj.
+
+\begin{Verbatim}[frame=single, label=sintaxis para UPDATE]
+  <update statement> ::=
+  UPDATE <target table> 
+  SET <set clause list>
+  [ WHERE <search condition> ]
+  
+  <target table> ::=
+  [ <database name> <dot> ] <table name>
+  
+  <set clause list> ::= <set clause> [ { <comma> <set clause> }... ]
+
+  <set clause> ::=
+  <column name> <equals operator> <expr>    
+\end{Verbatim}
+
+
+
+
+\subsection{Diseño de INSERT}
+La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
+
+\begin{Verbatim}[frame=single, label=sintaxis para INSERT]
+  <insert statement> ::=
+  INSERT INTO <insertion target> <insert columns and source>
+
+  <insertion target> ::= [ <database name> <dot> ] <table name>
+
+  <insert columns and source> ::=
+    <from subquery>
+  | <from constructor>
+  | DEFAULT VALUES
+
+  <from subquery> ::=
+  [ <left paren> <insert column list> <right paren> ]
+  <query expression>
+  
+  <from constructor> ::=
+  [ <left paren> <insert column list> <right paren> ]
+  VALUES <left paren> <exp> [ { <comma> <exp> }... ] <right paren>
+
+  <insert column list> ::= <column name list>
+\end{Verbatim}
+
+
+
+
+\subsection{Diseño de ALTER TABLE} \label{sec:altertable}
+\verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:\\
+
+%\begin{Verbatim}
+%  <alter table statement> ::= 
+%  ALTER TABLE [ <database name><dot> ] <table name> <alter table action>
+%  
+%  <alter table action> ::=
+%    RENAME TO <new table name>
+%  | ADD [ COLUMN ] <column def>
+%\end{Verbatim}
+\begin{Verbatim}[frame=single, label=sintaxis para ALTER TABLE]
+<alter table statement> ::= 
+  ALTER TABLE [ <database name><dot> ] <table name> <alter table action>
+  
+  <alter table action> ::=
+    RENAME TO <new table name>
+  | ADD [ COLUMN ] <column def>
+\end{Verbatim}
+
+Además de estas limitaciones hay algunas mas, al agregar nuevas columnas la definición de estas puede tomar cualquiera de las opciones disponibles en la definición de \verb=CREATE TABLE= excepto por las siguientes:
+
+\begin{enumerate}
+
+\item La columna no puede ser clave primaria o \verb=UNIQUE=.
+
+\item La columna no puede tener como valor por defecto \verb=CURRENT_TIME=, \verb=CURRENT_DATE=, \verb=CURRENT_TIMESTAMP=, o una expresión entre paréntesis.
+
+\item Si la columna no puede tener valor nulo se ha de especificar un valor por defecto diferente de \verb=NULL=
+
+\item If foreign key constraints are enabled and a column with a REFERENCES clause is added, the column must have a default value of NULL.
+
+\end{enumerate}
+
+
+
+\subsection{Diseño de DELETE}
+La sintaxis de \verb=DELETE= entendida por \s es la siguiente
+\begin{Verbatim}
+  <delete statement> ::=
+  DELETE FROM <target table> [ WHERE <search condition> ]
+
+  <target table> ::=
+  [ <data base name><dot> ] <table name>
+  [ INDEXED BY <index name> ]
+  [ NOT INDEXED ]
+\end{Verbatim}
+En ella podemos encontrar una diferencia con las demás motores de bases de datos, elementos que serán omitidos. Esta diferencia es que no es posible usar los elementos \verb=INDEXED BY <index name>= y \verb=NOT INDEXED= en \p y \m, además cabe aclarar que no se están agregando elementos que si son soportados por los otros motores. Así que finalmente nos queda la siguiente sintaxis:
+
+
+\begin{Verbatim}[frame=single, label=sintaxis para DELETE]
+  <delete statement> ::=
+  DELETE FROM <target table> [ WHERE <search condition> ]
+  
+  <target table> ::=
+  [ <data base name><dot> ] <table name>
+  
+\end{Verbatim}
+
+
+
+
+\subsection{Diseño de SELECT}
+Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas analizamos a continuación \verb=SELECT= tal como es conocido por \s:
+
+\begin{Verbatim}
+  <query specification> ::=
+  <select core> [ { <compound operator> <select core> }... ]
+  [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
+  [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]  
+\end{Verbatim}
+
+Hasta este punto la sintaxis usada es compatible con los otros dos motores, por lo que sera aceptada tal cual, así que se siguen buscando diferencias:
+
+\begin{Verbatim}
+  <select core> ::=
+  SELECT [ DISTINCT | ALL ] <result column> [ { <comma><result column> }... ] 
+  [ FROM <join source> ]
+  [ WHERE <exp> ]
+  [ GROUP BY <group list> ]
+  
+  <group list> ::=
+  <ordering term> [ { <comma><ordering term> }... ]
+  [ HAVING <expr> ]
+  
+  <result column> ::=
+    <asterisk>
+  | <table name><dot><asterisk>
+  | <expr> [ [ AS ] <column alias> ]
+  
+  <join source> ::=
+  <single source> [ { <join op> <single source> <join constraint> }... ]
+  
+  <single source> ::=
+    [ <data base name> ] <table name> [ [ AS ] <table alias> ] [ <index option> ]
+  | <left paren> <select stmt> <right paren> [ [ AS ] <table alias> ]
+  | <left paren> <join source> <right paren>
+  
+  <index option> ::=
+    INDEXED BY <index name> 
+  | NOT INDEXED
+  %not in postgre
+  <join op> ::=
+    <comma>
+  | [ NATURAL ] [ LEFT [OUTER] | INNER | CROSS ] JOIN
+  
+  <join constraint> ::=
+    [ ON <expr> ]
+  | USING <left paren> <comma><column name> <right paren>
+  
+  <ordering term> ::=
+  <expr> [ COLLATE <collation name> ] [ ASC | DESC ]
+  %no COLLATE en mysql no ASC DESC en postgre
+  <compound operator> ::=
+    UNION [ ALL ]
+  | INTERSECT 
+  | EXCEPT
+  %solo union para Mysql
+\end{Verbatim}
+Son pocas las incompatibilidades que podemos encontrar, pero existen, la primera incompatibilidad es que el elemento \verb=<index option>= no es aceptado por \p; segundo en el elemento \verb=<ordering item>= nos encontramos con que \m no soporta establecer la opcion \verb=COLLATE= y \p no acepta la anterior ni los elementos \verb=ASC, DESC=; por ultimo \m solo acepta \verb=UNION [ ALL ]= para el elemento \verb=<compound operator>=. Así que nuestra sintaxis final quedaría de la siguiente manera:  
+
+\begin{Verbatim}[frame=single, label=sintaxis para SELECT]
+  <query specification> ::=
+  <select core> [ { UNION [ ALL ] <select core> }... ]
+  [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
+  [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]
+  
+  <select core> ::=
+  SELECT [ DISTINCT | ALL ] <result column> [ { <comma><result column> }... ] 
+  [ FROM <join source> ]
+  [ WHERE <exp> ]
+  [ GROUP BY <group list> ]
+  
+  <group list> ::=
+  <expr> [ { <comma><expr> }... ] [ HAVING <expr> ]
+  
+  <result column> ::=
+    <asterisk>
+  | <table name><dot><asterisk>
+  | <expr> [ [ AS ] <column alias> ]
+  
+  <join source> ::=
+  <single source> [ { <join op> <single source> <join constraint> }... ]
+  
+  <single source> ::=
+    [ <data base name> ] <table name> [ [ AS ] <table alias> ]
+  | <left paren> <select stmt> <right paren> [ [ AS ] <table alias> ]
+  | <left paren> <join source> <right paren>
+
+  <join op> ::=
+    <comma>
+  | [ NATURAL ] [ LEFT [OUTER] | INNER | CROSS ] JOIN
+  
+  <join constraint> ::=
+    [ ON <expr> ]
+  | USING <left paren> <comma><column name> <right paren>
+\end{Verbatim}
