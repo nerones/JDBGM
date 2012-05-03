@@ -1,19 +1,20 @@
 package com.crossdb.sql;
 
 /**
- * <p>Title: crossdb - AlterTableQuery</p>
- * <p>Description: Represents an SQL Alter Table Statement.</p>
- * <p>Copyright: Copyright (c) 2002</p>
- * <p>Company: Space Program Inc.</p>
+ * Esta clase representa una sentencia ALTER pero que es solo capaz de realizar dos acciones, el cambio
+ * de nombre de la tabla o bien el agregado de columnas. El renombrado de columna presenta las mismas
+ * restricciones que se tiene para nombrar las tablas, es decir que el nombre de la tabla a de ser un
+ * nombre valido. El agregado de columnas tiene otras restricciones extras, las cuales son:
+ * 
+ * <p>Copyright (c) 2002 Space Program Inc.</p>
  * @author Travis Reeder - travis@spaceprogram.com
- * @version 0.1
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
+ * @version 0.5
  */
-
-
 public interface AlterTableQuery extends UpdateStatement{
 	
 	/**
-	 * Set the name of table to alter.
+	 * Establece el nombre de la tabla a ser modificada.
 	 */
 	void setTable(String table);
 	
