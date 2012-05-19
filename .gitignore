@@ -9,6 +9,8 @@ ejemplos/
 documentation/
 *.bak
 *.pdf
+*.blg
+*.bbl
 *.dvi
 *.out
 *.db
