@@ -1,10 +1,21 @@
 \chapter{Introducción}
-trabajando con mysql 5.1 reference manual\\
+En cualquier sistema informático es común encontrarse con el uso de bases de datos relacionales para manejar, valga la redundancia, los datos que este debe procesar. Estos datos deben ser leídos, actualizados y registrado por el sistema a través de el motor que gestiona la base de datos dicha comunicación con la base de dato se hace mediante SQL\footnote{Es necesario citar esto?} que es un lenguaje declarativo de acceso a bases de datos relacionales que permite especificar diversos tipos de operaciones en estas, pero para poder hacer uso de este lenguaje es necesario primero establecer una comunicación con el \\
 
-trabajando con PostgreSQL 8.4 reference manual\\
 
-sqlite con el de la pagina la version 3\\
-En esta tesis estamos
+Los lenguajes de programación ya proveen métodos para acceder a los diferentes
+motores de bases de datos, pero lo que se pretende lograr con JDBGM es encapsular estos
+métodos y proveer de una interfaz única para acceder a los diferentes motores, facilitando
+así la posibilidad de cambiar de motor. En este proyecto inicialmente me ocupare solo de
+motores de bases de datos relacionales, mas específicamente de MySQL, PostgreSQL y
+SQLite.
+
+
+Java provee de un API bien definido para acceder a los diferentes motores de
+bases de datos (DBMS) y se podría cumplir lo que promete JDBC ( escribe solo una
+vez ) si no fuera por que JDBC toma cadenas de texto que representan las sentencias
+SQL y estas sentencias son dependientes de la base de datos que se este usando, es
+decir cada base de datos usa un dialecto de SQL lo que limita la “portabilidad” del
+código escrito para el uso de otro DBMS.
 
 
 El Componente gestor de bases de datos es en principio una capa de abstracción para manejar distintos motores de bases de datos desde el lenguaje java, o sea que no habría necesidad de entrar en detalles correspondientes a cada motor en particular para hace uso de el. En principio se daría soporte para 3 motores pero  la estructura de el componente permitiría agregar fácilmente soporte para mas motores. JDBGM además estaría acompañada por una programa de ejemplo que haría uso del componente.
@@ -26,19 +37,4 @@ El componente entonces estaría encargado de las siguientes tareas:
 Aparte se incluiría una aplicación de ejemplo en la que se muestre el uso de JDBGM, como así también la facilidad con la que se podría cambiar de un motor a otro.  
 
 
-Los lenguajes de programación ya proveen métodos para acceder a los diferentes
-motores de bases de datos, pero lo que se pretende lograr con JDBGM es encapsular estos
-métodos y proveer de una interfaz única para acceder a los diferentes motores, facilitando
-así la posibilidad de cambiar de motor. En este proyecto inicialmente me ocupare solo de
-motores de bases de datos relacionales, mas específicamente de MySQL, PostgreSQL y
-SQLite. Para acceder a las bases de datos utilizare JDBC que es una API que permite la
-ejecución de operaciones sobre bases de datos desde java utilizando el dialecto SQL del
-modelo de base de datos que se utilice
 
-
-Java provee de un API bien definido para acceder a los diferentes motores de
-bases de datos (DBMS) y se podría cumplir lo que promete JDBC ( escribe solo una
-vez ) si no fuera por que JDBC toma cadenas de texto que representan las sentencias
-SQL y estas sentencias son dependientes de la base de datos que se este usando, es
-decir cada base de datos usa un dialecto de SQL lo que limita la “portabilidad” del
-código escrito para el uso de otro DBMS.
