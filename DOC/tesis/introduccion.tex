@@ -4,3 +4,41 @@ trabajando con mysql 5.1 reference manual\\
 trabajando con PostgreSQL 8.4 reference manual\\
 
 sqlite con el de la pagina la version 3\\
+En esta tesis estamos
+
+
+El Componente gestor de bases de datos es en principio una capa de abstracción para manejar distintos motores de bases de datos desde el lenguaje java, o sea que no habría necesidad de entrar en detalles correspondientes a cada motor en particular para hace uso de el. En principio se daría soporte para 3 motores pero  la estructura de el componente permitiría agregar fácilmente soporte para mas motores. JDBGM además estaría acompañada por una programa de ejemplo que haría uso del componente.
+ El componente gestor de base  de datos es una capa de abstracción para el uso de un motor de base de datos (DBMS por sus siglas en ingles), es decir el usuario de el componente JDBGM podría obviar los detalles correspondientes a que motor de base de datos en concreto esta usando, pues el encargado de gestionar esos detalles seria JDBGM. Se lograría así:
+1. Simplificación de código: las clases que manejan la lógica de un programa solo deberían ocuparse de la lógica en si y no de como conectarse al DBMS o de como hacer consultas a este, esto se debería hacer mediante llamadas a métodos del componente.
+
+2. Mayor portabilidad: el echo de que la parte de lógica del programa no este atado a un motor en particular hace que sea muy sencillo cambiar el DBMS pues llegado el caso a lo sumo debería modificarse el componente.
+3. Facilitar el mantenimiento del programa: como todo el manejo del DBMS esta centralizado en el componente se hace mas fácil el mantenimiento del código.
+
+La idea del componente esta basada en Data Acces Object o bien DAO, que es un patrón de diseño utilizado para encapsular la interacción de una aplicación con la base de datos, aunque en un sentido mas amplio DAO también esta pensado para ocuparse de cualquier medio de persistencia, es decir podríamos almacenar los datos en otros medios como archivos simples o bien en archivos xml, en este caso solo nos ocuparemos de motores de base de datos relacionales (RDBMS). Otra cuestión a tener en cuenta es que DAO hace uso de otro patrón para poder enviar y recibir los datos desde el cliente (aplicación que esta haciendo uso del componente) hacia el DBMS, este patrón es DTO  (Data Transfer Object) que en una base de datos relacional vendría a representar una tabla. Se puede pensar que un DTO no es mas que una clase que define tantos atributos como los que posee una tabla en un  modelo de base de datos relacional, así debería existir un DTO por cada tabla que exista en la    base de datos. 
+
+El componente entonces estaría encargado de las siguientes tareas:
+
+1. Conectarse con el DBMS: debería poder establecer la conexión al motor mediante el driver adecuado, además también proporcionar métodos para cerrar la conexión.
+2. El componente hace uso de DTO (o se basa en DTO): como medio para transferir los datos entre el cliente y el DBMS, así por ejemplo si el cliente quisiera agregar datos a una tabla employers en una RDBMS con atributos name e id se debería crear un objeto employersDTO con los mismos atributos y  el componente seria el encargado de agregar estos datos al RDBMS, por lo que de el lado cliente lo único que debería conocerse es el modelo de la base de datos.
+3. La capa define una interfaz para realizar las operaciones en el RDBMS: básicamente se definirían los métodos CRUD (Create, Read, Update y Delete) mediante los cuales se brindan formas de trabajar con la base de datos.
+4. El componente soportara inicialmente 3 DBMS: MySQL, PostgreSQL y SQLite. Aunque se piensa brindar un mayor soporte en el futuro, para ello la estructura del componente debiera ser tal que permita una fácil ampliación, como así también estar adecuadamente documentado, para que sea fácil comprender el funcionamiento interno del componente.
+
+Aparte se incluiría una aplicación de ejemplo en la que se muestre el uso de JDBGM, como así también la facilidad con la que se podría cambiar de un motor a otro.  
+
+
+Los lenguajes de programación ya proveen métodos para acceder a los diferentes
+motores de bases de datos, pero lo que se pretende lograr con JDBGM es encapsular estos
+métodos y proveer de una interfaz única para acceder a los diferentes motores, facilitando
+así la posibilidad de cambiar de motor. En este proyecto inicialmente me ocupare solo de
+motores de bases de datos relacionales, mas específicamente de MySQL, PostgreSQL y
+SQLite. Para acceder a las bases de datos utilizare JDBC que es una API que permite la
+ejecución de operaciones sobre bases de datos desde java utilizando el dialecto SQL del
+modelo de base de datos que se utilice
+
+
+Java provee de un API bien definido para acceder a los diferentes motores de
+bases de datos (DBMS) y se podría cumplir lo que promete JDBC ( escribe solo una
+vez ) si no fuera por que JDBC toma cadenas de texto que representan las sentencias
+SQL y estas sentencias son dependientes de la base de datos que se este usando, es
+decir cada base de datos usa un dialecto de SQL lo que limita la “portabilidad” del
+código escrito para el uso de otro DBMS.

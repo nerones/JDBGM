@@ -1,14 +1,13 @@
 \chapter{Especificación}\label{cap:especificacion}
 
-Acá un resumen del capitulo
-
+En este capitulo estableceremos los requisitos necesarios para cumplir con las necesidades que presenta el proyecto propuesto por esta Tesis, para ello empezaremos por reseñar el modo en que Java accede a las bases de datos y explicar el modo en que se pretende ocultar este acceso dejando que \jj se encargue de los detalles de la conexión. Seguido a ello se expondrá otro problema que surge al utilizar diferentes \dd y la solución que se tomo.
 
 
 
 
 
 \section{Bases}
-Para diseñar JDBGM se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
+Para diseñar \jj se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
 DAO esta pensada para encapsular el acceso a cualquier fuente de datos, es decir los datos podrían estar almacenados en un archivo de texto plano, una base de datos relacional, una base de datos no relacional o un archivo XML, pero en este caso se trabaja solo sobre motores de base de dato relacionales \citep{we}.  
 
 
