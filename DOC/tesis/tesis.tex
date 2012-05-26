@@ -39,7 +39,8 @@
 \newcommand{\dd}{\textit{DBMS}\xspace}
 
 
-\newcommand\figpage[1]{Figura~\ref*{#1} en la pagina~\pageref*{#1}}
+\newcommand{\figpage}[1]{Figura~\ref*{#1} en la pagina~\pageref*{#1}}
+\newcommand{\fullref}[1]{\ref{#1} de la página \pageref{#1}}
 
 %--------------------Fin comandos para abreviar nombres---------------------
 
@@ -173,10 +174,10 @@
 
 \include{introduccion}
 \include{antecedentes}
+\include{jdbgm}
 \include{especificacion}
 \include{disenio}
 \include{implementacion}
-\include{ejemplo}
 \include{conclusiones}
 \include{trabajofuturo}
 %\ include{designsvt}
@@ -197,7 +198,7 @@
 %%%%%%%%%%%%%%
 %\ include{software}
 %\ include{publicaciones}
-
+\include{ejemplo}
 
 %%%%%%%%%%%%%
 \backmatter
