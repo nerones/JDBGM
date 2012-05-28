@@ -1,5 +1,27 @@
 \chapter{JDBGM}
-En este capitulo describiremos el proyecto propuesto por este trabajo, empezaremos por recordar la problemática expuesta en el capitulo \fullref{capitulo:intro}, para luego exponer la solución propuesta a la cual le pondremos limites eligiendo la plataforma sobre la cual se desarrollara el proyecto.
+En este capitulo describiremos el proyecto propuesto por este trabajo, empezaremos por recordar la problemática expuesta en el capitulo \fullref{capitulo:intro} pero de una manera mas técnica, además enmarcaremos el proyecto en un escenario mas especifico definiendo un lenguaje sobre el cual se desarrollara y los \dd a los que se les dará soporte, para luego exponer la solución propuesta.
 
 \section{El problema}
-Como empezamos a describir en la introducción del trabajo el
+Como empezamos a describir en la introducción del capitulo \ref{capitulo:intro} la dificultad que encontramos al usar motores de bases de datos en el desarrollo de sistemas informáticos se traduce en problemas de mantenibilidad y portabilidad, veamos estos dos puntos por separado:
+\begin{itemize}
+\item Problemas en la portabilidad: Al utilizar un motor\footnote{Hablando de motores de bases de datos} en particular nos atamos en mayor o menor medida al uso de este según como hayamos diseñado el sistema, el mayor problema se traduce en las diferentes sintaxis para SQL que define cada \dd culpa de ello es muy probable que una sentencia valida para un motor no lo sea para otro, por lo tanto a la hora de querer migrar desde un motor a otro e inclusive a una versión mas nueva del mismo motor es necesario  ``actualizar'' las sentencias para que se apeguen a la sintaxis del motor al que se pretende migrar. Además como parte de su sintaxis particular cada \dd define sus propios tipos de datos lo que añade un poco mas de dificultad al proceso de cambio o migración desde un motor a otro.  
+\item  Problemas en el mantenimiento: al utilizar bases de datos es importante como se diseña el acceso y manejo de los \dd, hay que tener en cuenta las siguientes cuestiones: quien se tiene que hacer cargo de la persistencia de los datos? El programa tiene que conocer los datos o mas bien como obtener los datos? Estas cuestiones no son nuevas y se solucionan en parte siguiendo patrones de diseño. Un ejemplo mas conciso de esto lo podemos ver cuando se esta diseñando un modulo de un sistema que precisa persistir ciertos datos en una BD, la pregunta que hay que hacerse es quien debería hacerse cargo de realizar esta persistencia? Si lo hace el modulo en si nos encontraríamos con accesos a la base de datos mezclados con la lógica de negocio del modulo además estos accesos implican que el modulo debe conocer como conectarse con la base de datos y de que modo se deben enviar y recibir los datos, con lo que nuestro modulo	perdería cohesión y ganaría complejidad derivando todo esto en una mayor dificultad en el mantenimiento.
+\end{itemize}
+Estos dos puntos están fuertemente relacionados pues la mantenibilidad del software esta muy ligada a la portabilidad y viceversa, esto por que la portabilidad hace a la mantenibilidad, pero cuando hablamos de que el software sea mantenible estamos hablando de muchos aspectos mas. Este trabajo esta centrado en el uso de la base de datos y como afecta esto a estos dos aspectos. Como ya se dijo es de buena practica el uso de patrones de diseño, así que en la sección siguiente veamos que es esto y como nos va a ayudar a encontrar una base para el proyecto. 
+\section{Patrones de diseño}
+Un patrón de diseño es una solución genérica y reusable  a un problema que ocurre de manera frecuente en un contexto dado. Un patrón de diseño no es un diseño terminado que pueda ser transformado directamente en código es mas bien una guía que indica como resolver un problema en determinados escenarios. Así los patrones de diseño son buenas costumbres que uno mismo debe implementar en la aplicación a desarrollar y en este mismo sentido son recomendaciones a tener en cuenta y no obligaciones\cite{Metsker:2002:DPJ}. Además es importante notar que el uso de patrones no garantiza éxito a la hora de diseñar. La descripción de un patrón indica cuando este puede ser aplicable, pero solo la experiencia nos hará comprender cuando el uso de un patrón de diseño en particular mejorara el diseño del software\cite{java:patrones}.
+
+
+Entonces por que tener en cuenta a los patrones?
+\begin{itemize}
+\item Han sido provados. Los patrones reflejan la experiencia, conocimiento y perspectiva de desarrolladores quienes han aplicado satisfactoriamente estos patrones en su propio trabajo.
+
+\item Son reusables. Los patrones proveen soluciones ya descubiertas que pueden ser aplicadas a diferentes problemas.
+
+\item Son expresivos. Los patrones proveen un vocabulario común de soluciones que pueden expresar soluciones extensas de manera concisa.
+%They are expressive. Patterns provide a common vocabulary of solutions that can express large solutions succinctly.
+\end{itemize}
+Existe mucha teoría sobre los patrones pero en este trabajo no nos interesa ahondar sobre ellos si no que interesaba introducir el concepto al lector para conocer un patrón que servira de base para el desarrollo de \jj
+\subsection{Data Acces Object}
+El patron Data Acces Object o DAO
+\section{La solucion propuesta: \jj}
