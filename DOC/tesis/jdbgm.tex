@@ -55,7 +55,7 @@ Para finalizar nombremos las consecuencias de usar este patrón:
 
 \item 
 Not Useful for Container-Managed Persistence
-% Because the EJB container manages entity beans with container-managed persistence (CMP), the container automatically services all persistent storage access. Applications using container-managed entity beans do not need a DAO layer, since the application server transparently provides this functionality. However, DAOs are still useful when a combination of CMP (for entity beans) and BMP (for session beans, servlets) is required. 
+% Because the EJB container manages entity beans with container-managed persistence (CMP), the container automatically services all persistent storage access. Applications using container-managed entity beans do not need a DAO layer, sjdbcjdbcince the application server transparently provides this functionality. However, DAOs are still useful when a combination of CMP (for entity beans) and BMP (for session beans, servlets) is required. 
 
 
 \item Agrega una capa extra, la cual debe ser diseñada e implementada para beneficiarse del uso de este patrón. %Adds Extra Layer The DAOs create an additional layer of objects between the data client and the data source that need to be designed and implemented to leverage the benefits of this pattern. But the benefit realized by choosing this approach pays off for the additional effort. 
@@ -66,3 +66,6 @@ Not Useful for Container-Managed Persistence
 
 
 \section{La solucion propuesta: \jj}
+Después de conocer el patrón nos damos cuenta que el problema al que apunta la tesis es común y a veces inevitable, entonces por que desarrollar este proyecto? Pues para aquellos desarrollos donde el patrón sea aplicable. Además debemos recordar que el presente trabajo esta acotado a Java y bases de datos relacionales, lo que limita en cierto modo a la definición dada para DAO en el sentido de que no tenemos en cuenta otros tipo de mecanismos de persistencia de datos. Entonces veamos específicamente de que trata el proyecto.
+
+Para trabajar con \dd Java provee la API JDBC\cite{java:jdbc} que según su documentación provee un medio para acceder virtualmente a cualquier tipo de datos tabulares. JDBC es usado para invocar comandos SQL directamente aunque también fue diseñado para ser la base sobre la cual se construyen herramientas e interfaces alternativas mas amigables con el ``usuario'' en el sentido que se puede construir un API mas entendible o conveniente que es en el fondo traducida para usar JDBC. Como en nuestro proyecto queremos ocultar el acceso explicito a una base de datos no podemos usar directamente JDBC pues al usarlo directamente necesitaríamos explicitar la conexión con el motor de la base de datos
