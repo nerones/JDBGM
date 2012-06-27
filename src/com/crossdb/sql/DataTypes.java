@@ -30,7 +30,7 @@ public abstract class DataTypes {
 	
 	
     public String getAsString(Column col) {
-        return getAsString(col.getType(), col.getSize());
+        return getAsString(col.getType(), col.getDefaultSize());
     }
 
     /**
