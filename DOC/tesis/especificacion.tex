@@ -1,11 +1,36 @@
 \chapter{Especificación}\label{capitulo:especificacion}
 CAMBIAR INTRODUCCION!!!!!!!!!!!!!!11
 En este capitulo describiremos detalladamente el proyecto y estableceremos los requisitos necesarios para cumplir con las necesidades que presentamos anteriormente, para ello se reseñara el modo en que Java accede a las bases de datos y explicare el modo en que se pretende ocultar este acceso dejando que \jj se encargue de los detalles de la conexión. Seguido a ello explicaremos como es que se pretende eliminar la dependencia del uso de los dialectos de SQL de cada motor.
+
 %trabajando con mysql 5.1 reference manual\\
 
 %trabajando con PostgreSQL 8.4 reference manual\\
 
 %sqlite con el de la pagina la version 3\\
+\section{Contexto}
+El proyecto como ya se comento se desarrollara sobre el lenguaje Java e inicialmente se dará soporte solo para tres motores de base de datos, las versiones usadas de cada una de ellas para el desarrollo del proyecto son las siguientes:
+\begin{enumerate}
+	\item Java SE 6 o versión superior.
+	\item PostgreSQL 8.4
+	\item MySQL 5.1
+	\item Sqlite 3
+\end{enumerate}
+Los funcionalidades presentadas a continuación se podrán ver en mucho mayor detalle en la documentación incluida en el código fuente del proyecto\footnote{Se presenta en un modo mucho mas amigable gracias a Javadoc.}, en este capitulo se pretende comentar los lineamientos generales seguidos y el por que de los mismos. Básicamente hay dos tópicos diferentes a tratar, primero se definirá como se ocultara el acceso a la base de datos en otras palabras definir una interfaz que ocultara el uso de JDBC, en segundo lugar esta definir como se trataran las sentencias SQL para que no sean "dialecto dependientes".
+
+\section{Ocultando el acceso a el motor}
+Para manejar el acceso al motor de base de datos \jj debe proveer las siguientes funcionalidades mínimas que a su vez puede que se desglosen en mas de una función (o método):
+\begin{enumerate}
+
+\item Crear una conexión con el motor: es decir se debe encargar de obtener una conexión al motor y ponerla a disponibilidad de los métodos definidos.
+
+\item Cerrar la conexión con el motor: poder cerrar la conexión con el motor para liberar recursos de la misma, una conexión no usada sin cerrar es un desperdicio de recursos.
+
+\item Enviar sentencias SQL al motor: el modo de interactuar con el motor es mediante el envío de sentencias SQL, este punto se lo discutira mas ampliamente en la sección siguiente.
+
+\item Poder enviar varas sentencias a la vez: poder realizar una transacción que implique el envío de varias sentencias.
+
+\item Manejar los errores que se puedan producir: se pueden dar errores en la sintaxis de las sentencias SQL, 
+\end{enumerate}
 
 \section{Eliminando dialectos}
 En el capitulo anterior se comento que parte del desafío de nuestro proyecto era lidiar con los diferentes  dialectos utilizados por cada motor por lo que a continuación analizaremos como es que JDBC trabaja con las sentencias SQL.
