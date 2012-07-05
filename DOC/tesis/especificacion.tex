@@ -27,7 +27,7 @@ Para manejar el acceso al motor de base de datos \jj debe proveer las siguientes
 
 \item Enviar sentencias SQL al motor: el modo de interactuar con el motor es mediante el envío de sentencias SQL, este punto se lo discutira mas ampliamente en la sección siguiente.
 
-\item Poder enviar varas sentencias a la vez: poder realizar una transacción que implique el envío de varias sentencias.
+\item Poder enviar transacciones: una transaccion consiste en un conjunto de sentencias que deben ejecutarse en conjunto, una vez finalizadas se guardan los cambios (commit) o se rechazan (rollback) si sucediere algun error.
 
 \item Manejar los errores que se puedan producir: se pueden dar errores en la sintaxis de las sentencias SQL, 
 \end{enumerate}
