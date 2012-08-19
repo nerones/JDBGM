@@ -38,90 +38,50 @@ Cuando se habla de ocultar el acceso a el motor se esta haciendo referencia a qu
 
 
 \section{Eliminando dialectos}
-En el capitulo anterior se comento que parte del desafío de nuestro proyecto era lidiar con los diferentes  dialectos utilizados por cada motor por lo que a continuación analizaremos como es que JDBC trabaja con las sentencias SQL.
+En el capitulo anterior se comento que parte del desafío de nuestro proyecto era lidiar con los diferentes  dialectos utilizados por cada motor por lo que a continuación analizaremos como es que pretendemos sortear esta dificultad.
 
-JDBC nos provee de la clase \verb=Statement=\footnote{Posteriormente explicare como es que se trabaja con JDBC por ahora interesa solo lo expuesto} la cual posee los metodos \verb=executeUpdate= y \verb=executeQuery= los cuales permiten enviar sentencias SQL al motor de base de datos.
+JDBC nos provee de la clase \verb=Statement=\footnote{Posteriormente explicare como es que se trabaja con JDBC por ahora interesa solo lo expuesto} la cual posee los métodos \verb=executeUpdate= y \verb=executeQuery= los cuales permiten enviar sentencias SQL al motor de base de datos. El envío de estas sentencia se hace mediante cadenas de texto por lo que se nos presenta el problema de que estas cadenas ``estáticas'' dependen, según cuan complejas sean las sentencias, de el motor en particular que se este usando es por ello que en este proyecto se opto por generar las sentencias sobre demanda, es decir se pretende que las sentencias se almacenen desglosadas de modo que su sintaxis quede expuesta y pueda luego ser volcada en una cadena de texto cuando sean requeridas por el programador. El almacenar de este modo las sentencias no asegura tampoco la independencia de los dialectos usados pero nos permite manejar el modo en que las sentencias son convertidas en cadenas de textos, entonces si se define un nuevo dialecto que sea compatible con los dialectos usados por los otros motores y ajustando la estructura de datos que se va a utilizar para las sentencias a este dialecto se puede luego mediante las reglas adecuadas "traducir" la sentencia a su dialecto correspondiente. 
 
-Java ya nos provee JDBC para acceder a las bases de datos, pero al hacer uso de el es necesario especificar con que motor se esta trabajando, para ejemplificar ello veamos el típico código que debemos escribir para conectarnos a una base de datos.
-
-\begin{lstlisting}[title=Porción de codigo java para la conexión a una base de datos]
-class conectDB(){
-...
-
-Class.forName("com.mysql.jdbc.Driver");
-	Connection conexion = DriverManager.getConnection(
-		"jdbc:mysql://localhost/AsistenciaAlumnos", "tester",
-		"tester");
-	Statement st = (Statement) conexion.createStatement();
-
-...
-}
-\end{lstlisting}
-
-En esta porción de código lo que se hace inicialmente es instanciar el driver, es decir crear el objeto driver, luego el método estático \verb=getConnection= de 	\verb=DriverManager= nos devuelve un objeto que representa la conexión al motor con el que se esta trabajando. Este objeto del tipo \verb=Connection= nos provee métodos para generar objetos \verb=Statement= que nos permite hacer consultas a la base de datos mediante las funciones que dispone. Una descripción mucho mas extensa de JDBC puede ser encontrada en la documentación disponible en la web de Oracle\citep{java:jdbc}.
-Para nuestro proyecto necesitamos ocultar y simplificar el API de JDBC
-
-
-
-
-
-\section{JDBC y su envoltorio}
-y otro
-
-
-
-
-
-
-\section{Abstracción de SQL}
-Uno de los problemas al intentar portar código SQL entre diferentes motores de bases de datos reside en que cada motor usa su propio dialecto de SQL. Las diferencias entre estos dialectos puede ser mínima pero aun así esto provoca que a una aplicación a la que se le quiera cambiar el motor de base de datos que usa actualmente se le deban revisar todas las sentencias SQL usadas.\\
-Así que para brindar una abstracción sobre la base de datos es necesario que las consultas SQL (sin hacer diferencias sobre DDL \footnote{Data Definition Lenguaje} y DML \footnote{Data Manipulation Lenguaje}) no sean manejadas de forma explicita es decir que no seria conveniente, por ejemplo, manejar las consultas como cadenas de caracteres ya que esta es una estructura estática dependiente del DBMS que se este usando. Por lo que para poder manejar adecuadamente las consultas se considero usar una estructura de datos un poco mas compleja que contenga la consulta de manera desglosada. Es decir que en ves de tener una sentencia como la siguiente:
-\begin{Verbatim}
-  nombre_comando [opcion1 parametro1] [opcion2 parametro2] parametro; 
-\end{Verbatim}
-
-Se tendría una estructura de datos como la siguiente:
-
-%\lstset{frame=single, rulesepcolor=\color{black}, backgroundcolor=\color{lightgray}, language=java, numbers=left, numberstyle=\tiny, basicstyle=\footnotesize}
-\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
-class Sentencia{
-	nombre_comando;
-	parametro;
-	opcion1(parametro1);
-	opcion2(parametro2);
-	devolver_sentencia();
-}
-\end{lstlisting}
-
-Hay que tener en cuenta que el tipo de datos que se quiere manejar aparte de contener los parámetros de la sentencia debe brindar métodos para armar la sentencia, asignarles valores a los atributos y ser capaz de definir el comportamiento especifico que pueda tener la sentencia. Cuando se dice que el tipo de dato, mas en concreto la clase, que represente la sentencia sea capaz de armar la sentencia se refiere a que sea capaz de devolver la cadena de caracteres que represente una sentencia SQL valida para algún DBMS.\\
-Así podemos hacer un resumen de las características que se desea cumplan estas estructuras:
-\begin{enumerate}
-	\item La estructura debe devolver una cadena de caracteres (un \textit{String}) que represente una sentencia SQL valida para el \dd deseado.
-	\item Cada sentencia  SQL debe estar representada por una estructura diferente pero similar a las demás para que el armado de las sentencias mediante estas estructuras sea consistente, de modo que la sintaxis usada sea sencilla de aprender. 
-	\item La estructura debe contemplar que no se realicen acciones no permitidas con las sentencias, ya que si bien las acciones disponibles estarán limitadas por la estructura en si hay algunas otras opciones que pueden ser excluyentes con otras, esto se debe controlar.
-	\item La estructura debe contemplar todas las opciones disponibles para las sentencias que se están por incluir.
-\end{enumerate}
-Sobre este ultimo punto hay que aclarar que solo se cubrirá un subconjunto de todas las sentencias posibles que define SQL. Este conjunto estará formado por:
-\begin{enumerate}
+Definir un nuevo dialecto puede parecer algo engorroso, pero en realidad este nuevo dialecto estará basado en los dialectos usados por los motores a los que se le esta dando soporte en este proyecto y además solo se trabajara con un subconjunto de sentencias definidos en estos dialectos pues no es objetivo del proyecto brindar un total soporte sobre SQL si no que se cubrirán las siguientes sentencias:
+\begin{itemize}
 \item CREATE TABLE - Permite crear tablas 
 \item ALTER TABLE - Modifica la estructura de una tablas \footnote{Solo se da un soporte básico para esta sentencia}
 \item UPDATE - Modifica las filas de una tabla 
 \item INSERT - Inserta nuevas filas a una tabla
 \item DELETE - Elimina columnas de una tabla
 \item SELECT - Realiza consulta sobre las tablas
-\end{enumerate}
+\end{itemize}
+Los cuales cubren las necesidades que se pueden presentar en la lógica de negocio del proyecto sobre el cual se este trabajando, el uso de mas extensivo de SQL se da a la hora de la administración de la base de datos trabajo que usualmente es realizado por la persona que cumpla el rol de DBA (\textit{Data Base Administrator}) el cual usa una interfaz diferente propia a veces de el motor para trabajar directamente sobre el.
 
-%Se agruparon las sentencias de acuerdo a el resultado que producen, por un lado tenemos a las sentencias que devuelven datos mas allá de una información que indique el éxito o fracaso de la interpretación de la sentencia en el DBMS o sea sentencias como SELECT, por otro lado tenemos aquellas que solo devuelven información del exito o fracaso de la interpretación de la sentencia.
-Una vez definido el subconjunto de sentencias con las que se trabajaran es necesario que para cada una de ellas se defina un comportamiento común, es decir que estaremos definiendo un nuevo dialecto de SQL el cual sera soportado por todos los \dd, pero para que esto sea posible deberemos restringir las dialectos soportados al que menos posibilidades presente o viéndolo de otro modo es necesario extraer un dialecto común a todos ellos. Además de las sentencias es necesario tener en cuenta los tipos de datos que se usan en cada \dd también para ellos debemos encontrar un factor común, por lo que a continuación analizamos los tipos de datos usados por cada motor, luego se hará un análisis por separado para cada una de las sentencias elegidas.
+La estructura de datos que se quiere manejar la cual quedara expresada en forma de una Clase aparte de contener los datos que hacen a la sentencia debe brindar métodos para convertir la sentencia en una cadena de texto, asignarles valores a los atributos y ser capaz de definir el comportamiento especifico que pueda tener la sentencia. Así podemos hacer un resumen de las características que se desea cumplan estas clases:
+\begin{itemize}
 
+	\item Deben poder devolver una cadena de caracteres (\textit{String}) que represente una sentencia SQL valida para el dialecto deseado.
+	\item La sintaxis proveída para el manejo de las clases debe ser consistente entre todas ellas de modo que el aprendizaje de esta no presente mayor dificultad y debe ser lo suficientemente "expresiva" para poder entender lo que se esta haciendo sin tener que recurrir necesariamente a la documentación, lo que tampoco quita que la documentación deba ser dejada de lado. 
+	\item Deben contemplar que no se realicen acciones no permitidas con las sentencias es decir respetar la sintaxis de los dialectos, aspecto que también ah de tenerse en cuenta cuando se este definiendo el dialecto genérico para el proyecto. El manejo de estos errores debe ser mediante el uso de excepciones usando las clases hijas de verb=Exception= en Java.
+	\item Deben contemplar todas las opciones disponibles para las sentencias que se están por incluir definidas en el dialecto genérico.
+	\item Deben proveer los métodos necesarios para poblar de datos las clases.
 
+\end{itemize}
+
+Una vez definido el subconjunto de sentencias con las que se trabajaran es necesario definir el dialecto genérico sobre el cual se apoyara este proyecto por lo que para cada una de las sentencias se definirá un comportamiento común, pero para que esto sea posible deberemos restringir las dialectos soportados al que menos posibilidades presente pues las diferencias entre los dialectos usados por los motores se da generalmente por que se agregan funcionalidades a las definidas en el estándar  SQL y raramente se da el caso en que la diferencia se de por la falta de implementación de lo definido en el estándar. Como parte del análisis de las diferencias entre los dialectos y mas allá de la diferencia entre las sintaxis usadas para las sentencias es importante analizar también los tipos de datos que se usan en cada \dd. También para ellos debemos encontrar un factor común, por lo que a continuación dedicamos un capitulo entero a analizar los tipos de datos usados por cada motor.
+
+%\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
+%class Sentencia{
+%	nombre_comando;
+%	parametro;
+%	opcion1(parametro1);
+%	opcion2(parametro2);
+%	devolver_sentencia();
+%}
+%\end{lstlisting}
 
 \subsection{Tipos de datos y sus diferencias}
-Las primeras diferencias las encontramos en las definiciones de tipos de datos que usan los \dd, de estas la mas notoria es el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo declarado de dato en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos definidos usualmente, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER=, que maneja \m.\\
+Al analizar los tipos usados en los diferentes motores quizá la diferencia mas notoria se da en el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo de dato declarado en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos usualmente definidos, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER=, que maneja \m.\\
 
- En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s).\\
+ En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s). Observado esto podemos decir que al ser \s tan flexible los tipos de datos que se usaran estarán definidos en base a \m y \p.\\
  
-\cc debe proveer una interfaz única en la que se establezcan los tipos de datos disponibles para usar, estos tipos de datos deben ser elegidos en base a las compatibilidades entre los diferentes motores que soporta para lograr un uso genérico sobre cualquiera de los motores, en principio se podrían elegir todos los tipos de datos definidos en los motores, uniendo a aquellos que sean equivalentes en un solo tipo y dejando que después \cc se encargue de mapear los datos a los soportados por un motor en concreto, recordando que algunos de los datos declarados no son directamente soportados por todos los \dd. Pero esto podría acarrear confusiones pues veamos, el tipo de dato entero mas chico (el que ocupa menos espacio en disco para representarse) en \m\cite{mysql:datatypes} es \verb=TINYINT= que ocupa solo 1 byte, en cambio en \p\cite{postgre:datatypes} el mas chico es \verb=SMALLINT= que ocupa 2 bytes entonces en el caso de que en los tipos de datos especificados para \cc se encuentren estos dos no habría problemas al usarlos pues si se llegara a especificar una columna con tipo de dato \verb=TINYINT= mientras se trabaja sobre una base de datos con \p no habría mas que mapear internamente el tipo de dato a \verb=SMALLINT=, pero en esta situación el programador podría no enterarse de que en realidad la columna que el esta usando ocupa 2 bytes por dato lo que en casos en que el espacio en disco duro sea un tema sensible podría llevar a serias confusiones, entonces lo mejor es que en la especificación de \cc solo se incluyan los tipos que no lleven a este tipo de confusiones. A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero mediante un cuadro comparativo:
+\jj debe proveer una interfaz única en la que se establezcan los tipos de datos disponibles para usar, estos tipos de datos deben ser elegidos en base a las compatibilidades entre los diferentes motores que soporta para lograr un uso genérico sobre cualquiera de los motores, en principio se podrían elegir todos los tipos de datos definidos en los motores, uniendo a aquellos que sean equivalentes en un solo tipo y dejando que después \cc se encargue de mapear los datos a los soportados por un motor en concreto, recordando que algunos de los datos declarados no son directamente soportados por todos los \dd. Pero esto podría acarrear confusiones pues veamos, el tipo de dato entero mas chico (el que ocupa menos espacio en disco para representarse) en \m\cite{mysql:datatypes} es \verb=TINYINT= que ocupa solo 1 byte, en cambio en \p\cite{postgre:datatypes} el mas chico es \verb=SMALLINT= que ocupa 2 bytes entonces en el caso de que en los tipos de datos especificados para \jj se encuentren estos dos no habría problemas al usarlos pues si se llegara a especificar una columna con tipo de dato \verb=TINYINT= mientras se trabaja sobre una base de datos con \p no habría mas que mapear internamente el tipo de dato a \verb=SMALLINT= que al ser mas grande tranquilamente lo puede contener, pero en esta situación el programador podría no enterarse de que en realidad la columna que el esta usando ocupa 2 bytes por dato lo que en casos en que el espacio en disco duro sea un tema sensible podría llevar a serias confusiones, entonces lo mejor es que en la especificación de \jj solo se incluyan los tipos que no lleven a este tipo de confusiones. A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero mediante un cuadro comparativo en los que los tipos puestos en la misma linea son congruentes entre si, salvo que se indique lo contrario:
         
 \begin{table}[h]
 \begin{center}
@@ -153,7 +113,7 @@ Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de con
 \caption{Comparación de los tipos de datos reales aproximados}
 \end{table}
 
-En el caso de los tipos de números reales tenemos básicamente dos clases de tipos, los que guardan los datos de forma exacta y otros no exactos que se guardan en el formato punto flotante. Para el caso de los tipos de datos con punto flotante tomare los datos definidos para \p como los elegidos para \cc, el tipo \verb=FLOAT= definido en \m es similar a \verb=REAL=, y nuevamente el tipo \verb=REAL= de \s es capaz de contener los otros tipos. 
+En el caso de los tipos de números reales tenemos básicamente dos clases de tipos, los que guardan los datos de forma exacta y otros no exactos que se guardan en el formato punto flotante. Para el caso de los tipos de datos con punto flotante se tomaran los tipos definidos para \p como los elegidos para \jj, el tipo \verb=FLOAT= definido en \m es similar a \verb=REAL=, y nuevamente el tipo \verb=REAL= de \s es capaz de contener los otros tipos. 
 
 \begin{table}[h]
 \begin{center}
@@ -171,7 +131,7 @@ NUMERIC  & DATETIME &  \\
 \caption{Comparación de los tipos de datos reales exactos y fechas}
 \end{table}
 
-Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora según el formato que estemos utilizando.   
+Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERIC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora según el formato que estemos utilizando.   
 
 \begin{table}[h]
 \begin{center}
@@ -189,7 +149,7 @@ Para analizar el caso de los tipos de datos reales con almacenamiento exacto, de
 \caption{Comparación de los tipos de datos cadenas de texto}
 \end{table}
 
-Para el caso de los tipos de datos tenemos como siempre \s con una clase de almacenamiento bastante genérica que cubre todos los tipos de datos definidos en los demás motores. La diferencia que encontramos con los otros dos motores es que el tipo \verb=TEXT= que en \m tiene 4 variantes que varían en el limite de almacenamiento, siendo el ultimo sin limite (\verb=LONGTEXT=) en cambio en \p existe solo \verb=TEXT= y que es para almacenamiento de texto sin limite, así que como antes tomaremos los tipos de datos que define \p como los elegidos para \cc. 
+Para el caso de los tipos de datos cadenas de texto tenemos como siempre \s con una clase de almacenamiento bastante genérica que cubre todos los tipos de datos definidos en los demás motores. La diferencia que encontramos con los otros dos motores es que el tipo \verb=TEXT= que en \m tiene 4 variantes que varían en el limite de almacenamiento, siendo el ultimo sin limite (\verb=LONGTEXT=) en cambio en \p existe solo \verb=TEXT= y que es para almacenamiento de texto sin limite, así que como antes tomaremos los tipos de datos que define \p como los elegidos para \cc. 
 
 \begin{table}[h]
 \begin{center}
@@ -229,7 +189,7 @@ Faltan los tipos monetarios, booleanos
 
 
 
-\subsection{Diseño de CREATE TABLE}
+\subsection{Especificación de CREATE TABLE}
 Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
 \begin{Verbatim}
   CREATE TABLE <table name> (
@@ -409,7 +369,7 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 
 
 
-\subsection{Diseño de UPDATE}
+\subsection{Especificación de UPDATE}
 DMS\\
 
 Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s: 
@@ -466,7 +426,7 @@ Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son
 
 
 
-\subsection{Diseño de INSERT}
+\subsection{Especificación de INSERT}
 La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
 
 \begin{Verbatim}[frame=single, label=sintaxis para INSERT]
@@ -494,7 +454,7 @@ La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT=
 
 
 
-\subsection{Diseño de ALTER TABLE} \label{sec:altertable}
+\subsection{Especificación de ALTER TABLE} \label{sec:altertable}
 \verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:\\
 
 %\begin{Verbatim}
@@ -530,7 +490,7 @@ Además de estas limitaciones hay algunas mas, al agregar nuevas columnas la def
 
 
 
-\subsection{Diseño de DELETE}
+\subsection{Especificación de DELETE}
 La sintaxis de \verb=DELETE= entendida por \s es la siguiente
 \begin{Verbatim}
   <delete statement> ::=
@@ -556,7 +516,7 @@ En ella podemos encontrar una diferencia con las demás motores de bases de dato
 
 
 
-\subsection{Diseño de SELECT}
+\subsection{Especificación de SELECT}
 Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas analizamos a continuación \verb=SELECT= tal como es conocido por \s:
 
 \begin{Verbatim}

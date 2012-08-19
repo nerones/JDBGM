@@ -11,7 +11,24 @@ Acá un resumen del capitulo
 Para diseñar JDBGM se tomo como idea base el patrón de desarrollo DAO, que básicamente sirve para abstraer y encapsular el acceso a la fuente de los datos, además DAO sera el encargado de manejar la conexión con la fuente de los datos para la obtención y guardado de los datos.
 DAO esta pensada para encapsular el acceso a cualquier fuente de datos, es decir los datos podrían estar almacenados en un archivo de texto plano, una base de datos relacional, una base de datos no relacional o un archivo XML, pero en este caso se trabaja solo sobre motores de base de dato relacionales.  
 
+Java ya nos provee JDBC para acceder a las bases de datos, pero al hacer uso de el es necesario especificar con que motor se esta trabajando, para ejemplificar ello veamos el típico código que debemos escribir para conectarnos a una base de datos.
 
+\begin{lstlisting}[title=Porción de codigo java para la conexión a una base de datos]
+class conectDB(){
+...
+
+Class.forName("com.mysql.jdbc.Driver");
+	Connection conexion = DriverManager.getConnection(
+		"jdbc:mysql://localhost/AsistenciaAlumnos", "tester",
+		"tester");
+	Statement st = (Statement) conexion.createStatement();
+
+...
+}
+\end{lstlisting}
+
+En esta porción de código lo que se hace inicialmente es instanciar el driver, es decir crear el objeto driver, luego el método estático \verb=getConnection= de 	\verb=DriverManager= nos devuelve un objeto que representa la conexión al motor con el que se esta trabajando. Este objeto del tipo \verb=Connection= nos provee métodos para generar objetos \verb=Statement= que nos permite hacer consultas a la base de datos mediante las funciones que dispone. Una descripción mucho mas extensa de JDBC puede ser encontrada en la documentación disponible en la web de Oracle\citep{java:jdbc}.
+Para nuestro proyecto necesitamos ocultar y simplificar el API de JDBC
 
 
 
