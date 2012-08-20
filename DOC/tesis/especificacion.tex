@@ -1,6 +1,5 @@
 \chapter{Especificación}\label{capitulo:especificacion}
-CAMBIAR INTRODUCCION!!!!!!!!!!!!!!11
-En este capitulo describiremos detalladamente el proyecto y estableceremos los requisitos necesarios para cumplir con las necesidades que presentamos anteriormente, para ello se reseñara el modo en que Java accede a las bases de datos y explicare el modo en que se pretende ocultar este acceso dejando que \jj se encargue de los detalles de la conexión. Seguido a ello explicaremos como es que se pretende eliminar la dependencia del uso de los dialectos de SQL de cada motor.
+En este capitulo estableceremos los requisitos necesarios para cumplir con las necesidades que presentamos anteriormente, para ello estableceremos que medidas debemos tener en cuenta a la hora de establecer el API que nos permitirá comunicarnos con el motor de base de datos y además que se requiere para que el código escrito sea independiente del motor en particular que se este por utilizar.
 
 %trabajando con mysql 5.1 reference manual\\
 
@@ -76,7 +75,7 @@ Una vez definido el subconjunto de sentencias con las que se trabajaran es neces
 %}
 %\end{lstlisting}
 
-\subsection{Tipos de datos y sus diferencias}
+\subsection{Tipos de datos y sus diferencias}\label{subsection:datatypes}
 Al analizar los tipos usados en los diferentes motores quizá la diferencia mas notoria se da en el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo de dato declarado en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos usualmente definidos, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER=, que maneja \m.\\
 
  En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s). Observado esto podemos decir que al ser \s tan flexible los tipos de datos que se usaran estarán definidos en base a \m y \p.\\
@@ -186,10 +185,10 @@ Faltan los tipos monetarios, booleanos
 \subsection{Funciones}
 
 
+\subsection{Sentencias SQL}
+En las siguientes secciones se pasa a analizar por separado cada una de las sentencias que se están por incluir en nuestro dialecto genérico, para ello se compararan las implementaciones que se hicieron sobre cada uno de los motores sobre los que se da soporte.
 
-
-
-\subsection{Especificación de CREATE TABLE}
+\subsubsection{Especificación de CREATE TABLE}
 Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
 \begin{Verbatim}
   CREATE TABLE <table name> (
@@ -198,7 +197,7 @@ Esta sentencia es usada para crear tablas en una base de datos relacional, un re
   [ PRIMARY KEY <indexed columns> ]
   [ FOREIGN KEY <columns and referenced table> ]
 \end{Verbatim}
-Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definicion de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar\verb= CREATE TABLE= tal como la entiende \s\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m y \p:
+Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definición de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar\verb= CREATE TABLE= tal como la entiende \s\cite{sqlite:sql}\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m\citep{mysql:sql} y \p\citep{postgre:sql}
 
 \begin{Verbatim}[frame=leftline, framesep=3mm]
   CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
@@ -240,9 +239,9 @@ Los parámetros\verb= TEMPORARY= y\verb= TEMP= se usan indistintamente para crea
 
 La siguiente sección a estudiar es la definición de columnas y restricciones de columna que se diferencian de las restricciones de tabla en que las primeras se definen junta a la definición de columna y solo se pueden hacer sobre una única columna, en cambio las restricciones de tabla se hacen después de las definiciones de columnas y estas pueden referirse a un grupo de columnas.\\
 
-Como primer diferencia veremos las tipos de datos tienen diferentes nombres y significados, pero esto sera tratado mas adelante\footnote{referenciar a alguna parte de la tesis}. La clausula\verb= DEFAULT= en este caso esta limitada por \m que solo acepta valores constantes, es decir no se podria usar funciones como \verb= NOW()= con la excepción de que se puede poner\verb= CURRENT_TIMESTAMP= como\verb= DEFAULT= para una columna del tipo\verb= TIMESTAMP=.\\
+Como primer diferencia veremos las tipos de datos tienen diferentes nombres y significados, pero esto ya fue tratado en la sección \fullref{subsection:datatypes}. La clausula\verb= DEFAULT= en este caso esta limitada por \m que solo acepta valores constantes, es decir no se podria usar funciones como \verb= NOW()= con la excepción de que se puede poner\verb= CURRENT_TIMESTAMP= como\verb= DEFAULT= para una columna del tipo\verb= TIMESTAMP=.\\
 
-El parámetro\verb= COLLATE= también presenta diferencias, pero es en este caso es \p el que limita ya que no acepta\verb= COLLATE= en la definición de columna por lo que no sera adoptada en la especificación de \cc. En \p se puede especificar el ``collate'' a usar sobre todas las tablas en la creación de la base de datos. \verb= UNIQUE= y \verb= PRIMARY KEY= como restricción de columna no acepta ningún modificador en \m, por lo tanto se obviara el modificador\verb= <conflict cause>= de\s y otros que acepta \p. El parametro \verb= NOT NULL= tampoco acepta ningún modificador en \m, su contra parte el parámetro\verb= NULL= puede ser omitido ya que de no agregarse se toma por defecto que la columna puede aceptar valores nulos. Por ultimo hay que señalar que \m si bien implementa\verb= CHEK <expre>= este no es reconocido en la definición de columna.\\
+El parámetro\verb= COLLATE= también presenta diferencias, pero es en este caso es \p el que limita ya que no acepta\verb= COLLATE= en la definición de columna por lo que no sera adoptada en la especificación de \jj. En \p se puede especificar el ``collate'' a usar sobre todas las tablas en la creación de la base de datos. \verb= UNIQUE= y \verb= PRIMARY KEY= como restricción de columna no acepta ningún modificador en \m, por lo tanto se obviara el modificador\verb= <conflict cause>= de \s y otros que acepta \p. El parametro \verb= NOT NULL= tampoco acepta ningún modificador en \m, su contra parte el parámetro\verb= NULL= puede ser omitido ya que de no agregarse se toma por defecto que la columna puede aceptar valores nulos. Por ultimo hay que señalar que \m si bien implementa\verb= CHEK <expre>= este no es reconocido en la definición de columna.\\
 
 En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m una ultima diferencia la podemos ver en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando.  
 
@@ -293,7 +292,7 @@ De las restricciones de tabla la única a la que no se le podrá especificar un 
    <constraint characteristics> ::=
   [ NOT ] DEFERRABLE [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 \end{Verbatim}
-Los parámetros \verb=MATCH { FULL | PARTIAL | SIMPLE }= son reconocidos en los 3 DBMS, pero en \s no tienen ningún efecto, es decir que estos se pueden especificar pero siempre se tendra que la \verb=FK= se procesara con \verb=MATCH SIMPLE=, con lo que de momento sera parte de la especificación pero hay que tener siempre en cuenta que \s lo procesara de manera diferente. Por ultimo quedan dos diferencias, la primera es que la opción \verb=SET DEFAULT= de \verb=<referential action>= no es soportada por \m; segundo que \verb=<constraint characteristics>= no es soportada por \m.\\
+Los parámetros \verb=MATCH { FULL | PARTIAL | SIMPLE }= son reconocidos en los 3 DBMS, pero en \s no tienen ningún efecto, es decir que estos se pueden especificar pero siempre se tendrá que la \verb=FK= se procesara con \verb=MATCH SIMPLE=, con lo que de momento sera parte de la especificación pero hay que tener siempre en cuenta que \s lo procesara de manera diferente. Por ultimo quedan dos diferencias, la primera es que la opción \verb=SET DEFAULT= de \verb=<referential action>= no es soportada por \m; segundo que \verb=<constraint characteristics>= no es soportada por \m.\\
 
 %------------------------TODO-----------------------------------
 %revisar lo de SET DEFAULT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -369,10 +368,8 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 
 
 
-\subsection{Especificación de UPDATE}
-DMS\\
-
-Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s: 
+\subsubsection{Especificación de UPDATE}
+Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s\cite{sqlite:sql} 
 
 \begin{Verbatim}
   <update statement> ::=
@@ -401,12 +398,13 @@ En este punto encontramos la primer diferencia con los demas DBMS, el elemento \
   <set clause> ::=
   <column name> <equals operator> <expr>
   
-  -----ONLY AVALAYBLE IF ACTIVATED DURING COMPILATION---------
+  -----Solo disponible si se habilito durante la compilación---------
   
-  ORDER BY ... completar
+  [ ORDER BY <ordering-term> ]
+  [ LIMIT <expr> ]
 
 \end{Verbatim}
-Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son reconocidos por \m y \p por lo que serán ignorados en la especificación de el proyecto. Lo demás es de idéntica sintaxis. La especificación final de \jj.
+Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son reconocidos por \m y \p por lo que serán ignorados en la especificación de el proyecto. Lo demás es de idéntica sintaxis salvo por las opciones \verb=ORDER BY= y \verb=LIMIT= que solo están disponibles en \s si durante la compilación de el motor se habilito la opción \verb=SQLITE_ENABLE_UPDATE_DELETE_LIMIT= la cual por defecto esta desactivada y además \p no las reconoce por lo que quedan descartadas. La especificación final de \jj queda como sigue.
 
 \begin{Verbatim}[frame=single, label=sintaxis para UPDATE]
   <update statement> ::=
@@ -426,7 +424,7 @@ Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son
 
 
 
-\subsection{Especificación de INSERT}
+\subsubsection{Especificación de INSERT}
 La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
 
 \begin{Verbatim}[frame=single, label=sintaxis para INSERT]
@@ -454,7 +452,7 @@ La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT=
 
 
 
-\subsection{Especificación de ALTER TABLE} \label{sec:altertable}
+\subsubsection{Especificación de ALTER TABLE} \label{sec:altertable}
 \verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:\\
 
 %\begin{Verbatim}
@@ -490,7 +488,7 @@ Además de estas limitaciones hay algunas mas, al agregar nuevas columnas la def
 
 
 
-\subsection{Especificación de DELETE}
+\subsubsection{Especificación de DELETE}
 La sintaxis de \verb=DELETE= entendida por \s es la siguiente
 \begin{Verbatim}
   <delete statement> ::=
@@ -516,7 +514,7 @@ En ella podemos encontrar una diferencia con las demás motores de bases de dato
 
 
 
-\subsection{Especificación de SELECT}
+\subsubsection{Especificación de SELECT}
 Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas analizamos a continuación \verb=SELECT= tal como es conocido por \s:
 
 \begin{Verbatim}
@@ -611,3 +609,5 @@ Son pocas las incompatibilidades que podemos encontrar, pero existen, la primera
     [ ON <expr> ]
   | USING <left paren> <comma><column name> <right paren>
 \end{Verbatim}
+
+Habiendo definido un dialecto genérico que sea soportado por todos los motores a los que se le esta dando soporte teniendo en cuenta además de la sintaxis de las sentencias a los tipos de datos definidos y las funciones que presentan cada uno de los motores es necesario a continuación diseñar la arquitectura del proyecto atendiendo a las necesidades expuestas en este capitulo, actividad que se desarrollara en el siguiente capitulo. 
