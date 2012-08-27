@@ -17,7 +17,7 @@ Para diseñar \jj como ya se menciono se tomo como base a el patrón de desarrol
   \label{fig:jdbgm:overview}
 \end{figure}
 
-Así que \jj debe ser capaz de hacer dos tareas independientes pero relacionadas, en primer lugar debe proveer el almacenamiento de las sentencias de modo que puedan ser traducidas luego a el dialecto que corresponda y en segundo lugar proveer los métodos necesarios para comunicarse con el motor mediante \jd, podemos observar esquemáticamente la situación en la figura \figpage{fig:jdbgm:closerlook} que nos muestra la idea de independencia existente entre los dos módulos principales que se están exponiendo, el manejador de sentencias es totalmente independiente de la capa intermedia pues de lo que esta encargado es de proveer los métodos necesarios para "armar las sentencias" y traducirlas cuando sea requerido a el dialecto correspondiente, esta traducción lo que hace es convertir la sentencia almacenada a una cadena de texto la cual es entendible por \jd por lo que se podría obviar la capa intermedia que hace transparente su uso y usarlo directamente. En cambio la capa intermedia dependerá de el manejador de sentencias para poder proveer la independencia de dialectos que se quiere lograr y además este solo recibirá las sentencias compatibles con el formato propuesto por \jj por lo que a continuación se procederá a explicar la estructura propuesta para este manejador para que después se pueda explicar correctamente el funcionamiento de la capa intermedia.
+Así que \jj debe ser capaz de hacer dos tareas independientes pero relacionadas, en primer lugar debe proveer el almacenamiento de las sentencias de modo que puedan ser traducidas luego a el dialecto que corresponda y en segundo lugar proveer los métodos necesarios para comunicarse con el motor mediante \jd, podemos observar esquemáticamente la situación en la figura \figpage{fig:jdbgm:closerlook} que nos muestra la idea de independencia existente entre los dos módulos principales que se están exponiendo, el manejador de sentencias es totalmente independiente de la capa intermedia pues de lo que esta encargado es de proveer los métodos necesarios para ``armar las sentencias'' y traducirlas cuando sea requerido a el dialecto correspondiente, esta traducción lo que hace es convertir la sentencia almacenada a una cadena de texto la cual es entendible por \jd por lo que se podría obviar la capa intermedia que hace transparente su uso y usarlo directamente. En cambio la capa intermedia dependerá de el manejador de sentencias para poder proveer la independencia de dialectos que se quiere lograr y además este solo recibirá las sentencias compatibles con el formato propuesto por \jj por lo que a continuación se procederá a explicar la estructura propuesta para este manejador para que después se pueda explicar correctamente el funcionamiento de la capa intermedia.
 
 \begin{figure}
   \centering
@@ -26,7 +26,21 @@ Así que \jj debe ser capaz de hacer dos tareas independientes pero relacionadas
   \label{fig:jdbgm:closerlook}
 \end{figure}
 
-\subsection{Manejador de sentencias}
+\section{Manejador de sentencias}
+Como ya se dijo el manejador de sentencias debe ser capaz de almacenar las sentencias de forma desglosada así que pasemos a ver que se quiere lograr. Como una primer solución podemos pensar que una sentencia como la siguiente ``\verb=nombre_comando parametro opcion1 parametro1 opcion2 parametro2='' que se podría corresponder con la siguiente consulta ``\verb|SELECT * FROM table WHERE table.id=1|'', salvando ciertas reglas de construcción que en este momento no vienen al caso, puede ser almacenado en una clase que se corresponda con el siguiente esquema:
+
+\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
+class Sentencia{
+	nombre_comando;
+	parametro;
+	set_opcion1(parametro1);
+	set_opcion2(parametro2);
+	devolver_sentencia();
+}
+\end{lstlisting}
+Como se ve es una idea bastante sencilla en la que la clase identificara la sentencia y sus opciones correspondientes serán nombres de atributos pues en definitiva lo que nos interesa de estas opciones son los valores que toman o si están presentes o no en la sentencia que se esta armando. Como clase de POO también debe ofrecer métodos para almacenar los valores que tomaran las opciones y es aquí donde empiezan a jugar las reglas dispuestas en el dialecto genérico que fue especificado en el capitulo \ref{capitulo:especificacion}, puesto que las opciones ofrecidas por cada sentencia no pueden ser libremente usadas es necesario que estos métodos restrinjan el modo en que se pueden usar ya sea limitando las posibilidades de el/los métodos o bien usando excepciones para detener la ejecución del programa, una explicación mas detallada del manejo de excepciones se vera en las secciones siguientes, cuando alguna acción ilegal sobre las sentencias ocurra.
+
+Con esto ya se tiene una idea genérica de las clases que se quiere representen a las sentencias y teniendo en cuenta que cada una de estas clases representa a una sentencia diferente con un comportamiento diferente pero con similitudes es necesario recalcar que estas diferentes clases deben presentar las mismas similitudes, por ejemplo supóngase que los objetos \verb|select| y \verb|create| representan las sentencias SQL del mismo nombre las cuales precisan que se les asigne el nombre de la tabla sobre la que se esta trabajando
 
 Java ya nos provee JDBC para acceder a las bases de datos, pero al hacer uso de el es necesario especificar con que motor se esta trabajando, para ejemplificar ello veamos el típico código que debemos escribir para conectarnos a una base de datos.
 
