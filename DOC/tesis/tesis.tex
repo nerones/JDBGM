@@ -1,5 +1,6 @@
 \documentclass[a4paper,fleqn,twoside]{book}
-\usepackage{graphicx,amsmath,amsfonts,psfrag,fancyhdr,layout,appendix,subfig,xspace}
+\usepackage{graphicx,amsmath,amsfonts,psfrag,fancyhdr,layout,appendix,xspace}
+\usepackage[lofdepth,lotdepth]{subfig}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{listings}
@@ -15,15 +16,15 @@
 %\usepackage{chapterbib}
 
 %This change labels of subfig
-\renewcommand{\thesubfigure}{\alph{subfigure}\arabic{subfiggroup}}
+%\renewcommand{\thesubfigure}{\alph{subfigure}\arabic{subfiggroup}}
 \captionsetup[subfigure]{labelformat=simple,labelsep=colon, listofformat=subsimple}
 %\captionsetup{lofdepth=2} This is in order to list the subfigures in the LOF
-\makeatletter
- \renewcommand{\p@subfigure}{}
+%\makeatletter
+ %\renewcommand{\p@subfigure}{}
   %Esto lo agrego yo para tener subfiguras a1, b1, ... a2, b2, ... 
   %Se reinicia cada vez que una nueva figura es convocada (como es debido).
-  \newcounter{subfiggroup}[figure] 
-\makeatother
+  %\newcounter{subfiggroup}[figure] 
+%\makeatother
 
 
 \usepackage{epsfig}
