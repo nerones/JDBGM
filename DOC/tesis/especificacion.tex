@@ -36,7 +36,7 @@ Cuando se habla de ocultar el acceso a el motor se esta haciendo referencia a qu
 \end{enumerate}
 
 
-\section{Eliminando dialectos}
+\section{Eliminando dialectos} \label{seccion:especificacion:dialectos}
 En el capitulo anterior se comento que parte del desafío de nuestro proyecto era lidiar con los diferentes  dialectos utilizados por cada motor por lo que a continuación analizaremos como es que pretendemos sortear esta dificultad.
 
 JDBC nos provee de la clase \verb=Statement=\footnote{Posteriormente explicare como es que se trabaja con JDBC por ahora interesa solo lo expuesto} la cual posee los métodos \verb=executeUpdate= y \verb=executeQuery= los cuales permiten enviar sentencias SQL al motor de base de datos. El envío de estas sentencia se hace mediante cadenas de texto por lo que se nos presenta el problema de que estas cadenas ``estáticas'' dependen, según cuan complejas sean las sentencias, de el motor en particular que se este usando es por ello que en este proyecto se opto por generar las sentencias sobre demanda, es decir se pretende que las sentencias se almacenen desglosadas de modo que su sintaxis quede expuesta y pueda luego ser volcada en una cadena de texto cuando sean requeridas por el programador. El almacenar de este modo las sentencias no asegura tampoco la independencia de los dialectos usados pero nos permite manejar el modo en que las sentencias son convertidas en cadenas de textos, entonces si se define un nuevo dialecto que sea compatible con los dialectos usados por los otros motores y ajustando la estructura de datos que se va a utilizar para las sentencias a este dialecto se puede luego mediante las reglas adecuadas "traducir" la sentencia a su dialecto correspondiente. 
