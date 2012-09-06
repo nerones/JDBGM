@@ -57,12 +57,12 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 		 * should this shiza be in MySQLDataTypes??
 		 * 
 		 */
-		if (column.getDefaultValue() != null) {
+		if (column.getColumnDefaultValue() != null) {
 			if (column.getType() == java.sql.Types.VARCHAR
 					|| column.getType() == java.sql.Types.CHAR) {
-				ret += " DEFAULT '" + column.getDefaultValue() + "' ";
+				ret += " DEFAULT '" + column.getColumnDefaultValue() + "' ";
 			} else
-				ret += " DEFAULT " + column.getDefaultValue();
+				ret += " DEFAULT " + column.getColumnDefaultValue();
 		}
 		return ret;
 		

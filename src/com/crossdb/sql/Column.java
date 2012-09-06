@@ -13,75 +13,77 @@ import java.sql.Types;
  * </p>
  * 
  * @author Travis Reeder - travis@spaceprogram.com
- * @author Jorge P&eacute;rez Burgos
- * @author jorge.perez@adaptia.net - http://www.adaptia.net (C) 2003
+ * @author Jorge P&eacute;rez Burgos - jorge.perez@adaptia.net - http://www.adaptia.net (C) 2003
  * @author Nelson Efrain A. Cruz
  * @version 0.2
  */
 public class Column {
 
 	private String columnName = null;
+	
 	/**
-	 * Indica si la columna acepta valores nulos.
+	 * Indica si la columna acepta valores nulos, tomando el mismo valor por
+	 * defecto que ResultSetMetaData.columnNullable que es 1 y equivale a nullable.
 	 */
-	private int is_nullable = ResultSetMetaData.columnNullable; // equivalent to
-	// java.sql.ResultSetMetaData
-	// nullable fields
+	private int is_nullable = ResultSetMetaData.columnNullable;
+//	TODO review how to handle dataTypes
 	/**
 	 * Identifica el tipo de dato de la columna
 	 */
 	private int type = 0; // maps to java.sql.Types
-	/**
-	 * Tamaño por defecto para las cadenas (CHAR, VARCHAR)
-	 */
-	private int varcharSize = 50; // default 50
 	
-	private int columnIndex = 0;
+	/**
+	 * Tamaño por defecto para las cadenas de texto variable como CHAR y VARCHAR
+	 */
+	private int varcharSize = 50;
+	
+	//private int columnIndex = 0;
+	
 	/**
 	 * Indica si la columna es clave primaria o no.
 	 */
 	private boolean isPrimaryKey = false;
+	
 	/**
 	 * Indica si la columna  es clave foranea o no.
 	 */
 	private boolean isForeignKey = false;
-	// If a column is foreign key we need the the foreign table and the foreign
-	// primary key
+
 	/**
 	 * Tabla a la que apunta la columna en el caso de que se trate de una
 	 * columna que sea clave foranea
 	 */
 	private String foreignTable = null;
+	
 	/**
 	 * Nombre de la columna que es clave primaria de la tabla a la que apunta esta columna, 
 	 * en el caso de que se trate de una columna que sea clave foranea
 	 */
 	private String foreignPrimaryKey = null;
 
-	// auto inc variables
-	/**
-	 * Si la columna presenta la restricción AUTOINCREMENT
-	 */
 	/*
 	 * Tener en cuenta que en SQLite solo puede ser autoincrement si es clave
-	 * primaria
-	 */// TODO es soportado por SQLite pero solo cuando es INTEGER PRIMARY KEY eliminarlo?
-	private boolean isAutoIncrement = false;
-	/*
-	 * variables de ajuste para AUTOINCREMENT no creo que sea soportado por SQLite
+	 * primaria en postgresql no existe la cláusula autoincrement así que no se
+	 * usa en este proyecto
 	 */
-	private int start_with = 1;
-	private int increment_by = 1;
+	//private boolean isAutoIncrement = false;
+	
+	/*
+	 * variables de ajuste para AUTOINCREMENT que no son soportados por SQLite
+	 */
+	//private int start_with = 1;
+	//private int increment_by = 1;
+	
 	/*
 	 *Sequence lo vi en oracle es para designar algo asi como un generador de "secuencias"
 	 *para agregar a las tablas, no quedo claro: se crea una sequence y esta genera  
 	 */
-	private String sequence = null;
+	//private String sequence = null;
 	
 	/*
-	 * creo que es el valor por defecto pero tengo duda
+	 * El valor por defecto de la columna que solo puede ser un valor constante.
 	 */
-	private String col_default = null;
+	private String columnDefaultValue = null;
 	
 	/**
 	 * Si la columna es del tipo UNIQUE
@@ -89,11 +91,17 @@ public class Column {
 	private boolean unique = false;
 	
 	/**
-	 * un valor para la columna
+	 * Si bien esta clase define una columna, podemos usar una lista de columnas
+	 * para almacenar los valores de cada columna correspondientes a una fila de
+	 * una tabla, por lo que la columna también puede almacenar un valor
 	 */
 	private Object columnValue;
+	
 	/**
-	 * Sirve para identificar si el valor que toma la ciolumna no ha de ser alterado
+	 * Sirve para identificar si el valor que toma la columna no ha de ser alterado,
+	 * por ejemplo si se quiere pasar un numero como string y que no sea convertido
+	 * en integer por ejemplo
+	 * 
 	 */
 	private boolean noAlter;
 	
@@ -103,8 +111,8 @@ public class Column {
 	 * Crea una columna con un nombre y un valor, usado principalmente cuando creamos
 	 * una columna para agregar a una sentencia INSERT o UPDATE
 	 * 
-	 * @param columnName - el nombre de la columna
-	 * @param columnValue - el valor de la columna
+	 * @param columnName el nombre de la columna
+	 * @param columnValue el valor de la columna
 	 */
 	public Column(String columnName, Object columnValue) {
 		this.columnName = columnName;
@@ -114,19 +122,18 @@ public class Column {
 	/*
 	 * No se para que es el columnIndex
 	 */
-	public Column(int columnIndex) {
-		this.columnIndex = columnIndex;
-	}
+//	public Column(int columnIndex) {
+//		this.columnIndex = columnIndex;
+//	}
 
 	/**
-	 * Crea una columna con el nombre indicado en name y los demas valores a sus
+	 * Crea una columna con el nombre indicado y los demás valores a sus
 	 * valores por defecto.
 	 * 
-	 * @param name
-	 *            - el nombre de la columna.
+	 * @param columnName el nombre de la columna.
 	 */
-	public Column(String name) {
-		this.columnName = name;
+	public Column(String columnName) {
+		this.columnName = columnName;
 	}
 
 	/**
@@ -134,10 +141,9 @@ public class Column {
 	 * dado por java.sql.Types.
 	 * 
 	 * @param name
-	 *            - el nombre de la columna
+	 *             el nombre de la columna
 	 * @param type
-	 *            - el tipo de dato de la columna tomado de
-	 *            {@link java.sql.Types}
+	 *            el tipo de dato de la columna tomado de {@link java.sql.Types}
 	 */
 	public Column(String name, int type) {
 		this.columnName = name;
@@ -146,7 +152,7 @@ public class Column {
 
 	/**
 	 * Crea un objeto Columna pero con la posibilidad de definir si es clave
-	 * primaria y si tiene la opción de autoincrementar activa, toma el tipo de
+	 * primaria, toma el tipo de
 	 * datos desde la clase {@link java.sql.Types}
 	 * 
 	 * @param name
@@ -155,30 +161,44 @@ public class Column {
 	 *            El tipo de dato para la columna
 	 * @param isPK
 	 *            Si es clave primaria
-	 * @param isAutoIncr
-	 *            si tiene activa la opción de autoincrementar
 	 */
-	public Column(String name, int type, boolean isPK, boolean isAutoIncr) {
+	public Column(String name, int type, boolean isPK) {
 		this.columnName = name;
 		this.type = type;
 		isPrimaryKey = isPK;
-		isAutoIncrement = isAutoIncr;
+		//isAutoIncrement = isAutoIncr;
 	}
 	
 	public Object getColumnValue() {
 		return columnValue;
 	}
 
+	/**
+	 * Pone un valor para la columna, que se debe corresponder con el tipo
+	 * declarado para la misma, que luego será usado para ingresar filas de datos
+	 * a la tabla correspondiente. 
+	 * @param value Un valor para la columna
+	 */
 	public void setColumnValue(Object value) {
 		this.columnValue = value;
 	}
 	
 	
-
+	/**
+	 * @see #setNoAlter(boolean)
+	 * 
+	 */
 	public boolean isNoAlter() {
 		return noAlter;
 	}
 
+	/**
+	 * Si se desea que el valor de la columna ingresado mediante {@link #setColumnValue(Object)}
+	 * no sea modificado a la hora de convertir la columna a una cadena de texto
+	 * se debe poner en true esta bandera.
+	 * 
+	 * @param noAlter indica si el valor de la columna no debe ser alterado
+	 */
 	public void setNoAlter(boolean noAlter) {
 		this.noAlter = noAlter;
 	}
@@ -224,47 +244,47 @@ public class Column {
 		return isForeignKey;
 	}
 	
-	/**
+	/*
 	 * Para saber si la columna es AUTOINCREMENT
 	 * @return true si es AUTOINCREMENT, false en caso contrarop
 	 */
-	public boolean isAutoIncrement() {
-		return isAutoIncrement;
-	}
+//	public boolean isAutoIncrement() {
+//		return isAutoIncrement;
+//	}
+//
+//	public void setAutoIncrement(boolean b) {
+//		isAutoIncrement = b;
+//	}
 
-	public void setAutoIncrement(boolean b) {
-		isAutoIncrement = b;
-	}
-
-	public void setStartWith(int sw) {
-		start_with = sw;
-	}
-
-	public int getStartWith() {
-		return start_with;
-	}
-
-	public void setIncrementBy(int ib) {
-		increment_by = ib;
-	}
-
-	public int getIncrementBy() {
-		return increment_by;
-	}
+//	public void setStartWith(int sw) {
+//		start_with = sw;
+//	}
+//
+//	public int getStartWith() {
+//		return start_with;
+//	}
+//
+//	public void setIncrementBy(int ib) {
+//		increment_by = ib;
+//	}
+//
+//	public int getIncrementBy() {
+//		return increment_by;
+//	}
 	// TODO mover setSequence SQLite lo soporta?
-	/**
+	/*
 	 * Sets the sequence used for this column if it's an auto increment column.
 	 */
-	public void setSequence(String sequence_name) {
-		sequence = sequence_name;
-	}
+//	public void setSequence(String sequence_name) {
+//		sequence = sequence_name;
+//	}
 
-	public String getSequence() {
-		return sequence;
-	}
+//	public String getSequence() {
+//		return sequence;
+//	}
 
-	public String getDefaultValue() {
-		return col_default;
+	public String getColumnDefaultValue() {
+		return columnDefaultValue;
 	}
 	
 	
@@ -280,7 +300,10 @@ public class Column {
 		this.unique = unique;
 	}
 
-	
+	/**
+	 * @see #setDefaultSize(int)
+	 * @return El tamaño por defecto para los tipos de datos que lo soporten
+	 */
 	public int getDefaultSize() {
 		return varcharSize;
 	}
@@ -319,7 +342,7 @@ public class Column {
 	/**
 	 * Especifica el tipo de datos de la columna.
 	 * 
-	 * @param t - el tipo de dato tomado de {@link Types}
+	 * @param t el tipo de dato tomado de {@link Types}
 	 */
 	public void setType(int t) {
 		type = t;
@@ -330,16 +353,23 @@ public class Column {
 	 * tipos de dato como CHAR, de no ser necesario especificar un tamaño para el tipo
 	 * ha de usarse {@link #setType(int)}.
 	 * 
-	 * @param t - el tipo de dato tomado de {@link Types}
-	 * @param size - el tamaño del tipo
+	 * @param t el tipo de dato tomado de {@link Types}
+	 * @param size el tamaño del tipo
 	 */
 	public void setType(int t, int size) {
 		type = t;
 		this.varcharSize = size;
 	}
 
+	/**
+	 * Un valor por defecto para los elementos de las filas que se vayan
+	 * agregando a esta columna que solo pueden ser un valor constante como un
+	 * numero o una cadena de caracteres.
+	 * 
+	 * @param s el valor constante por defecto de la columna
+	 */
 	public void setDefaultValue(String s) {
-		col_default = s;
+		columnDefaultValue = s;
 	}
 
 	/**
@@ -371,7 +401,7 @@ public class Column {
 	 * 
 	 * Agrega el nombre de la tabla a la que apunta la clave foranea de ser la columna
 	 * una clave foranea. Tener en cuenta que se debe poner en verdadero {@link #isForeignKey} y este
-	 * metodo no lo hace por eso
+	 * método no lo hace por eso
 	 * se debe usar algunos de los métodos {@link #setForeignKey(String)} o {@link #setForeignKey(String, String)}
 	 * 
 	 * @param foreignTable
@@ -393,8 +423,7 @@ public class Column {
 	 * 
 	 * @see #isForeignKey()
 	 * @see #setForeignKey(boolean)
-	 * @see #setForeignPrimaryKey(String)
-	 * @see #setForeignTable(String)
+	 * 
 	 */
 	public void setForeignKey(String foreignTable, String foreignPK) {
 		isForeignKey = true;
@@ -414,8 +443,7 @@ public class Column {
 	 * 
 	 * @see #isForeignKey()
 	 * @see #setForeignKey(boolean)
-	 * @see #setForeignPrimaryKey(String)
-	 * @see #setForeignTable(String)
+	 * 
 	 */
 	public void setForeignKey(String foreignTable) {
 		isForeignKey = true;

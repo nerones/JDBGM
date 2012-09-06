@@ -41,10 +41,10 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 //				query1 += " REFERENCES "+df.getForeignTable() + "(" + df.getForeignPrimaryKey() + ")"; 
 			if (df.isNullable() == 0)	
 				query1 += " NOT NULL";
-			if (df.getDefaultValue() != null) {
+			if (df.getColumnDefaultValue() != null) {
 					if (!(df.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
 						// Can't use functions like Now() in defaults in mysql
-						query1 += " DEFAULT " + df.getDefaultValue();
+						query1 += " DEFAULT " + df.getColumnDefaultValue();
 					}
 
 				}

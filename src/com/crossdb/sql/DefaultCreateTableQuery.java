@@ -116,13 +116,13 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 		} 
 		if (column.isNullable() == 0)
 			query1 += " NOT NULL";
-		if (column.getDefaultValue() != null) {
+		if (column.getColumnDefaultValue() != null) {
 			if (column.getType() == java.sql.Types.VARCHAR
 					|| column.getType() == java.sql.Types.CHAR) {
-				query1 += " DEFAULT '" + column.getDefaultValue() + "' ";}
+				query1 += " DEFAULT '" + column.getColumnDefaultValue() + "' ";}
 			else if (!(column.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
 				// Can't use functions like Now() in defaults in mysql
-				query1 += " DEFAULT " + column.getDefaultValue();
+				query1 += " DEFAULT " + column.getColumnDefaultValue();
 			}
 
 		}

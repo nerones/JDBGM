@@ -118,12 +118,12 @@ public class SQLServerCreateTableQuery extends DefaultCreateTableQuery {
             }
             else
                 query1 += " NOT NULL ";
-            if (df.getDefaultValue() != null) {
+            if (df.getColumnDefaultValue() != null) {
                 if (df.getType() == java.sql.Types.VARCHAR) {
-                    query1 += " DEFAULT '" + df.getDefaultValue() + "'";
+                    query1 += " DEFAULT '" + df.getColumnDefaultValue() + "'";
                 }
                 else {
-                    query1 += " DEFAULT " + df.getDefaultValue();
+                    query1 += " DEFAULT " + df.getColumnDefaultValue();
                 }
             }
             else if (auto_defaults) { // set defaults automatically

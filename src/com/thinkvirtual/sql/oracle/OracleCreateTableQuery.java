@@ -85,10 +85,10 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 
 			}
 
-			if(df.getDefaultValue() != null){
+			if(df.getColumnDefaultValue() != null){
 				// "datetime")){
 				// Can't use functions like Now() in defaults in mysql
-				query1 += " DEFAULT " + df.getDefaultValue();
+				query1 += " DEFAULT " + df.getColumnDefaultValue();
 
 
 
@@ -161,10 +161,10 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 
 			}
 
-			if(df.getDefaultValue() != null){
+			if(df.getColumnDefaultValue() != null){
 				// "datetime")){
 				// Can't use functions like Now() in defaults in mysql
-				query1 += " DEFAULT " + df.getDefaultValue();
+				query1 += " DEFAULT " + df.getColumnDefaultValue();
 
 
 
