@@ -22,7 +22,13 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected boolean isTemporary = false;
     protected boolean hasFK = false; 
     protected ArrayList<String[]> foreignKeys = new ArrayList<String[]>();
+    
+    /**
+     * La clase que mapea los tipos de datos de {@link java.sql.Types} a los tipos
+     * que usa cada motor.
+     */
     protected DataTypes datatype;
+    
     /**
      * Cuenta la cantidad de columnas que forman la clave Primaria (pk) tener en
      * cuenta que si su valor final es 0 se trata de una pk formada por una única
@@ -31,12 +37,20 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
      * columnas.  
      */
     protected int pkCounter = -1;
+    
     /**
      * De tener la tabla una clave primaria (pk) compuesta por mas de una columna
      * esta variable guarda la lista de columnas que la conforman en forma de String.
      */
     protected String compositePrimaryKey = "";
 
+    /**
+     * El constructor obliga a que se le pase una implementación especifica de
+     * {@link DataTypes} para que después la clase sepa como debe mapear los
+     * tipos de datos de JDBC a los de cada motor en especifico.
+     * 
+     * @param datatype la clase que sirve para mapear los tipos de datos.
+     */
     public DefaultCreateTableQuery(DataTypes datatype) {
         columns = new ArrayList<Column>();
         this.datatype = datatype;
@@ -61,6 +75,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     	if (pkCounter > 0) return true;
     	else return false;
     }
+    
     //TODO soporte para multiples claves foraneas quizas deba usar otra estructura de datos
     //TODO soporte para FK compuesta (multiples columnas)
     protected void setForeignKey(Column column){
@@ -112,7 +127,8 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 		if (column.isUnique()) query1 += " UNIQUE";
 		if (column.isPrimaryKey() && !isCompositePK()){
 			query1 += " PRIMARY KEY";
-			if (column.isAutoIncrement()) query1 += " AUTO_INCREMENT";
+			//Por el momento se elimina la opción de crear una  PK con autoincrement
+			//if (column.isAutoIncrement()) query1 += " AUTO_INCREMENT";
 		} 
 		if (column.isNullable() == 0)
 			query1 += " NOT NULL";

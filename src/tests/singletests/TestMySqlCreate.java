@@ -92,7 +92,7 @@ public class TestMySqlCreate {
 		ct.setName("Animales2");
 		Column col = new Column("Genero", Types.CHAR, false, false);
 		col.setUnique(true);
-		col.setDefaultValue("'RATA'");
+		col.setDefaultColumnValue("'RATA'");
 		ct.addColumn(col );
 		ct.addColumn(new Column("Id", Types.INTEGER, true, false));
 		assertEquals("CREATE TABLE Animales2 ( Genero CHAR(50) UNIQUE DEFAULT 'RATA', Id INTEGER PRIMARY KEY )", ct.toString());

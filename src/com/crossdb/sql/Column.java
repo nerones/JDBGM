@@ -27,6 +27,7 @@ public class Column {
 	 */
 	private int is_nullable = ResultSetMetaData.columnNullable;
 //	TODO review how to handle dataTypes
+	
 	/**
 	 * Identifica el tipo de dato de la columna
 	 */
@@ -80,7 +81,7 @@ public class Column {
 	 */
 	//private String sequence = null;
 	
-	/*
+	/**
 	 * El valor por defecto de la columna que solo puede ser un valor constante.
 	 */
 	private String columnDefaultValue = null;
@@ -295,7 +296,12 @@ public class Column {
 	public boolean isUnique() {
 		return unique;
 	}
-
+	
+	/**
+	 * Si se pone en true esta bander la columna tendra la restricción {@code UNIQUE},
+	 * el valor por defecto es false.
+	 * @param unique True si se desea que la columna sea UNIQUE
+	 */
 	public void setUnique(boolean unique) {
 		this.unique = unique;
 	}
@@ -368,7 +374,7 @@ public class Column {
 	 * 
 	 * @param s el valor constante por defecto de la columna
 	 */
-	public void setDefaultValue(String s) {
+	public void setDefaultColumnValue(String s) {
 		columnDefaultValue = s;
 	}
 

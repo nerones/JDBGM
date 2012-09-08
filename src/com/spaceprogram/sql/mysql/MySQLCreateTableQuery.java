@@ -36,7 +36,8 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 			if (df.isUnique()) query1 += " UNIQUE";
 			if (df.isPrimaryKey() && !isCompositePK()){
 				query1 += " PRIMARY KEY";
-				if (df.isAutoIncrement()) query1 += " AUTO_INCREMENT";
+				//No existe autoincrement por ahora en JBGM
+				//if (df.isAutoIncrement()) query1 += " AUTO_INCREMENT";
 			} 
 			if (df.isNullable() == 0)
 				query1 += " NOT NULL";

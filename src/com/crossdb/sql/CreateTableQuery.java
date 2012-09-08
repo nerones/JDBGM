@@ -42,6 +42,22 @@ public interface CreateTableQuery extends UpdateStatement{
 	 */
 	void setTemporary(boolean istemporary);
 
+	/*
+	 * No se agrega, al menos por ahora la opción CREATE TABLE table_name AS SELECT
+	 * por algunas incompatibilidades, como por ejemplo en SQLite de agregarse la opción
+	 * AS SELECT no se pueden agregar mas columnas aparte de las devueltas por select
+	 * en cambio en MySQL y PostgreSQL si se puede. quizás haya algún mode de sortear
+	 * esto. 
+	 */
+	/**
+	 * Se puede crear una tabla nueva a partir de una sentencia {@code SELECT}
+	 * que se le pasa como parámetro. Pero si es especificada esta fuente para
+	 * la sentencia {@code CREATE TABLE} no es posible poner definiciones de
+	 * columnas.
+	 * @param select la sentencia select fuente para crear la nueva tabla.
+	 */
+	void setSelectStatementSource( SelectQuery select);
+	
 	/**
 	 * Añade las columnas que contendrá la tabla a ser creada, las características
 	 * de las columnas se establecen en la clase {@link Column}-
@@ -49,20 +65,13 @@ public interface CreateTableQuery extends UpdateStatement{
 	 */
 	void addColumn(Column c);
 	
-	/*
-	 * No se agrega, al menos por ahora la opción CREATE TABLE table_name AS SELECT
-	 * por algunas incompatibilidades, como por ejemplo en SQLite de agregarse la opción
-	 * AS SELECT no se pueden agregar mas columnas aparte de las devueltas por select
-	 * en cambio en MySQL y PostgreSQL si se puede. quizás haya algun mode de sortear
-	 * esto. 
-	 */
+	
 	
 	boolean isCompositePK();
 	
 	String getCompositePK();
-	// TODO soportan las demas la opcion AS select_sentence
 
-	/**
+	/*
 	 * This is used for dbs like Oracle and SAP db, but needs to be implemented
 	 * for all dbs for cross db compatability.
 	 * 
