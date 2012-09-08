@@ -38,21 +38,21 @@ import java.util.Vector;
  */
 public class TableConstraint {
 	
-	public static int TYPE_PRIMARY_KEY = 1;
-	public static int TYPE_FOREIGN_KEY = 2;
-	public static int TYPE_UNIQUE = 3;
+	public static final int TYPE_PRIMARY_KEY = 1;
+	public static final int TYPE_FOREIGN_KEY = 2;
+	public static final int TYPE_UNIQUE = 3;
 	
-	public static int MATCH_FULL = 4;
-	public static int MATCH_PARTIAL = 5;
-	public static int MATCH_SIMPLE = 6;
+	public static final int MATCH_FULL = 4;
+	public static final int MATCH_PARTIAL = 5;
+	public static final int MATCH_SIMPLE = 6;
 	
-	public static int TRIGGERED_ON_UPDATE = 11;
-	public static int TRIGGERED_ON_DELETE = 12;
+	public static final int TRIGGERED_ON_UPDATE = 11;
+	public static final int TRIGGERED_ON_DELETE = 12;
 	
-	public static int REFERENTIAL_ACTION_CASCADE = 7;
-	public static int REFERENTIAL_ACTION_SET_NULL = 8;
-	public static int REFERENTIAL_ACTION_RESTRICT = 9;
-	public static int REFERENTIAL_ACTION_NO_ACTION = 10;
+	public static final int REFERENTIAL_ACTION_CASCADE = 7;
+	public static final int REFERENTIAL_ACTION_SET_NULL = 8;
+	public static final int REFERENTIAL_ACTION_RESTRICT = 9;
+	public static final int REFERENTIAL_ACTION_NO_ACTION = 10;
 	
 	
 	/**
@@ -73,7 +73,7 @@ public class TableConstraint {
 	 * de las variables estáticas declaradas en esta clase.
 	 */
 	private int constraintType = 0;
-	private String constraintName;
+	private String constraintName = null;
 	private int matchType= 0;
 	private int firstTriggeredAction = 0;
 	private int firstReferentialAction = 0;
@@ -165,10 +165,94 @@ public class TableConstraint {
 		this.constraintName = constraintName;
 	}
 	
+	private String matchTypeAsString(int matchType) {
+		switch (matchType) {
+		case MATCH_FULL:
+			return " MATCH FULL";
+			
+		case MATCH_PARTIAL:
+			return " MATCH PARTIAL";
+		case MATCH_SIMPLE:
+			return " MATCH SIMPLE";
+		default:
+			throw new RuntimeException("No se especifico un valor valido para" +
+					"matchType, referirse a la documentación para mas detalle");
+		}
+	}
+	
+	private String referentialActionAsString(int referentialAction) {
+		switch (referentialAction) {
+		case REFERENTIAL_ACTION_CASCADE:
+			return " CASCADE";
+			
+		case REFERENTIAL_ACTION_NO_ACTION:
+			return " NO ACTION";
+		case REFERENTIAL_ACTION_RESTRICT:
+			return " RESTRICT";
+		case REFERENTIAL_ACTION_SET_NULL:
+			return " SET NULL";
+		default:
+			throw new RuntimeException("No se especifico un valor valido para" +
+					"referentialAction, referirse a la documentación para mas detalle");
+		}
+	}
+	
+	private String triggeredActionAsString(int triggeredAction){
+		switch (triggeredAction) {
+		case TRIGGERED_ON_UPDATE:
+			return " ON UPDATE";
+		case TRIGGERED_ON_DELETE:
+			return " ON DELETE";
+		default:
+			throw new RuntimeException("No se especifico un valor valido para" +
+					"triggeredAction, referirse a la documentación para mas detalle");
+		}
+	}
 	public String toString(){
-		
-		
-		return null;
+		String query_string = "";
+		if (constraintName != null) query_string += "CONSTRAINT "+ constraintName;
+		if ( (columns == null) || (columns.size() == 0) ) 
+			throw new RuntimeException("No se agregaron columnas a la restricción no se puede construir.");
+		/*
+		 * Extraigo la primer columna de la lista de columnas para poder armar 
+		 * en un ciclo la lista de columnas del modo (element,element,element)
+		 */
+		Column firstColumn = columns.remove(0);
+		switch (constraintType){
+		case TYPE_UNIQUE:
+			//Column firstColumn = columns.remove(0);
+			query_string += " UNIQUE (" + firstColumn.getName();
+			for (Column column: columns){
+				query_string += " ," + column.getName();
+			}
+			return query_string + " )";
+		case TYPE_PRIMARY_KEY:
+			//Column firstColumn = columns.remove(0);
+			query_string += " PRIMARY KEY (" + firstColumn.getName();
+			for (Column column: columns){
+				query_string += " " + column.getName();
+			}
+			return query_string + " )";
+		case TYPE_FOREIGN_KEY:
+			//Column firstColumn = columns.remove(0);
+			query_string += " FOREIGN KEY (" + firstColumn.getName();
+			String referencedColumnsAsString = "("+ firstColumn.getName();
+			for (Column column: columns){
+				query_string += " ," + column.getName();
+				referencedColumnsAsString += " ," + column.getForeignPrimaryKey();
+			}
+			query_string += " ) REFERENCES " + firstColumn.getForeignTable() 
+					+ referencedColumnsAsString + ")";
+			if (matchType != 0) query_string += matchTypeAsString(matchType) +" ";
+			if ( firstTriggeredAction != 0 ) query_string += triggeredActionAsString(firstTriggeredAction) + 
+					referentialActionAsString(firstReferentialAction);
+			if (secondTriggeredAction != 0 ) query_string += triggeredActionAsString(secondTriggeredAction) +
+					referentialActionAsString(secondReferentialAction);
+			return query_string;
+		default:
+			throw new RuntimeException("No se especifico un valor valido para" +
+					"constraintType, referirse a la documentación para mas detalle");
+		}
 	}
 	
 }
