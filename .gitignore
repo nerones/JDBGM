@@ -21,7 +21,7 @@ AsistenciaAlumnos
 doc
 data-sql/
 DBTable.java
-
+*~
 MyTableModel.java
 *.synctex.gz
 *.dia~
