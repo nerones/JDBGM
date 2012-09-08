@@ -20,9 +20,11 @@ package tests.singletests;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.crossdb.sql.Column;
 import com.crossdb.sql.TableConstraint;
 
 /**
@@ -34,7 +36,15 @@ public class TestTableConstraint {
 	
 	@Before
 	public void setUp(){
-		tableConstraint = new TableConstraint();
+		tableConstraint = new TableConstraint(TableConstraint.TYPE_FOREIGN_KEY);
+		
+	}
+	
+	@Test
+	public void testPKConstraint(){
+		tableConstraint = new TableConstraint(TableConstraint.TYPE_PRIMARY_KEY, new Column("column1"));
+		Assert.assertEquals(" PRIMARY KEY (column1 )", tableConstraint.toString());
+		//tableConstraint.toString();
 	}
 
 }
