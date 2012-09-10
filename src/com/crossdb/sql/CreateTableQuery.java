@@ -32,7 +32,7 @@ import java.util.Vector;
  * 
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz
- * @version 0.2
+ * @version 0.5
  */
 public interface CreateTableQuery extends UpdateStatement{
 	
@@ -67,8 +67,15 @@ public interface CreateTableQuery extends UpdateStatement{
 	
 	/**
 	 * Añade las columnas que contendrá la tabla a ser creada, las características
-	 * de las columnas se establecen en la clase {@link Column}-
+	 * de las columnas se establecen en la clase {@link Column}, al añadir las clases
+	 * con este método solo se añadirá la definición de columna cualquier restricción
+	 * debe ser agregada mediante una {@link TableConstraint} o a través de los métodos
+	 * específicos para añadir restricciones.
+	 * 
 	 * @param c La columna a ser añadida en la tabla.
+	 * @see #addPrimaryKeyColumn(Column)
+	 * @see #addForeignKeyColumn(Column)
+	 * @see #addUniqueColumn(Column)
 	 */
 	void addColumn(Column c);
 	
@@ -76,22 +83,88 @@ public interface CreateTableQuery extends UpdateStatement{
 	 * Agrega una restricción de tabla pudiendo ser de cualquiera de los tipos
 	 * internos que se define para {@link TableConstraint}, hay que tener en
 	 * cuenta que una tabla solo puede tener una restricción del tipo PK y varias
-	 * del tipo FK y UNIQUE.
+	 * del tipo FK y UNIQUE. Las columnas que se agreguen mediante este método serán
+	 * automáticamente agregadas a la lista de columnas de la tabla revisando
+	 * previamente si estas no fueron ya agregadas. Y también revisa que no se este
+	 * agregando mas de una clave primaria.
 	 * 
 	 * @param tableConstraint La restricción de tabla que se quiere agregar.
 	 */
 	void addTableConstraint(TableConstraint tableConstraint);
 	
+	/**
+	 * Permite agregar una columna como clave primaria, internamente arma una
+	 * {@link TableConstraint} con la columna, si se desea poner un nombre a
+	 * la restricción se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param pkcolumn La columna que será clave primaria.
+	 * @see #addTableConstraint(TableConstraint)
+	 */
 	void addPrimaryKeyColumn(Column pkcolumn);
+	
+	/**
+	 * Permite agregar una columna como clave primaria y con la restricción {@code AUTOINCREMENT} siendo este
+	 * el único método con el que se puede realizar tal acción, internamente arma una
+	 * {@link TableConstraint} con la columna, si se desea poner un nombre a
+	 * la restricción se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param autoPKColumn La columna que será clave primaria y autoincrement.
+	 */
+	void addAutoincrementPrimaryKeyColumn(Column autoPKColumn);
+	
+	/**
+	 * Permite agregar una lista de columnas como clave primaria, internamente arma una
+	 * {@link TableConstraint} con las columnas, si se desea poner un nombre a
+	 * la restricción se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param pkcolumns Las columnas que serán clave primaria compuesta.
+	 * @see #addTableConstraint(TableConstraint)
+	 */
 	void addCompositePrimaryKeyColumns(Vector<Column> pkcolumns);
+	
+	/**
+	 * Permite agregar una columna con la restricción UNIQUE, internamente arma una
+	 * {@link TableConstraint} con la columna, si se desea poner un nombre a
+	 * la restricción se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param uniqueColumn La columna que será UNIQUE.
+	 * @see #addTableConstraint(TableConstraint)
+	 */
 	void addUniqueColumn(Column uniqueColumn);
+	
+	/**
+	 * Permite agregar una lista de columnas con la restricción UNIQUE, internamente arma una
+	 * {@link TableConstraint} con la columna, si se desea poner un nombre a
+	 * la restricción se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param uniqueColumns Las columnas que serán UNIQUE.
+	 * @see #addTableConstraint(TableConstraint)
+	 */
 	void addCompositeUniqueColumns(Vector<Column> uniqueColumns);
+	
+	/**
+	 * Permite agregar una columna como una clave foranea, internamente arma una
+	 * {@link TableConstraint} con la columna, si se desea armar una clave foranea
+	 * mas compleja se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param fkcolumn La columna que será clave foranea.
+	 * @see #addTableConstraint(TableConstraint)
+	 */
 	void addForeignKeyColumn(Column fkColumn);
+	
+	/**
+	 * Permite agregar una lista de columnas como una clave foranea, internamente arma una
+	 * {@link TableConstraint} con la columna, si se desea armar una clave foranea
+	 * mas compleja se debería usar directamente el método {@link #addTableConstraint(TableConstraint)}.
+	 * 
+	 * @param fkcolumn Las columnas que serán una clave foranea.
+	 * @see #addTableConstraint(TableConstraint)
+	 */
 	void addForeignKeyColumn(Vector<Column> fkColumns);
 	
-	boolean isCompositePK();
+	//boolean isCompositePK();
 	
-	String getCompositePK();
+	//String getCompositePK();
 
 	/*
 	 * This is used for dbs like Oracle and SAP db, but needs to be implemented

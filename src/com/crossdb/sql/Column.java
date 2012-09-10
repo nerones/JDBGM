@@ -67,7 +67,7 @@ public class Column {
 	 * primaria en postgresql no existe la cláusula autoincrement así que no se
 	 * usa en este proyecto
 	 */
-	//private boolean isAutoIncrement = false;
+	private boolean isAutoIncrementPK = false;
 	
 	/*
 	 * variables de ajuste para AUTOINCREMENT que no son soportados por SQLite
@@ -268,17 +268,17 @@ public class Column {
 		return isForeignKey;
 	}
 	
-	/*
-	 * Para saber si la columna es AUTOINCREMENT
-	 * @return true si es AUTOINCREMENT, false en caso contrarop
+	/**
+	 * Para saber si la columna es una clave primaria con la restricción AUTOINCREMENT
+	 * @return true si es AUTOINCREMENT, false en caso contrario.
 	 */
-//	public boolean isAutoIncrement() {
-//		return isAutoIncrement;
-//	}
-//
-//	public void setAutoIncrement(boolean b) {
-//		isAutoIncrement = b;
-//	}
+	public boolean isAutoIncrementPK() {
+		return isAutoIncrementPK;
+	}
+
+	public void setAutoIncrementPK(boolean b) {
+		isAutoIncrementPK = b;
+	}
 
 //	public void setStartWith(int sw) {
 //		start_with = sw;
@@ -306,6 +306,10 @@ public class Column {
 //	public String getSequence() {
 //		return sequence;
 //	}
+	
+	public void setColumnDefaultValue(String defaultValue){
+		this.columnDefaultValue = defaultValue;
+	}
 
 	public String getColumnDefaultValue() {
 		return columnDefaultValue;

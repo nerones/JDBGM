@@ -22,7 +22,7 @@ public class SQLServerInsertQuery extends DefaultInsertQuery {
 		for(int m = 0; m < columns.size(); m++){
 
 			Column col = (columns.get(m));
-            if(col.isAutoIncrement()){
+            if(col.isAutoIncrementPK()){
                 // ignore it, uses identity in database
 
             }else{

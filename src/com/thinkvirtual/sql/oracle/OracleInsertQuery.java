@@ -105,7 +105,7 @@ public class OracleInsertQuery extends DefaultInsertQuery {
 
 			Column col = (columns.get(m));
 			Object val = col.getColumnValue();  //values.get(m);
-			if (col.isAutoIncrement()) {
+			if (col.isAutoIncrementPK()) {
 				String seq_name = col.getSequence();
 				if (seq_name == null) {
 					// default to table_name + col_name + '_seq'

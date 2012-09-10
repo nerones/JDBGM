@@ -34,7 +34,7 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 			if (df.isUnique()) query1 += " UNIQUE";
 			if (df.isPrimaryKey() && !isCompositePK()){
 				query1 += " PRIMARY KEY";
-				if (df.isAutoIncrement()) query1 += " AUTOINCREMENT";
+				if (df.isAutoIncrementPK()) query1 += " AUTOINCREMENT";
 			}
 //			else if (df.isForeignKey())
 //				TODO soporte para acciones sobre FK y updates and deletes

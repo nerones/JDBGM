@@ -32,14 +32,14 @@ public abstract class DefaultInsertQuery extends InsertQuery {
 
 	public void addAutoIncrementColumn(String column) {
 		Column c = new Column(column, null);
-		c.setAutoIncrement(true);
+		c.setAutoIncrementPK(true);
 		columns.add(c);
 		// values.add(null);
 	}
 
 	public void addAutoIncrementColumn(String column, String sequence) {
 		Column c = new Column(column, null);
-		c.setAutoIncrement(true);
+		c.setAutoIncrementPK(true);
 		c.setSequence(sequence);
 		columns.add(c);
 		// values.add(null);

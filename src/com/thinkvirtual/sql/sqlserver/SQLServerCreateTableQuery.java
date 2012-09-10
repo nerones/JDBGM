@@ -102,11 +102,11 @@ public class SQLServerCreateTableQuery extends DefaultCreateTableQuery {
                 default_value = " '' ";
             }
 
-            if (df.isAutoIncrement()) {
+            if (df.isAutoIncrementPK()) {
                 query1 += " IDENTITY (1, 1) primary key ";
             }
 
-            if (df.isNullable() == 1 && df.isAutoIncrement() == false) {
+            if (df.isNullable() == 1 && df.isAutoIncrementPK() == false) {
                 query1 += " NULL ";
             }
             else
@@ -129,7 +129,7 @@ public class SQLServerCreateTableQuery extends DefaultCreateTableQuery {
             else if (auto_defaults) { // set defaults automatically
 
                 if (df.isNullable() == 0) { //not nullable
-                    if (!df.isAutoIncrement()) {
+                    if (!df.isAutoIncrementPK()) {
 
 
                         query1 += " DEFAULT " + default_value;

@@ -78,7 +78,7 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 
 			else query1 += " varchar2(" + df.getSize() + ") "; // default for unknown types
 
-			if(df.isAutoIncrement()){
+			if(df.isAutoIncrementPK()){
 				query1 += " PRIMARY KEY ";
 				// create sequence for this table now
 				extra += "\n-- " + createSequenceString(df);
@@ -154,7 +154,7 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 
 			else query1 += " varchar(" + df.getSize() + ") "; // default for unknown types
 
-			if(df.isAutoIncrement()){
+			if(df.isAutoIncrementPK()){
 				query1 += " PRIMARY KEY ";
 				// create sequence for this table now
 				createSequence(df);

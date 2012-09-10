@@ -250,6 +250,20 @@ public class TableConstraint {
 		return columns;
 	}
 	
+	public boolean isPrimaryKey(){
+		if (constraintType == TYPE_PRIMARY_KEY) return true;
+		else return false;
+	}
+	
+	public boolean isForeignKey(){
+		if (constraintType == TYPE_FOREIGN_KEY) return true;
+		else return false;
+	}
+	
+	public boolean isUnique(){
+		if (constraintType == TYPE_UNIQUE) return true;
+		else return false;
+	}
 	/**
 	 * Convierte a la restricción en su equivalente en SQL.
 	 */
