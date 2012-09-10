@@ -1,6 +1,7 @@
 package com.crossdb.sql;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Implementación base de {@link CreateTableQuery}, de  esta clase deberían heredar todas
@@ -16,12 +17,14 @@ import java.util.ArrayList;
  */
 public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 
-    protected String name;
-    protected ArrayList<Column> columns;
-    protected boolean auto_defaults = true;
+    protected String tableName;
+    protected Vector<Column> columns;
+    //protected boolean auto_defaults = true;
     protected boolean isTemporary = false;
+    protected SelectQuery selectStatementSource;
+    protected Vector<TableConstraint> tableConstraints; 
     protected boolean hasFK = false; 
-    protected ArrayList<String[]> foreignKeys = new ArrayList<String[]>();
+    protected Vector<String[]> foreignKeys = new Vector<String[]>();
     
     /**
      * La clase que mapea los tipos de datos de {@link java.sql.Types} a los tipos
@@ -52,14 +55,23 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
      * @param datatype la clase que sirve para mapear los tipos de datos.
      */
     public DefaultCreateTableQuery(DataTypes datatype) {
-        columns = new ArrayList<Column>();
+        columns = new Vector<Column>();
+        tableConstraints = new Vector<TableConstraint>();
         this.datatype = datatype;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.tableName = name;
     }
 
+    public void setTemporary(boolean istemporary){
+    	isTemporary = istemporary;
+    }
+    
+    public void setSelectStatementSource( SelectQuery select){
+    	this.selectStatementSource = select;
+    }
+    
     public void addColumn(Column column) {
     	String pre = "";
     	if (column.isPrimaryKey()){
@@ -70,6 +82,29 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     	if (column.isForeignKey()) setForeignKey(column);
         columns.add(column);
     }
+    
+    public void addTableConstraint(TableConstraint tableConstraint){
+    	
+    }
+    
+    public void addPrimaryKeyColumn(Column pkcolumn){
+    	
+    }
+	public void addCompositePrimaryKeyColumns(Vector<Column> pkcolumns){
+		
+	}
+	public void addUniqueColumn(Column uniqueColumn){
+		
+	}
+	public void addCompositeUniqueColumns(Vector<Column> uniqueColumns){
+		
+	}
+	public void addForeignKeyColumn(Column fkColumn){
+		
+	}
+	public void addForeignKeyColumn(Vector<Column> fkColumns){
+		
+	}
     
     public boolean isCompositePK(){
     	if (pkCounter > 0) return true;
@@ -99,7 +134,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     	}
     }
     
-    public ArrayList<String[]> getForeignKeys(){
+    public Vector<String[]> getForeignKeys(){
     	return foreignKeys;
     }
     
@@ -108,13 +143,10 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     	return compositePrimaryKey;
     }
 
-    public void setAutoDefaults(boolean b) {
-        auto_defaults = b;
-    }
-    
-    public void setTemporary(boolean istemporary){
-    	isTemporary = istemporary;
-    }
+//    public void setAutoDefaults(boolean b) {
+//        auto_defaults = b;
+//    }
+   
     
     public String columnToString(Column column){
 		String query1 = column.getName() + " ";

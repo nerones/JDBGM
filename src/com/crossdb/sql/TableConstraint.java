@@ -32,12 +32,21 @@ import java.util.Vector;
  * con las constantes {@link #REFERENTIAL_ACTION_CASCADE}, {@link #REFERENTIAL_ACTION_NO_ACTION}
  * , {@link #REFERENTIAL_ACTION_RESTRICT} y {@link #REFERENTIAL_ACTION_SET_NULL}.
  * 
+ * <p>
+ * Esta clase es capaz de convertir a SQL la restricción que esta representando, para 
+ * ello revisa las cláusulas disponibles para cada tipo de restricción, de haberse 
+ * seteado una cláusula no disponible para un tipo de restricción dado esta será simplemente
+ * ignorada, por ejemplo si para una restricción del tipo unique se le asigna una cláusula
+ * MATCH con {@link #setMatchTypeFK(int)} esta será ignorada cuando se use {@link #toString()}.
+ * 
  * @author Nelson Efrain A. Cruz
  * @version 0.1
  *
  */
 public class TableConstraint {
-	
+	/**
+	 * restricción de tabla del tipo FOREIGN KEY. 
+	 */
 	public static final int TYPE_PRIMARY_KEY = 1;
 	public static final int TYPE_FOREIGN_KEY = 2;
 	public static final int TYPE_UNIQUE = 3;
@@ -86,6 +95,7 @@ public class TableConstraint {
 	 * 
 	 * @param constraintType el tipo de restricción de la que se trata
 	 */
+	@Deprecated
 	public TableConstraint(int constraintType){
 		this.constraintType = constraintType;
 		this.columns = new Vector<Column>();
@@ -147,16 +157,43 @@ public class TableConstraint {
 	}
 	
 	/**
+	 * Pone la clausula MATCH con algunas de sus opciones FULL, PARTIAL o SIMPLE
+	 * que se usa cuando la restricción de tabla es del tipo {@link #TYPE_FOREIGN_KEY}
+	 * si se tratase de algunas de las otras restricciones estas cláusula será omitida a
+	 * la hora de convertir la restricción a SQL con el método {@link #toString()}.
+	 * 
+	 * @param matchType El tipo de cláusula Match que se le quiere agregar
+	 */
+	public void setMatchTypeFK(int matchType){
+		this.matchType = matchType;
+	}
+	/**
 	 * La primer acción que se realizara al borrar o actualizar la tabla con
-	 * respecto a su clave foranea
-	 * @param triggeredAction
+	 * respecto a su clave foranea (ON UPDATE o ON DELETE), e usa cuando la restricción de tabla es del tipo {@link #TYPE_FOREIGN_KEY}
+	 * si se tratase de algunas de las otras restricciones estas cláusula será omitida a
+	 * la hora de convertir la restricción a SQL con el método {@link #toString()}.
+	 * 
+	 * @param triggeredAction El cambio que dispara la acción
+	 * @param referentialAction La acción que debe realizarse con el cambio
 	 */
 	public void setFirstReferentialTriggeredAction(int triggeredAction, int referentialAction){
+		if (triggeredAction == secondTriggeredAction) throw new RuntimeException("No se pueden agregar dos veces el mismo valor para" +
+				"triggeredAction");
 		this.firstTriggeredAction = triggeredAction;
 		this.firstReferentialAction = referentialAction;
 	}
 	
+	/**
+	 * La segunda acción a realizar al modificar el contenido de las claves foraneas, no puede
+	 * ser la misma que la indicada en {@link #setFirstReferentialTriggeredAction(int, int)}.
+	 * 
+	 * @see #setFirstReferentialTriggeredAction(int, int)
+	 * @param triggeredAction
+	 * @param referentialAction
+	 */
 	public void setSecondReferentialTriggeredAction(int triggeredAction, int referentialAction){
+		if (triggeredAction == firstTriggeredAction) throw new RuntimeException("No se pueden agregar dos veces el mismo valor para" +
+				"triggeredAction");
 		this.secondTriggeredAction = triggeredAction;
 		this.secondReferentialAction = referentialAction;
 	}
@@ -208,9 +245,17 @@ public class TableConstraint {
 					"triggeredAction, referirse a la documentación para mas detalle");
 		}
 	}
+	
+	public Vector<Column> getColumns(){
+		return columns;
+	}
+	
+	/**
+	 * Convierte a la restricción en su equivalente en SQL.
+	 */
 	public String toString(){
 		String query_string = "";
-		if (constraintName != null) query_string += "CONSTRAINT "+ constraintName;
+		if (constraintName != null) query_string += " CONSTRAINT "+ constraintName;
 		if ( (columns == null) || (columns.size() == 0) ) 
 			throw new RuntimeException("No se agregaron columnas a la restricción no se puede construir.");
 		/*
@@ -225,29 +270,35 @@ public class TableConstraint {
 			for (Column column: columns){
 				query_string += " ," + column.getName();
 			}
+			//vuelvo a poner la columna que saque al principio para no modificar la clase.
+			columns.insertElementAt(firstColumn, 0);
 			return query_string + " )";
 		case TYPE_PRIMARY_KEY:
 			//Column firstColumn = columns.remove(0);
 			query_string += " PRIMARY KEY (" + firstColumn.getName();
 			for (Column column: columns){
-				query_string += " " + column.getName();
+				query_string += " ," + column.getName();
 			}
+			columns.insertElementAt(firstColumn, 0);
 			return query_string + " )";
 		case TYPE_FOREIGN_KEY:
+			if ( !firstColumn.isForeignKey() ) throw new RuntimeException("La columna que se agrego a la restricción no es Foreign Key");
 			//Column firstColumn = columns.remove(0);
 			query_string += " FOREIGN KEY (" + firstColumn.getName();
-			String referencedColumnsAsString = "("+ firstColumn.getName();
+			String referencedColumnsAsString = "("+ firstColumn.getForeignPrimaryKey();
 			for (Column column: columns){
 				query_string += " ," + column.getName();
+				if ( !column.isForeignKey() ) throw new RuntimeException("La columna que se agrego a la restricción no es Foreign Key");
 				referencedColumnsAsString += " ," + column.getForeignPrimaryKey();
 			}
 			query_string += " ) REFERENCES " + firstColumn.getForeignTable() 
 					+ referencedColumnsAsString + ")";
-			if (matchType != 0) query_string += matchTypeAsString(matchType) +" ";
+			if (matchType != 0) query_string += matchTypeAsString(matchType);
 			if ( firstTriggeredAction != 0 ) query_string += triggeredActionAsString(firstTriggeredAction) + 
 					referentialActionAsString(firstReferentialAction);
 			if (secondTriggeredAction != 0 ) query_string += triggeredActionAsString(secondTriggeredAction) +
 					referentialActionAsString(secondReferentialAction);
+			columns.insertElementAt(firstColumn, 0);
 			return query_string;
 		default:
 			throw new RuntimeException("No se especifico un valor valido para" +

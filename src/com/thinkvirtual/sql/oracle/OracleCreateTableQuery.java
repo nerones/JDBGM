@@ -43,7 +43,7 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 		String query1;
 		String extra = "";
 		boolean add_primary_key_fx = false; // used in sap db where primary key is specified in a function
-		query1 = " CREATE TABLE " + name + " ( "; //"CREATE TABLE IF NOT EXISTS " + table_name + " ( ";
+		query1 = " CREATE TABLE " + tableName + " ( "; //"CREATE TABLE IF NOT EXISTS " + table_name + " ( ";
 		for(int j =0; j < columns.size(); j++){
 			Column df = (Column)(columns.get(j));
 			query1 += df.getName() + " ";
@@ -119,7 +119,7 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 		this.stmt = stmt;
 		String query1;
 		boolean add_primary_key_fx = false; // used in sap db where primary key is specified in a function
-		query1 = " CREATE TABLE " + name + " ( "; //"CREATE TABLE IF NOT EXISTS " + table_name + " ( ";
+		query1 = " CREATE TABLE " + tableName + " ( "; //"CREATE TABLE IF NOT EXISTS " + table_name + " ( ";
 		for(int j =0; j < columns.size(); j++){
 			Column df = (Column)(columns.get(j));
 			query1 += df.getName() + " ";
@@ -187,7 +187,7 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 		String seq_name = col.getSequence();
 		if(seq_name == null){
 			// default to table_name + col_name + '_seq'
-			seq_name = name + /*"_" +col.getName() + */ "_seq"; // with col.getName() it is too long..
+			seq_name = tableName + /*"_" +col.getName() + */ "_seq"; // with col.getName() it is too long..
 		}
 		String query1 = "CREATE SEQUENCE " + seq_name;
 		stmt.executeUpdate(query1);
@@ -198,7 +198,7 @@ public class OracleCreateTableQuery extends DefaultCreateTableQuery {
 		String seq_name = col.getSequence();
 		if(seq_name == null){
 			// default to table_name + col_name + '_seq'
-			seq_name = name + /*"_" + col.getName() + */"_seq";
+			seq_name = tableName + /*"_" + col.getName() + */"_seq";
 		}
 		String query1 = "CREATE SEQUENCE " + seq_name;
 		return query1;

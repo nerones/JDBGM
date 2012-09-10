@@ -1,5 +1,7 @@
 package com.crossdb.sql;
 
+import java.util.Vector;
+
 /**
  * Description: There are some oddities with this class that are here to support
  * all databases. The main one is that you can specify a sequence table for dbs
@@ -20,8 +22,13 @@ package com.crossdb.sql;
  * Es interfaz sirve de base para representar una sentencia CREATE TABLE. La interfaz
  * en si solo representa los atributos de la tabla (nombre básicamente), los tipos de datos, nombres de columnas
  * y restricciones sobre ellas se declaran en la clase {@link Column}. Las opciones para
- * {@link CreateTableQuery} estan limitadas debido a que debe ser soportada por varios
+ * {@link CreateTableQuery} están limitadas debido a que debe ser soportada por varios
  * motores.
+ * <p>
+ * Para evitar complicaciones a la hora de definir claves compuestas (pk,fk y unique) todas
+ * estas restricciones se usan como restricciones de tablas mediante {@link TableConstraint}
+ * por mas de que se trate de una clave no compuesta como por ejemplo una clave primaria
+ * compuesta por una única columna.
  * 
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz
@@ -65,7 +72,22 @@ public interface CreateTableQuery extends UpdateStatement{
 	 */
 	void addColumn(Column c);
 	
+	/**
+	 * Agrega una restricción de tabla pudiendo ser de cualquiera de los tipos
+	 * internos que se define para {@link TableConstraint}, hay que tener en
+	 * cuenta que una tabla solo puede tener una restricción del tipo PK y varias
+	 * del tipo FK y UNIQUE.
+	 * 
+	 * @param tableConstraint La restricción de tabla que se quiere agregar.
+	 */
+	void addTableConstraint(TableConstraint tableConstraint);
 	
+	void addPrimaryKeyColumn(Column pkcolumn);
+	void addCompositePrimaryKeyColumns(Vector<Column> pkcolumns);
+	void addUniqueColumn(Column uniqueColumn);
+	void addCompositeUniqueColumns(Vector<Column> uniqueColumns);
+	void addForeignKeyColumn(Column fkColumn);
+	void addForeignKeyColumn(Vector<Column> fkColumns);
 	
 	boolean isCompositePK();
 	

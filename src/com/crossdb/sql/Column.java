@@ -170,6 +170,29 @@ public class Column {
 		//isAutoIncrement = isAutoIncr;
 	}
 	
+	/**
+	 * Crea un objeto Columna pero con la posibilidad de definir si es clave
+	 * foranea poniendo valores para la tabla y columna a las que apunta, toma el tipo de
+	 * datos desde la clase {@link java.sql.Types}
+	 * 
+	 * @param name
+	 *            El nombre de la columna
+	 * @param type
+	 *            El tipo de dato para la columna
+	 * @param foreigntable
+	 *            La tabla a la que apunta la clave foranea
+	 * @param foreignColumn
+	 * 			  La columna de la tabla a la que apunta la clave foranea
+	 */
+	public Column(String name, int type, String foreigntable, String foreignColumn) {
+		this.columnName = name;
+		this.type = type;
+		isForeignKey = true;
+		this.foreignTable = foreigntable;
+		this.foreignPrimaryKey = foreignColumn;
+		//isAutoIncrement = isAutoIncr;
+	}
+	
 	public Object getColumnValue() {
 		return columnValue;
 	}

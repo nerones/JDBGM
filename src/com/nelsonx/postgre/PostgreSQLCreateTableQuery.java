@@ -20,7 +20,7 @@ public class PostgreSQLCreateTableQuery extends DefaultCreateTableQuery {
 	@Override
 	public String toString() {
 		String query1;
-		query1 = "CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
+		query1 = "CREATE TABLE " + tableName + " ( "; // "CREATE TABLE IF NOT EXISTS "
 													// + table_name + " ( ";
 		for (int j = 0; j < columns.size(); j++) {
 			Column df = (Column) (columns.get(j));
