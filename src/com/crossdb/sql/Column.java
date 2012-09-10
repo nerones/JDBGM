@@ -27,6 +27,7 @@ public class Column {
 	 */
 	private int is_nullable = ResultSetMetaData.columnNullable;
 //	TODO review how to handle dataTypes
+	
 	/**
 	 * Identifica el tipo de dato de la columna
 	 */
@@ -66,7 +67,7 @@ public class Column {
 	 * primaria en postgresql no existe la cláusula autoincrement así que no se
 	 * usa en este proyecto
 	 */
-	//private boolean isAutoIncrement = false;
+	private boolean isAutoIncrementPK = false;
 	
 	/*
 	 * variables de ajuste para AUTOINCREMENT que no son soportados por SQLite
@@ -80,7 +81,7 @@ public class Column {
 	 */
 	//private String sequence = null;
 	
-	/*
+	/**
 	 * El valor por defecto de la columna que solo puede ser un valor constante.
 	 */
 	private String columnDefaultValue = null;
@@ -169,6 +170,29 @@ public class Column {
 		//isAutoIncrement = isAutoIncr;
 	}
 	
+	/**
+	 * Crea un objeto Columna pero con la posibilidad de definir si es clave
+	 * foranea poniendo valores para la tabla y columna a las que apunta, toma el tipo de
+	 * datos desde la clase {@link java.sql.Types}
+	 * 
+	 * @param name
+	 *            El nombre de la columna
+	 * @param type
+	 *            El tipo de dato para la columna
+	 * @param foreigntable
+	 *            La tabla a la que apunta la clave foranea
+	 * @param foreignColumn
+	 * 			  La columna de la tabla a la que apunta la clave foranea
+	 */
+	public Column(String name, int type, String foreigntable, String foreignColumn) {
+		this.columnName = name;
+		this.type = type;
+		isForeignKey = true;
+		this.foreignTable = foreigntable;
+		this.foreignPrimaryKey = foreignColumn;
+		//isAutoIncrement = isAutoIncr;
+	}
+	
 	public Object getColumnValue() {
 		return columnValue;
 	}
@@ -244,17 +268,17 @@ public class Column {
 		return isForeignKey;
 	}
 	
-	/*
-	 * Para saber si la columna es AUTOINCREMENT
-	 * @return true si es AUTOINCREMENT, false en caso contrarop
+	/**
+	 * Para saber si la columna es una clave primaria con la restricción AUTOINCREMENT
+	 * @return true si es AUTOINCREMENT, false en caso contrario.
 	 */
-//	public boolean isAutoIncrement() {
-//		return isAutoIncrement;
-//	}
-//
-//	public void setAutoIncrement(boolean b) {
-//		isAutoIncrement = b;
-//	}
+	public boolean isAutoIncrementPK() {
+		return isAutoIncrementPK;
+	}
+
+	public void setAutoIncrementPK(boolean b) {
+		isAutoIncrementPK = b;
+	}
 
 //	public void setStartWith(int sw) {
 //		start_with = sw;
@@ -282,6 +306,10 @@ public class Column {
 //	public String getSequence() {
 //		return sequence;
 //	}
+	
+	public void setColumnDefaultValue(String defaultValue){
+		this.columnDefaultValue = defaultValue;
+	}
 
 	public String getColumnDefaultValue() {
 		return columnDefaultValue;
@@ -295,7 +323,12 @@ public class Column {
 	public boolean isUnique() {
 		return unique;
 	}
-
+	
+	/**
+	 * Si se pone en true esta bander la columna tendra la restricción {@code UNIQUE},
+	 * el valor por defecto es false.
+	 * @param unique True si se desea que la columna sea UNIQUE
+	 */
 	public void setUnique(boolean unique) {
 		this.unique = unique;
 	}
@@ -368,7 +401,7 @@ public class Column {
 	 * 
 	 * @param s el valor constante por defecto de la columna
 	 */
-	public void setDefaultValue(String s) {
+	public void setDefaultColumnValue(String s) {
 		columnDefaultValue = s;
 	}
 

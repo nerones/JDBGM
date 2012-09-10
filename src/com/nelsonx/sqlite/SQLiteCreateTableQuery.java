@@ -20,7 +20,7 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 	@Override
 	public String toString() {
 		String query1;
-		query1 = "CREATE TABLE " + name + " ( "; // "CREATE TABLE IF NOT EXISTS "
+		query1 = "CREATE TABLE " + tableName + " ( "; // "CREATE TABLE IF NOT EXISTS "
 													// + table_name + " ( ";
 		for (int j = 0; j < columns.size(); j++) {
 			Column df = (Column) (columns.get(j));
@@ -34,7 +34,7 @@ public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 			if (df.isUnique()) query1 += " UNIQUE";
 			if (df.isPrimaryKey() && !isCompositePK()){
 				query1 += " PRIMARY KEY";
-				if (df.isAutoIncrement()) query1 += " AUTOINCREMENT";
+				if (df.isAutoIncrementPK()) query1 += " AUTOINCREMENT";
 			}
 //			else if (df.isForeignKey())
 //				TODO soporte para acciones sobre FK y updates and deletes
