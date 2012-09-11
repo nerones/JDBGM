@@ -163,6 +163,7 @@ public class Column {
 	 * @param isPK
 	 *            Si es clave primaria
 	 */
+	@Deprecated
 	public Column(String name, int type, boolean isPK) {
 		this.columnName = name;
 		this.type = type;
@@ -255,6 +256,7 @@ public class Column {
 	 * Para saber si la columna es una clave primaria
 	 * @return TRUE si es clave primaria, FALSE en caso contrario.
 	 */
+	@Deprecated
 	public boolean isPrimaryKey() {
 		return isPrimaryKey;
 	}
@@ -320,7 +322,7 @@ public class Column {
 	 * Para ver si es una columna con la restricción UNIQUE
 	 * @return true si la columna tiene la restricción UNIQUE, falso en caso contrario
 	 */
-	public boolean isUnique() {
+	protected boolean isUnique() {
 		return unique;
 	}
 	
@@ -329,7 +331,7 @@ public class Column {
 	 * el valor por defecto es false.
 	 * @param unique True si se desea que la columna sea UNIQUE
 	 */
-	public void setUnique(boolean unique) {
+	protected void setUnique(boolean unique) {
 		this.unique = unique;
 	}
 
@@ -353,6 +355,7 @@ public class Column {
 		columnName = n;
 	}
 
+	@Deprecated
 	public void setPrimaryKey(boolean b) {
 		isPrimaryKey = b;
 	}

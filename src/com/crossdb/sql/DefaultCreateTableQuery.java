@@ -20,7 +20,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected Vector<Column> columns;
     //protected boolean auto_defaults = true;
     protected boolean isTemporary = false;
-    protected SelectQuery selectStatementSource;
+    protected SelectQuery selectStatementSource = null;
     protected boolean havePrimaryKey = false;
     protected boolean haveAutoincrementPrimaryKey = false;
 
@@ -107,9 +107,11 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     }
     
     public void addAutoincrementPrimaryKeyColumn(Column autoPKColumn){
+    	if (havePrimaryKey) throw new RuntimeException("No se puede agregar mas de una calve primaria");
     	if ( !autoPKColumn.isAutoIncrementPK() ) autoPKColumn.setAutoIncrementPK(true);
     	haveAutoincrementPrimaryKey = true;
     	havePrimaryKey = true;
+    	columns.add(autoPKColumn);
     	
     }
     
@@ -219,8 +221,21 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     	
 //    	return query1;
 //    }
+    /**
+     * Convierte la sentencia en una cadena de texto pero es para uso interno de
+     * la clase, el método adecuado para convertir la sentencia es {@link #toString()}.
+     * 
+     * @return La sentencia como una cadena de caracteres.
+     */
+    protected abstract String sentenceAsSQL();
     
-    public abstract String toString();
+    public String toString(){
+    	
+    	if (columns.isEmpty()) {
+    		if (selectStatementSource == null) throw new RuntimeException("No se puede convertir a SQL no se agregaron columnas");
+    	}
+    	return sentenceAsSQL();
+    }
     
     //TODO soporte default para tipos de datos extraños;
     //TODO falta compatibilidad de los tipos

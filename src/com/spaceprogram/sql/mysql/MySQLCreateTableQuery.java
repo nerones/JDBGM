@@ -29,18 +29,19 @@ public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 		if (column.isNullable() == 0) columnAsString += " NOT NULL";
 		//TODO revisar valor por defecto y el tipo de dato
 		if (column.getColumnDefaultValue() != null) columnAsString += " DEFAULT " + column.getColumnDefaultValue();
-		if (column.isAutoIncrementPK()) columnAsString += " AUTO_INCREMENT PRIMARY KEY";
+		if (column.isAutoIncrementPK() && isHaveAutoincrementPrimaryKey()) columnAsString += " AUTO_INCREMENT PRIMARY KEY";
 		
 		return columnAsString;
 	}
 
-	public String toString() {
+	public String sentenceAsSQL() {
 
 		//String query1;
 		
-		String createAsString = "CREATE TABLE ";
-		
+		String createAsString = "CREATE";
 		if (isTemporary) createAsString += " TEMPORARY";
+		createAsString += " TABLE ";
+		if (selectStatementSource != null) return createAsString + tableName + " AS " + selectStatementSource.toString();
 		createAsString +=  tableName + " ( ";
 		for (Column column : columns){
 			createAsString += columnToString(column) + ", ";
