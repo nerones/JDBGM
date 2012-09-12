@@ -280,32 +280,32 @@ public class TableConstraint {
 		switch (constraintType){
 		case TYPE_UNIQUE:
 			//Column firstColumn = columns.remove(0);
-			query_string += " UNIQUE (" + firstColumn.getName();
+			query_string += "UNIQUE (" + firstColumn.getName();
 			for (Column column: columns){
-				query_string += " ," + column.getName();
+				query_string += ", " + column.getName();
 			}
 			//vuelvo a poner la columna que saque al principio para no modificar la clase.
 			columns.insertElementAt(firstColumn, 0);
-			return query_string + " )";
+			return query_string + ")";
 		case TYPE_PRIMARY_KEY:
 			//Column firstColumn = columns.remove(0);
-			query_string += " PRIMARY KEY (" + firstColumn.getName();
+			query_string += "PRIMARY KEY (" + firstColumn.getName();
 			for (Column column: columns){
-				query_string += " ," + column.getName();
+				query_string += ", " + column.getName();
 			}
 			columns.insertElementAt(firstColumn, 0);
-			return query_string + " )";
+			return query_string + ")";
 		case TYPE_FOREIGN_KEY:
 			if ( !firstColumn.isForeignKey() ) throw new RuntimeException("La columna que se agrego a la restricción no es Foreign Key");
 			//Column firstColumn = columns.remove(0);
-			query_string += " FOREIGN KEY (" + firstColumn.getName();
+			query_string += "FOREIGN KEY (" + firstColumn.getName();
 			String referencedColumnsAsString = "("+ firstColumn.getForeignPrimaryKey();
 			for (Column column: columns){
-				query_string += " ," + column.getName();
+				query_string += ", " + column.getName();
 				if ( !column.isForeignKey() ) throw new RuntimeException("La columna que se agrego a la restricción no es Foreign Key");
-				referencedColumnsAsString += " ," + column.getForeignPrimaryKey();
+				referencedColumnsAsString += ", " + column.getForeignPrimaryKey();
 			}
-			query_string += " ) REFERENCES " + firstColumn.getForeignTable() 
+			query_string += ") REFERENCES " + firstColumn.getForeignTable() 
 					+ referencedColumnsAsString + ")";
 			if (matchType != 0) query_string += matchTypeAsString(matchType);
 			if ( firstTriggeredAction != 0 ) query_string += triggeredActionAsString(firstTriggeredAction) + 
