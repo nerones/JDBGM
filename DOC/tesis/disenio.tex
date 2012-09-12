@@ -129,6 +129,7 @@ Como ya se denoto para un adecuado y consistente funcionamiento de el manejador 
 
 \begin{itemize}
 \item \verb=Column=
+\item \verb=TableConstraint=
 \item \verb=DataTypes=
 \item \verb=Formater=(No usado - revisar)
 \item \verb=Functions= (no decidido por completo)
@@ -141,27 +142,47 @@ Como ya se denoto para un adecuado y consistente funcionamiento de el manejador 
 A continuación una descripción de ellas
 
 \subsubsection{La clase Column}
-Representa una columna de una tabla para ello posee atributos tales como nombre de columna, banderas que indican si es clave primaria o foranea y todos los demás atributos que sirven para definir la columna en una sentencia \verb=CREATE TABLE=. Entre sus métodos no se incluye ninguno que sirva para convertir la columna en una cadena  de texto que sirva para definirla en una sentencia SQL pues a pesar de que la sintaxis de la definición de columna no varia, salvo por los tipos de datos, si varia el uso sobre ella pues la sentencia \verb=ALTER TABLE= también puede definir columnas en su sintaxis pero con ciertas restricciones como se ve en la sección \ref{sec:altertable} y para evitar confusiones cada clase (clase que represente una sentencia) que haga uso de un objeto columna deberá implementar las restricciones sobre la construcción de la sentencia ignorando los atributos que no use.
+Representa una columna de una tabla para ello posee atributos tales como nombre de columna, banderas que indican si es clave foranea y todos los demás atributos que sirven para definir la columna en una sentencia \verb=CREATE TABLE=. Entre sus métodos no se incluye ninguno que sirva para convertir la columna en una cadena  de texto que sirva para definirla en una sentencia SQL pues a pesar de que la sintaxis de la definición de columna no varia demasiado, salvo por los tipos de datos, si varia el uso sobre ella pues la sentencia \verb=ALTER TABLE= también puede definir columnas en su sintaxis pero con ciertas restricciones como se ve en la sección \ref{sec:altertable} y para evitar confusiones cada clase (clase que represente una sentencia) que haga uso de un objeto columna deberá implementar las restricciones sobre la construcción de la sentencia ignorando los atributos que no use.
 
 Además de esto la columna también posee un atributo para almacenar un valor para la columna de modo que la clase no solo sirva para definir una columna si no también como contenedor del valor, del tipo y del nombre  de la columna para usarlo luego con otras sentencias que no necesiten definir columnas si no ingresarles datos como es el caso de \verb=INSERT=. Haciendo esto se evita crear otra clase que solo sirva de contenedor para el valor de una columna y por lo tanto hay menos clases para recordar. 
 
+\subsubsection{La clase TableConstraint}
+Esta clase representa lo que en una sentencia \verb=CREATE TABLE= vendría a ser una restricción de tabla, las cuales pueden ser \verb=PRIMARY KEY, FOREIGN KEY o UNIQUE= estas restricciones a su vez pueden hacerse sobre una (clave simple) columna o bien sobre varias (clave compuesta). La razón por la que se eligió crear una clase para representar las restricciones de tabla es que de no existir se complicaba mucho la "traducción" a SQL de la clase que representa a \verb=CREATE TABLE=, esta clase representa un medio mas sencillo para la traducción de la restricción, como contra parte se puede observar que la sintaxis se vuelve un poco mas compleja pero aun así es mayor el beneficio pues se hace mas sencilla la traducción a cadena de caracteres. 
+
+\subsubsection{La clase DataTypes}
+Esta es una clase abstracta que servirá para mapear los tipos de datos a los correspondientes a los de un motor especifico, esto se logra mediante un método que toma como entrada los tipos de datos definidos por \jd y los mapea a los tipos de datos encontrados en el capitulo anterior.
 
 
-\begin{enumerate}
-\item \verb=Column= 
-\item \verb=DataTypes= Es una clase abstracta que define el comportamiento de las clases que serán encargadas de mapear los tipos de datos genéricos usados en \cc a los tipos de datos concretos para cada motor, la clase define un solo método \verb=getAsString(Column col)= que a partir de un objeto \verb=Column= tomado como parámetro devuelve una cadena de texto que contiene el tipo de datos especifico. Aparte se tiene un método abstracto que tiene por objetivo concreto mapear el tipo de dato genérico con el tipo especifico.  
+\subsubsection{Formater}
+(No usado - revisar)
 
-\item \verb=Formatter=
+\subsubsection{Functions}
+\verb=Functions= (no decidido por completo)
 
-\item \verb=WhereCondition= Es una clase muy simple que tiene por objetivo la representación de las condiciones $ x = y $ que se usan dentro de una cláusula WHERE. La clase puede contener los nombres de las tablas a comparar, si es que se comparan valores de mas de una tabla, los nombres de los campos a comparar y (de haber) algún valor contra el que comparar.
+\subsubsection{Join}
+\verb=Join=
+\verb=Join= Básicamente representa las condiciones de \verb=JOIN= para las sentencias \verb=SELECT=.
 
-\item \verb=WhereClause=  Representa una cláusula \verb=WHERE= como por ejemplo \verb|WHERE x = y | , la cláusula where esta formada por diferentes condiciones del tipo \verb=WhereCondition= e incluir cláusulas \verb=WhereClause= anidadas como por ejemplo \verb|WHERE (x = y AND (x=z OR x=b))|. Entonces cada conjunto de paréntesis puede ser visto como una cláusula \verb=WHERE=, y básicamente podemos ver a \verb=WhereClause= como una lista de condiciones y/o cláusulas \verb=WHERE=.
+\subsubsection{SQLFactory y SpecificSQLFactory}
+\verb=SpecificSQLFactory=
+\verb=SQLFactory=
+Clases constructoras de Objetos (\textit{Factories})
+\subsubsection{Parseando los datos de forma adecuada}
+\verb=SQLFormat, SQLDateTimeFormat, SQLTimeFormat=
 
-\item \verb=Join= Básicamente representa las condiciones de \verb=JOIN= para las sentencias \verb=SELECT=.
+\subsubsection{La restricción WHERE}
+\verb=WhereClause, WhereCondition, WhereFrame=
+\verb=WhereCondition= Es una clase muy simple que tiene por objetivo la representación de las condiciones $ x = y $ que se usan dentro de una cláusula WHERE. La clase puede contener los nombres de las tablas a comparar, si es que se comparan valores de mas de una tabla, los nombres de los campos a comparar y (de haber) algún valor contra el que comparar.
 
-\item Clases constructoras de Objetos (\textit{Factories})
+\verb=WhereClause=  Representa una cláusula \verb=WHERE= como por ejemplo \verb|WHERE x = y | , la cláusula where esta formada por diferentes condiciones del tipo \verb=WhereCondition= e incluir cláusulas \verb=WhereClause= anidadas como por ejemplo \verb|WHERE (x = y AND (x=z OR x=b))|. Entonces cada conjunto de paréntesis puede ser visto como una cláusula \verb=WHERE=, y básicamente podemos ver a 
 
-\end{enumerate}
+\verb=WhereClause= como una lista de condiciones y/o cláusulas \verb=WHERE=.
+
+
+
+
+
+
 
 
 
