@@ -18,40 +18,34 @@
  */
 package tests.singletests;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crossdb.sql.AlterTableQuery;
-import com.crossdb.sql.Column;
-import com.spaceprogram.sql.mysql.MySQLAlterTableQuery;
+import com.crossdb.sql.WhereClause;
 
 /**
+ * 
  * @author Nelson Efrain A. Cruz
- *
+ * @version 0.1
  */
-public class TestAlterMySQL {
-	AlterTableQuery at;
+public class TestWhereClause {
+	
+	WhereClause where;
+	String expectedWhere = "";
 	
 	@Before
-	public void setUp() throws Exception {
-		at = new MySQLAlterTableQuery();
+	public void setUp(){
+		where = new WhereClause();
 	}
 	
 	@Test
-	public void testBasi(){
-		at.setTable("tabla");
-		at.addColumn(new Column("columna", java.sql.Types.DECIMAL, false));
-		assertEquals("ALTER TABLE tabla ADD columna DECIMAL", at.toString());
+	public void testSimplewhere(){
+		where.andEquals("perro_id", 1);
+		expectedWhere = " WHERE perro = 1";
+		Assert.assertEquals(expectedWhere, where.toString());
+		
 	}
 	
-	@Test
-	public void testBasic(){
-		at.setTable("tabla");
-		at.addColumn(new Column("columna", java.sql.Types.DECIMAL, false));
-		assertEquals("ALTER TABLE tabla ADD columna DECIMAL", at.toString());
-		//sdsdsd
-	}
 
 }

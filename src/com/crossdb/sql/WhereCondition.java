@@ -13,7 +13,7 @@ package com.crossdb.sql;
  * @author Nelson Efrain A. Cruz
  * @version 0.5
  */
-
+@Deprecated
 public class WhereCondition {
 
 	public static final int LESS_THAN = 20;

@@ -205,7 +205,7 @@ public class MakeMySqlDB {
 		CreateTableQuery create = sqlFactory.getCreateTableQuery();
 		create.setName("alumnos");
 		Column column = new Column("idAlumno", Types.INTEGER);
-		create.addColumn(new Column("idAlumno", Types.INTEGER, true, true));
+		create.addColumn(new Column("idAlumno", Types.INTEGER, true));
 		create.addColumn(new Column("dni", Types.INTEGER));
 		create.addColumn(new Column("fechaNacimiento", Types.DATE));
 		create.addColumn(new Column("email", Types.VARCHAR));
@@ -218,14 +218,14 @@ public class MakeMySqlDB {
 		
 		create = sqlFactory.getCreateTableQuery();
 		create.setName("materias");
-		create.addColumn(new Column("idMateria", Types.INTEGER, true, true));
+		create.addColumn(new Column("idMateria", Types.INTEGER, true));
 		create.addColumn(new Column("nombre", Types.VARCHAR));
 		System.out.println(create);
 		manager.update(create);
 		
 		create = sqlFactory.getCreateTableQuery();
 		create.setName("aniolectivo");
-		create.addColumn(new Column("IdAA", Types.INTEGER, true, true));
+		create.addColumn(new Column("IdAA", Types.INTEGER, true));
 		column = new Column("idAlumno", Types.INTEGER);
 		column.setForeignKey("alumnos");
 		create.addColumn(column);
@@ -236,7 +236,7 @@ public class MakeMySqlDB {
 		
 		create = sqlFactory.getCreateTableQuery();
 		create.setName("materiasxanio");
-		create.addColumn(new Column("IdMP", Types.INTEGER, true, true));
+		create.addColumn(new Column("IdMP", Types.INTEGER, true));
 		column = new Column("idAA", Types.INTEGER);
 		column.setForeignKey("aniolectivo");
 		create.addColumn(column);
@@ -258,7 +258,7 @@ public class MakeMySqlDB {
 		
 		create = sqlFactory.getCreateTableQuery();
 		create.setName("grados");
-		create.addColumn(new Column("idgrado", Types.INTEGER, true, true));
+		create.addColumn(new Column("idgrado", Types.INTEGER, true));
 		create.addColumn(new Column("nombre", Types.VARCHAR));
 		manager.update(create);
 		System.out.println(create);
@@ -306,13 +306,13 @@ public class MakeMySqlDB {
 			String mes = String.valueOf(ranGene.nextInt(12));
 			String dia = String.valueOf(ranGene.nextInt(28));
 			date = anio + "/" + mes + "/" + dia;
-			columndni.setValue(dni);
-			columnNacimiento.setValue(date);
-			columnEmail.setValue(mails.elementAt(i));
-			columnDireccion.setValue(calles.elementAt(i));
-			columnNombre.setValue(nombres.elementAt(i));
-			columnApellido.setValue(apellidos.elementAt(i));
-			columnTelefono.setValue(tel);
+			columndni.setColumnValue(dni);
+			columnNacimiento.setColumnValue(date);
+			columnEmail.setColumnValue(mails.elementAt(i));
+			columnDireccion.setColumnValue(calles.elementAt(i));
+			columnNombre.setColumnValue(nombres.elementAt(i));
+			columnApellido.setColumnValue(apellidos.elementAt(i));
+			columnTelefono.setColumnValue(tel);
 			//System.out.println(insert.toString());
 			manager.update(insert);
 		}
@@ -327,7 +327,7 @@ public class MakeMySqlDB {
 		insert.appendColumns(list);
 		
 		for (int i = 0; i < materias.size(); i++) {
-			col.setValue(materias.elementAt(i));
+			col.setColumnValue(materias.elementAt(i));
 			manager.update(insert);
 		}
 		
@@ -336,7 +336,7 @@ public class MakeMySqlDB {
 		//datos para los grados
 		String[] nom = { "4a", "4b", "5a", "5c" };
 		for (int i = 0; i < 3; i++) {
-			col.setValue(nom[i]);
+			col.setColumnValue(nom[i]);
 			manager.update(insert);
 		}
 		
@@ -377,9 +377,9 @@ public class MakeMySqlDB {
 			int[] anios = {2010,2009,2008};
 			int a = ranGene.nextInt(anios.length);
 			int b = ranGene.nextInt(idsgrados.size());
-			idalumn.setValue(idsalumnos.elementAt(i));
-			idgrado.setValue(idsgrados.elementAt(b));
-			anio.setValue(anios[a]);
+			idalumn.setColumnValue(idsalumnos.elementAt(i));
+			idgrado.setColumnValue(idsgrados.elementAt(b));
+			anio.setColumnValue(anios[a]);
 			manager.update(insert);
 		}
 		
@@ -412,8 +412,8 @@ public class MakeMySqlDB {
 		insert.addColumn(idMateria);
 		for (int i = 0; i < idAA.size(); i++) {
 			int materia = ranGene.nextInt(idMAteria.size());
-			cidAA.setValue(idAA.elementAt(i));
-			idMateria.setValue(idMAteria.elementAt(materia));
+			cidAA.setColumnValue(idAA.elementAt(i));
+			idMateria.setColumnValue(idMAteria.elementAt(materia));
 			manager.update(insert);
 		}
 
@@ -445,9 +445,9 @@ public class MakeMySqlDB {
 
 				String dia = "" + (i + 1);// String.valueOf(ranGene.nextInt(28));
 				date = anio1 + "/" + mes + "/" + dia;
-				fecha.setValue(date);
-				asistencia.setValue(1);
-				cidMP.setValue(idMP.elementAt(j));
+				fecha.setColumnValue(date);
+				asistencia.setColumnValue(1);
+				cidMP.setColumnValue(idMP.elementAt(j));
 				manager.update(insert);
 			}
 		}

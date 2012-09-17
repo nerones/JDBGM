@@ -11,6 +11,7 @@ import java.util.List;
  * @version 0.1
  */
 // TODO mover la documentación de la implementación de esta Interfaz
+@Deprecated
 public interface IWhereClause {
      /**
 	 defaults to AND

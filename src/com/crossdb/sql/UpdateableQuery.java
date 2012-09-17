@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * 
  */
 public interface UpdateableQuery extends UpdateStatement{
-	// TODO revisar la docuemtnación de las funciones addColumn
+	// TODO revisar la documentación de las funciones addColumn
 	void setTable(String table);
 
 	void addColumn(String column, String value);

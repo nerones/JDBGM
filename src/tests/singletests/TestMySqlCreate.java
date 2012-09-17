@@ -158,7 +158,7 @@ public class TestMySqlCreate {
 		ct.addTableConstraint(foreign);
 		expectedSQL = "CREATE TABLE animales ( uno INTEGER, dos INTEGER, " +
 				"FOREIGN KEY (uno, dos) REFERENCES tunos(tuno_id, tdos_id) MATCH FULL )";
-		System.out.println(ct.toString());
+		//System.out.println(ct.toString());
 		assertEquals(expectedSQL, ct.toString());
 	}
 	
