@@ -2,18 +2,25 @@ package com.crossdb.sql;
 
 /**
  * Representa una cláusula WHERE como por ejemplo WHERE x = y, la cláusula where
- * esta formada por diferentes condiciones del tipo {@link WhereCondition} e
- * incluir cláusulas {@link WhereClause} anidadas como por ejemplo WHERE (x = y
- * AND (x=z OR x=b))
+ * esta formada por diferentes condiciones y cláusulas {@link WhereClause} anidadas 
+ * como por ejemplo WHERE (x = y AND (x=z OR x=b)). Todas las funciones que ofrece
+ * esta clase son para ir construyendo las diferentes condiciones de la cláusula, todas
+ * ellas vienen con el prefijo "and" u "or" esto es para definir el modo en que se
+ * irán concatenando las diferentes condiciones, la unica que ves que se ignora
+ * el prefijo es cuando se esta agregando la primera condición a la cláusula.
+ * <p>
+ * Si se quiere agregar los nombre de las tablas como por ejemplo "tabla.columna = 1"
+ * se debe agregar como un solo elemento o sea "tabla.columna" se debe ingresar como
+ * nombre de columna sobre la cual se quiere establecer una condición, la clase
+ * no hace ningún tipo de control sobre la existencia de la tabla o la correctitud del
+ * nombre de las columnas, estos errores se veran cuando se este ejecutando la sentencia
+ * sobre el motor.
  * <p>
  * Entonces cada conjunto de paréntesis puede ser visto como una cláusula where,
  * y básicamente podemos ver a WhereClause como una lista de condiciones y/o
  * cláusulas where.
- * <p>
- * Copyright: Copyright (c) 2002 - Company: Space Program Inc.
  * </p>
- * 
- * @author Travis Reeder - travis@spaceprogram.com
+ * @author Travis Reeder - travis@spaceprogram.com Copyright (c) 2002 - Company: Space Program Inc.
  * @author Nelson Efrain A. Cruz
  * @version 0.1
  */
@@ -47,19 +54,27 @@ public class WhereClause {
 	SQLDateTimeFormat sqldf;
 
 	public WhereClause() {
+		whereClauseString = "";
 
 	}
 	
 	private void addCondition(String and_or, String column, String operator, Object value){
 		
-		if (whereClauseString != null) whereClauseString += " " + and_or;
+		if (whereClauseString != "") whereClauseString += " " + and_or + " ";
 		
-		whereClauseString += " " + column + operator + getValueAsString(value);
+		whereClauseString += column + " " + operator + " " + getValueAsString(value);
+	}
+	
+	private void addConditionNoAlter(String and_or, String column, String operator, Object value){
+		
+		if (whereClauseString != "") whereClauseString += " " + and_or + " ";
+		
+		whereClauseString += column + " " + operator + " " + value;
 	}
 	
 	private void addCondition(String and_or, WhereClause innerClause){
-		if (whereClauseString != null) whereClauseString += " " + and_or;
-		whereClauseString += " " + innerClause.getConditionsString();
+		if (whereClauseString != "") whereClauseString += " " + and_or + " ";
+		whereClauseString += innerClause.getConditionsString();
 	}
 
 	/**
@@ -72,11 +87,26 @@ public class WhereClause {
 			if (sqldf == null)
 				sqldf = new SQLDateTimeFormat();
 
-			valueAsString += "'" + sqldf.format((java.util.Date) value) + "' ";
+			valueAsString += "'" + sqldf.format((java.util.Date) value) + "'";
+		} else if (value instanceof String){
+			valueAsString += "'" + value + "'" ;
 		} else
 			// TODO value se convierte a string pero puede ser cualquier objeto.
-			valueAsString += value + " ";
+			valueAsString += value ;
 		
+		return valueAsString;
+	}
+	
+	private String escapeArrayAsString(Object[] value){
+		String valueAsString = "(";
+		for (int i = 0; i < value.length-1 ; i++) {
+			if (value[i] instanceof String)
+				valueAsString += "'" + value[i] + "', ";
+			else valueAsString += value[i] + ", ";
+		}
+		if (value[value.length-1] instanceof String)
+			valueAsString += "'" + value[value.length-1] + "')";
+		else valueAsString += value[value.length-1] + ")";
 		return valueAsString;
 	}
 	
@@ -165,16 +195,17 @@ public class WhereClause {
 	}
 	
 	/**
-	 * Genera la cláusula WHERE para alguna sentencia con el operador "key IN value"
+	 * Genera la cláusula WHERE para alguna sentencia con el operador "key IN (value,value2)"
 	 * si se lo llama varias veces, las condiciones se concatenaran con el operador
 	 * "AND". EL parámetro value debe ser una lista separada por comas  como cadena de caracteres
 	 *  de la forma "a,b,c"
 	 * 
 	 * @param key El nombre de la columna que interviene en la condición.
-	 * @param value La lista de elementos donde se debe buscar, debe ser una cadena de caracteres.
+	 * @param value La lista de elementos donde se debe buscar, debe ser un array de objetos.
 	 */
-	public void andIn(String key, String value) {
-		addCondition("AND", key, IN, value);
+	public void andIn(String key, Object[] value) {
+		
+		addConditionNoAlter("AND", key, IN, escapeArrayAsString(value));
 	}
 	
 	/**
@@ -184,26 +215,26 @@ public class WhereClause {
 	 *  de la forma "a,b,c"
 	 * 
 	 * @param key El nombre de la columna que interviene en la condición.
-	 * @param value La lista de elementos donde se debe buscar, debe ser una cadena de caracteres.
+	 * @param value La lista de elementos donde se debe buscar, debe ser un array de objetos.
 	 */
-	public void orIn(String key, String value) {
-		addCondition("OR", key, IN, value);
+	public void orIn(String key, Object[] value) {
+		addConditionNoAlter("OR", key, IN, escapeArrayAsString(value));
 	}
 	
 	/**
 	 * Lo mismo que {@link #andIn(String, String)} pero la negación lógica del mismo "NOT IN"
 	 * @see WhereClause#andIn(String, String)
 	 */
-	public void andNotIn(String key, String value) {
-		addCondition("AND", key, NOT_IN, value);
+	public void andNotIn(String key, Object[] value) {
+		addConditionNoAlter("AND", key, NOT_IN, escapeArrayAsString(value));
 	}
 	
 	/**
 	 * Lo mismo que {@link #orIn(String, String)} pero la negación lógica del mismo "NOT IN"
 	 * @see WhereClause#orIn(String, String)
 	 */
-	public void orNotIn(String key, String value) {
-		addCondition("OR", key, NOT_IN, value);
+	public void orNotIn(String key, Object[] value) {
+		addConditionNoAlter("OR", key, NOT_IN, escapeArrayAsString(value));
 	}
 	
 	/**
@@ -250,6 +281,63 @@ public class WhereClause {
 		addCondition("OR", key, NOT_LIKE, value);
 	}
 	
+	/**
+	 * Genera la cláusula WHERE para alguna sentencia con el operador "key IS NOT NULL"
+	 * si se lo llama varias veces, las condiciones se concatenaran con el operador
+	 * "AND".
+	 * 
+	 * @param key El nombre de la columna que interviene en la condición.
+	 */
+	public void andNotNull(String key){
+		addConditionNoAlter("AND", key, NOT_NULL, "");
+	}
+	
+	/**
+	 * Genera la cláusula WHERE para alguna sentencia con el operador "key IS NOT NULL"
+	 * si se lo llama varias veces, las condiciones se concatenaran con el operador
+	 * "OR".
+	 * 
+	 * @param key El nombre de la columna que interviene en la condición.
+	 */
+	public void orNotNull(String key){
+		addConditionNoAlter("OR", key, NOT_NULL, "");
+	}
+	
+	/**
+	 * Genera la cláusula WHERE para alguna sentencia con el operador "key IS NULL"
+	 * si se lo llama varias veces, las condiciones se concatenaran con el operador
+	 * "AND".
+	 * 
+	 * @param key El nombre de la columna que interviene en la condición.
+	 */
+	public void andNull(String key){
+		addConditionNoAlter("AND", key, IS_NULL, "");
+	}
+	
+	/**
+	 * Genera la cláusula WHERE para alguna sentencia con el operador "key IS NULL"
+	 * si se lo llama varias veces, las condiciones se concatenaran con el operador
+	 * "OR".
+	 * 
+	 * @param key El nombre de la columna que interviene en la condición.
+	 */
+	public void orNull(String key){
+		addConditionNoAlter("OR", key, IS_NULL, "");
+	}
+	
+	/**
+	 * and key BETWEEN value1 AND value2
+	 * @param key
+	 * @param value1
+	 * @param value2
+	 */
+	public void andBetween(String key, int value1, int value2){
+		addConditionNoAlter("AND", key, BETWEEN, value1 + " AND " + value2);
+	}
+	
+	public void orBetween(String key, int value1, int value2){
+		addConditionNoAlter("OR", key, BETWEEN, value1 + " AND " + value2);
+	}
 
 
 	/**

@@ -42,10 +42,60 @@ public class TestWhereClause {
 	@Test
 	public void testSimplewhere(){
 		where.andEquals("perro_id", 1);
-		expectedWhere = " WHERE perro = 1";
+		where.andEquals("oveja", "blanca");
+		where.orEquals("gato", "negro");
+		expectedWhere = " WHERE (perro_id = 1 AND oveja = 'blanca' OR gato = 'negro')";
+		System.out.println(where.toString());
+		Assert.assertEquals(expectedWhere, where.toString());
+		where = new WhereClause();
+		where.andBetween("perro_id", 1, 3);
+		expectedWhere = " WHERE (perro_id BETWEEN 1 AND 3)";
+		System.out.println(where.toString());
+		
+	}
+	
+	@Test
+	public void testComplexWhere() {
+		where.andLike("nombre", "%ardo%");
+		WhereClause where2 = new WhereClause();
+		where2.andEquals("oveja", "negra");
+		String[] array = {"edu","jorge","luis"};
+		where2.orIn("nombre", array);
+		where.andNestClause(where2);
+		
+		System.out.println(where.toString());
+		expectedWhere = " WHERE (nombre LIKE '%ardo%' AND (oveja = 'negra' OR nombre IN ('edu', 'jorge', 'luis')))";
+		Assert.assertEquals(expectedWhere, where.toString());
+	}
+	
+	@Test
+	public void testComplexWhere2() {
+		where.andLike("nombre", "%ardo%");
+		WhereClause where2 = new WhereClause();
+		where2.andEquals("oveja", "negra");
+		Integer[] array = {1,2,3};
+		where2.orIn("nombre", array);
+		where.andNestClause(where2);
+		
+		System.out.println(where.toString());
+		expectedWhere = " WHERE (nombre LIKE '%ardo%' AND (oveja = 'negra' OR nombre IN (1, 2, 3)))";
+		Assert.assertEquals(expectedWhere, where.toString());
+	}
+	
+	@Test
+	public void testFullWhere(){
+		where.andComparison("perro_id", "<", 3);
+		where.orComparison("perro_id", "<>", 3);
+		String[] array = {"edu","jorge","luis"};
+		where.andNotIn("nombre", array);
+		where.andNotLike("nombre", "%ardo%");
+		expectedWhere = " WHERE (perro_id < 3 OR perro_id <> 3 AND nombre NOT IN ('edu', 'jorge', 'luis') AND nombre NOT LIKE '%ardo%')";
 		Assert.assertEquals(expectedWhere, where.toString());
 		
 	}
+	
+	//TODO test more strange objects, to see how the to string works.
+	
 	
 
 }
