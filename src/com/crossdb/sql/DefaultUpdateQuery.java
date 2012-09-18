@@ -110,8 +110,6 @@ public abstract class DefaultUpdateQuery extends UpdateQuery {
     public void incrementColumn(String column) {
         addToColumn(column, 1);
     }
-
-    public abstract String toString();
     
     /*
 	public int execute(Statement stmt) throws SQLException {

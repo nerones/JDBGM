@@ -110,12 +110,27 @@ public class Column {
 
 	/**
 	 * Crea una columna con un nombre y un valor, usado principalmente cuando creamos
-	 * una columna para agregar a una sentencia INSERT o UPDATE
+	 * una columna para agregar a una sentencia INSERT o UPDATE. el tipo de dato
+	 * del que se trata será inferido dependiendo de la clase que se trate el 
+	 * Parámetro columnValue.
 	 * 
 	 * @param columnName el nombre de la columna
 	 * @param columnValue el valor de la columna
 	 */
 	public Column(String columnName, Object columnValue) {
+		this.columnName = columnName;
+		this.columnValue = columnValue;
+	}
+	
+	/**
+	 * Crea una columna con un nombre, un tipo de dato y un valor, usado principalmente cuando creamos
+	 * una columna para agregar a una sentencia INSERT o UPDATE, indicar el tipo
+	 * de dato es para podes convertir adecuadamente el valor a un {@link String}.
+	 * 
+	 * @param columnName el nombre de la columna
+	 * @param columnValue el valor de la columna
+	 */
+	public Column(String columnName, int dataType, Object columnValue) {
 		this.columnName = columnName;
 		this.columnValue = columnValue;
 	}

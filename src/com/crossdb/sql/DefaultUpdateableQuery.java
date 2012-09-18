@@ -1,7 +1,8 @@
 package com.crossdb.sql;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Vector;
+import java.sql.Types;
 
 // TODO: Would be nice to be able to setup a query like this then just call doUpdate or doInsert to do either? Or getInsertQuery or getUpdateQuery from UpdateableQuery
 // TODO: Revisar si son innecesarias las interfaces y quedarse solo con las clases abstractas.
@@ -15,13 +16,12 @@ import java.util.ArrayList;
  */
 public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 	
-	protected ArrayList<Column> columns; // SELECT columns
+	protected Vector<Column> columns; // SELECT columns
 
 	// protected List values;
 
 	public DefaultUpdateableQuery() {
-
-		columns = new ArrayList<Column>();
+		columns = new Vector<Column>();
 
 	}
 
@@ -29,37 +29,37 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 	// values
 
 	public void addColumn(String column, String value) {
-		Column c = new Column(column, value);
+		Column c = new Column(column, Types.CHAR, value);
 		columns.add(c);
 		// values.add(value);
 	}
 
 	public void addColumn(String column, float value) {
-		Column c = new Column(column, new Float(value));
+		Column c = new Column(column, Types.FLOAT, new Float(value));
 		columns.add(c);
 		// values.add(new Float(value));
 	}
 
 	public void addColumn(String column, double value) {
-		Column c = new Column(column, new Double(value));
+		Column c = new Column(column, Types.DOUBLE, new Double(value));
 		columns.add(c);
 		// values.add(new Double(value));
 	}
 
 	public void addColumn(String column, int value) {
-		Column c = new Column(column, new Integer(value));
+		Column c = new Column(column, Types.INTEGER, new Integer(value));
 		columns.add(c);
 		// values.add(new Integer(value));
 	}
 
 	public void addColumn(String column, java.util.Date value) {
-		Column c = new Column(column, value);
+		Column c = new Column(column, Types.DATE, value);
 		columns.add(c);
 		// values.add(value);
 	}
 
 	public void addColumn(String column, boolean value) {
-		columns.add(new Column(column, new Boolean(value)));
+		columns.add(new Column(column, Types.BOOLEAN, new Boolean(value)));
 		// values.add(new Boolean(value));
 	}
 
@@ -71,24 +71,21 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 		columns.add(column);
 	}
 	
-	
 	public void addColumnNoAlter(String column, String value) {
 		Column c = new Column(column, value);
 		c.setNoAlter(true);
 		columns.add(c);
-
 		// values.add(0,value);
 		// no_alter_values++;
-
 	}
 
 
-	public void appendColumns(ArrayList<Column> columns) {
+	public void appendColumns(Vector<Column> columns) {
 		this.columns.addAll(columns);
 
 	}
 
-	public ArrayList<Column> getColumns() {
+	public Vector<Column> getColumns() {
 		return columns;
 	}
 
