@@ -1,27 +1,27 @@
+
+package com.crossdb.sql;
+
 /**
  * default update query that other implementations can extend
  *
  * @author Travis Reeder - travis@spaceprogram.com
  * Date: Jun 27, 2002
  * Time: 7:24:05 PM
- * 
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
+ * @version 0.3
  */
-package com.crossdb.sql;
-
-
 public abstract class DefaultUpdateQuery extends UpdateQuery {
 	
 	//TODO hacer pruebas sobre update, aunque parece no haber error, mover los where
 
 	protected String table;
 
-	protected WhereClause wclause = new WhereClause();
+	protected WhereClause wclause = null;
 	//List order_by; // ORDER BY order_by
 	//int limit[]; // 2 max that will be offset, count
 
 
 	public DefaultUpdateQuery() {
-
 		super();
 	}
 
@@ -29,75 +29,80 @@ public abstract class DefaultUpdateQuery extends UpdateQuery {
 	public void setTable(String table) {
 		this.table = table;
 	}
-
-
-
-
-	public void addWhereCondition(String pre, int comparison, String pred) {
-		//Where where = new Where(pre, comparison, pred);
-		wclause.addCondition(new WhereCondition(pre, comparison, pred));
+	
+	public WhereClause addWhere(){
+		if (wclause == null) wclause = new WhereClause();
+		return wclause;
 	}
 
-	public void addWhereCondition(String pre, int comparison, int pred) {
-		//Where where = new Where(pre, comparison, pred);
-		wclause.addCondition(new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
-	}
 
-	public void addWhereCondition(String and_or, String pre, int comparison, String pred) {
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, pred));
-	}
 
-	public void addWhereCondition(String and_or, String pre, int comparison, int pred) {
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
-	}
 
-	public void addWhereCondition(String pre, int comparison, java.util.Date pred) {
-		//Where where = new Where(pre, comparison, pred);
-		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
-		wclause.addCondition(new WhereCondition(pre, comparison, " '" + sqldf.format(pred) + "' "));
-	}
-
-	public void addWhereCondition(String and_or, String pre, int comparison, java.util.Date pred) {
-		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, " '" + sqldf.format(pred) + "' "));
-	}
-
-	public void addWhereString(String pre, int comparison, String pred) {
-		wclause.addCondition(new WhereCondition(pre, comparison, "'" + SQLFormat.escape(pred) + "'"));
-	}
-
-	public void addWhereString(String and_or, String pre, int comparison, String pred) {
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "'" + SQLFormat.escape(pred) + "'"));
-	}
-
-	public void addWhereCondition(WhereCondition cond) {
-		wclause.addCondition(cond);
-	}
-
-	public void addWhereClause(WhereClause wc) {
-		wclause.addClause(wc);
-
-	}
-    public void addWhereClause(IWhereClause wc) {
-		wclause.addClause(wc);
-
-	}
-
-	public void addWhereNotNull(String col) {
-		wclause.addCondition(new WhereCondition(col, WhereCondition.NOT_NULL, ""));
-	}
-
-	public void addWhereNotNull(String and_or, String col) {
-		wclause.addCondition(and_or, new WhereCondition(col, WhereCondition.NOT_NULL, ""));
-	}
-
-	public void addWhereIsNull(String col) {
-		wclause.addCondition(new WhereCondition(col, WhereCondition.IS_NULL, ""));
-	}
-
-	public void addWhereIsNull(String and_or, String col) {
-		wclause.addCondition(and_or, new WhereCondition(col, WhereCondition.IS_NULL, ""));
-	}
+//	public void addWhereCondition(String pre, int comparison, String pred) {
+//		//Where where = new Where(pre, comparison, pred);
+//		wclause.addCondition(new WhereCondition(pre, comparison, pred));
+//	}
+//
+//	public void addWhereCondition(String pre, int comparison, int pred) {
+//		//Where where = new Where(pre, comparison, pred);
+//		wclause.addCondition(new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
+//	}
+//
+//	public void addWhereCondition(String and_or, String pre, int comparison, String pred) {
+//		wclause.addCondition(and_or, new WhereCondition(pre, comparison, pred));
+//	}
+//
+//	public void addWhereCondition(String and_or, String pre, int comparison, int pred) {
+//		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
+//	}
+//
+//	public void addWhereCondition(String pre, int comparison, java.util.Date pred) {
+//		//Where where = new Where(pre, comparison, pred);
+//		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
+//		wclause.addCondition(new WhereCondition(pre, comparison, " '" + sqldf.format(pred) + "' "));
+//	}
+//
+//	public void addWhereCondition(String and_or, String pre, int comparison, java.util.Date pred) {
+//		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
+//		wclause.addCondition(and_or, new WhereCondition(pre, comparison, " '" + sqldf.format(pred) + "' "));
+//	}
+//
+//	public void addWhereString(String pre, int comparison, String pred) {
+//		wclause.addCondition(new WhereCondition(pre, comparison, "'" + SQLFormat.escape(pred) + "'"));
+//	}
+//
+//	public void addWhereString(String and_or, String pre, int comparison, String pred) {
+//		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "'" + SQLFormat.escape(pred) + "'"));
+//	}
+//
+//	public void addWhereCondition(WhereCondition cond) {
+//		wclause.addCondition(cond);
+//	}
+//
+//	public void addWhereClause(WhereClause wc) {
+//		wclause.addClause(wc);
+//
+//	}
+//    public void addWhereClause(IWhereClause wc) {
+//		wclause.addClause(wc);
+//
+//	}
+//
+//	public void addWhereNotNull(String col) {
+//		wclause.addCondition(new WhereCondition(col, WhereCondition.NOT_NULL, ""));
+//	}
+//
+//	public void addWhereNotNull(String and_or, String col) {
+//		wclause.addCondition(and_or, new WhereCondition(col, WhereCondition.NOT_NULL, ""));
+//	}
+//
+//	public void addWhereIsNull(String col) {
+//		wclause.addCondition(new WhereCondition(col, WhereCondition.IS_NULL, ""));
+//	}
+//
+//	public void addWhereIsNull(String and_or, String col) {
+//		wclause.addCondition(and_or, new WhereCondition(col, WhereCondition.IS_NULL, ""));
+//	}
 
     public void addToColumn(String column, int valueToAdd) {
         addColumnNoAlter(column, column + " + (" + valueToAdd + ")");
@@ -111,16 +116,4 @@ public abstract class DefaultUpdateQuery extends UpdateQuery {
         addToColumn(column, 1);
     }
     
-    /*
-	public int execute(Statement stmt) throws SQLException {
-		return stmt.executeUpdate(toString());
-	}
-
-	public int execute(Connection conn) throws SQLException {
-		Statement stmt = conn.createStatement();
-		int ret = execute(stmt);
-		stmt.close();
-		return ret;
-	}
-	*/
 }

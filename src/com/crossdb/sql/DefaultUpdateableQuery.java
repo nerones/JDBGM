@@ -11,14 +11,15 @@ import java.sql.Types;
  * 
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
- * @version 0.2
+ * @version 0.3
  * 
  */
 public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 	
+	/**
+	 * Las columnas que intervienen en la sentencia.
+	 */
 	protected Vector<Column> columns; // SELECT columns
-
-	// protected List values;
 
 	public DefaultUpdateableQuery() {
 		columns = new Vector<Column>();
@@ -75,8 +76,6 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 		Column c = new Column(column, value);
 		c.setNoAlter(true);
 		columns.add(c);
-		// values.add(0,value);
-		// no_alter_values++;
 	}
 
 

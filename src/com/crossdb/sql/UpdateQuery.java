@@ -1,51 +1,16 @@
 package com.crossdb.sql;
 
 /**
- This is an initial beta of a class that will represent a query string
-
-
- /**
- * <p>Title: crossdb</p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2002</p>
- * <p>Company: Space Program Inc.</p>
- * @author Travis Reeder - travis@spaceprogram.com
+ * Representa una sentencia {@code UPDATE}.
+ * 
+ * This is an initial beta of a class that will represent a query string
+ * @author Travis Reeder - travis@spaceprogram.com Space Program Inc. Copyright (c) 2002.
+ * @author Nelson Efrain Abraham Cruz - neac03@gmail.com
  * @version 0.1
  */
 
 
 public abstract class UpdateQuery extends DefaultUpdateableQuery {
-
-	//public abstract void setTable(String table);
-
-//	public abstract void addWhereCondition(String x, int comparison, String y);
-//
-//	public abstract void addWhereCondition(String x, int comparison, int y);
-//
-//	public abstract void addWhereCondition(String x, int comparison, Date y);
-//
-//	public abstract void addWhereCondition(String and_or, String x, int comparison, String y);
-//
-//	public abstract void addWhereCondition(String and_or, String x, int comparison, int y);
-//
-//	public abstract void addWhereCondition(String and_or, String x, int comparison, Date y);
-//
-//	public abstract void addWhereString(String x, int comparison, String y);
-//
-//	public abstract void addWhereString(String and_or, String x, int comparison, String y);
-//
-//	public abstract void addWhereCondition(WhereCondition cond);
-//
-//	public abstract void addWhereClause(WhereClause wc);
-//
-//	public abstract void addWhereNotNull(String col);
-//
-//	public abstract void addWhereNotNull(String and_or, String col);
-//
-//	public abstract void addWhereIsNull(String col);
-//
-//	public abstract void addWhereIsNull(String and_or, String col);
-
 
 	// TODO revisar si crea algún problema
 	/**
