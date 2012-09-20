@@ -104,6 +104,13 @@ public interface UpdateableQuery extends UpdateStatement{
 	 */
 	void addColumnNoAlter(String column, String value);
 	
+	/**
+	 * La intención de este método es recordar que se debe re escribir la función
+	 * {@link Object#toString()}, se debe tener en cuenta que la clase base que implemente
+	 * esta interfaz (de la que heredaran las implementaciones especificas) deberá declarar
+	 * como abstracto el método para asi obligar a que sea implementado en las clases finales. 
+	 * @return
+	 */
 	public String toString();
 	
 }

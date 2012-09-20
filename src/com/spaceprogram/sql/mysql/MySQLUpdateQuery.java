@@ -21,72 +21,50 @@ public class MySQLUpdateQuery extends DefaultUpdateQuery {
 		super();
 	}
 
-
-	public String toString() {
-
+	protected String columnValueToString(Column column){
 		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
-		String query2 = "UPDATE " + table + " SET ";
-		//String query2b = " ) VALUES ( ";
-		//pr("col=" + cols.size() + " - " + dfs.length);
-		//int m2 = 0;
-		for (int m = 0; m < columns.size(); m++) {
-
-			Column col = (columns.get(m));
-			Object val = col.getColumnValue();  //values.get(m);
-			String in_val;
-			if (val == null) {
-				in_val = null;
-			}
-			else if (val instanceof String) { // then sql escape and put quotes around it
-				if (col.isNoAlter()) {
-					in_val = (String) val;
-				}
-				else {
-					in_val = "'" + SQLFormat.escape((String) val) + "'";
-				}
-			}
-			else if (val instanceof java.util.Date) {
-				in_val = "'" + sqldf.format(val) + "'";
-			}
-			else if (val instanceof Boolean) {
-				Boolean b = (Boolean) val;
-				if (b.booleanValue()) {
-					// true, so 1
-					in_val = "1";
-				}
-				else
-					in_val = "0";
-
+		Object val = column.getColumnValue();  //values.get(m);
+		String in_val;
+		if (val == null) {
+			in_val = null;
+		}
+		else if (val instanceof String) { // then sql escape and put quotes around it
+			if (column.isNoAlter()) {
+				in_val = (String) val;
 			}
 			else {
-				in_val = val.toString();
+				in_val = "'" + SQLFormat.escape((String) val) + "'";
 			}
-			//	String val = (String)();
-			query2 += col.getName() + " = " + in_val + ",";
-
+		}
+		else if (val instanceof java.util.Date) {
+			in_val = "'" + sqldf.format(val) + "'";
+		}
+		else if (val instanceof Boolean) {
+			Boolean b = (Boolean) val;
+			if (b.booleanValue()) {
+				// true, so 1
+				in_val = "1";
+			}
+			else
+				in_val = "0";
 
 		}
-		query2 = query2.substring(0, query2.length() - 1);
-
-		/*query2 += " WHERE ";
-		// rifle through tables and return string
-		int i;
-		for(i = 0; i < where_clauses.size(); i++){
-			String where = (String)(where_clauses.get(i));
-			query2 += where + "  ";
+		else {
+			in_val = val.toString();
 		}
-		if(i > 0){
-			query2 = query2.substring(0,query2.length() -1);
-		 }*/
-		if (wclause.hasConditions()) {
-			query2 += " WHERE ";
-			// rifle through tables and return string
-			query2 += wclause.toString();
-		}
+		return in_val;
+	}
 
-		//query2b = query2b.substring(0,query2b.length() - 1);
-		//query2b += " ) ";
-		return query2; // + query2b;
+	public String toString() {
+		String updateAsString = "UPDATE " + table + " SET ";
+		for (Column column : columns){
+			updateAsString += column.getName() + " = " + columnValueToString(column) + ", ";
+		}
+		updateAsString = updateAsString.substring(0, updateAsString.length() - 2);
+		if (wclause != null) {
+			updateAsString += wclause.toString();
+		}
+		return updateAsString;
 	}
 
 

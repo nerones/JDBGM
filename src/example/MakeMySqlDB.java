@@ -278,7 +278,7 @@ public class MakeMySqlDB {
 		
 		InsertQuery insert = sqlFactory.getInsertQuery();
 		insert.setTable("alumnos");
-		ArrayList columnlist = new ArrayList();
+		Vector columnlist = new Vector();
 		Column columndni = new Column("dni", null);
 		columnlist.add(columndni);
 		Column columnNacimiento = new Column("fechaNacimiento", null);
@@ -322,7 +322,7 @@ public class MakeMySqlDB {
 		insert = sqlFactory.getInsertQuery();
 		insert.setTable("materias");
 		Column col = new Column("nombre", null);
-		ArrayList list = new ArrayList();
+		Vector list = new Vector();
 		list.add(col);
 		insert.appendColumns(list);
 		

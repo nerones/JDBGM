@@ -87,5 +87,7 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 	public Vector<Column> getColumns() {
 		return columns;
 	}
+	
+	public abstract String toString();
 
 }
