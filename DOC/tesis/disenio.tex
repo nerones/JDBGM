@@ -144,9 +144,9 @@ A continuación una descripción de ellas
 \subsubsection{La clase Column}
 Representa una columna de una tabla para ello posee atributos tales como nombre de columna, banderas que indican si es clave foranea y todos los demás atributos que sirven para definir la columna en una sentencia \verb=CREATE TABLE=. Entre sus métodos no se incluye ninguno que sirva para convertir la columna en una cadena  de texto que sirva para definirla en una sentencia SQL pues a pesar de que la sintaxis de la definición de columna no varia demasiado, salvo por los tipos de datos, si varia el uso sobre ella pues la sentencia \verb=ALTER TABLE= también puede definir columnas en su sintaxis pero con ciertas restricciones como se ve en la sección \ref{sec:altertable} y para evitar confusiones cada clase (clase que represente una sentencia) que haga uso de un objeto columna deberá implementar las restricciones sobre la construcción de la sentencia ignorando los atributos que no use.
 
-Además de esto la columna también posee un atributo para almacenar un valor para la columna de modo que la clase no solo sirva para definir una columna si no también como contenedor del valor, del tipo y del nombre  de la columna para usarlo luego con otras sentencias que no necesiten definir columnas si no ingresarles datos como es el caso de \verb=INSERT=. Haciendo esto se evita crear otra clase que solo sirva de contenedor para el valor de una columna y por lo tanto hay menos clases para recordar. 
+Además de esto la columna también posee un atributo para almacenar un valor para la columna de modo que la clase no solo sirva para definir una columna si no también como contenedor del valor, del tipo y del nombre  de la columna para usarlo luego con otras sentencias que no necesiten definir columnas si no ingresarles datos como es el caso de \verb=INSERT=. Haciendo esto se evita crear otra clase que solo sirva de contenedor para el valor de una columna y por lo tanto hay menos clases para recordar. Además se deja abierta la posibilidad de establecer a que tipo de datos pertenece el valor que se esta ingresando para poder manejar el modo en que este valor es convertido a \verb=String=, para aclarar esto supóngase que se quiere ingresar un valor booleano a una columna y como los constructores de esta clase aceptan para el parámetro que establece el valor para la columna un objeto de la clase \verb=Object= se le puede pasar cualquier objeto por lo que intuitivamente se le podría pasar una cadena \verb|columnValue ="TRUE"| a menos que se indique el tipo de columna a la clase la clase puede inferir que se quiere enviar una cadena de texto y convertirla a  por ejemplo \verb|.. SET boolean_column = 'TRUE'| que puede llevar a un error cuando se intente enviar la sentencia a el motor, en cambio si el tipo de dato es establecido a boolean la clase lo convertirá en un \verb=1= o \verb=0= según corresponda.
 
-\subsubsection{La clase TableConstraint}
+\subsubsection{Las restricciones de tabla en TableConstraint}
 Esta clase representa lo que en una sentencia \verb=CREATE TABLE= vendría a ser una restricción de tabla, las cuales pueden ser \verb=PRIMARY KEY, FOREIGN KEY o UNIQUE= estas restricciones a su vez pueden hacerse sobre una (clave simple) columna o bien sobre varias (clave compuesta). La razón por la que se eligió crear una clase para representar las restricciones de tabla es que de no existir se complicaba mucho la "traducción" a SQL de la clase que representa a \verb=CREATE TABLE=, esta clase representa un medio mas sencillo para la traducción de la restricción, como contra parte se puede observar que la sintaxis se vuelve un poco mas compleja pero aun así es mayor el beneficio pues se hace mas sencilla la traducción a cadena de caracteres. 
 
 \subsubsection{La clase DataTypes}
@@ -170,27 +170,73 @@ Clases constructoras de Objetos (\textit{Factories})
 \subsubsection{Parseando los datos de forma adecuada}
 \verb=SQLFormat, SQLDateTimeFormat, SQLTimeFormat=
 
-\subsubsection{La restricción WHERE}
-\verb=WhereClause, WhereCondition, WhereFrame=
-\verb=WhereCondition= Es una clase muy simple que tiene por objetivo la representación de las condiciones $ x = y $ que se usan dentro de una cláusula WHERE. La clase puede contener los nombres de las tablas a comparar, si es que se comparan valores de mas de una tabla, los nombres de los campos a comparar y (de haber) algún valor contra el que comparar.
+\subsubsection{La restricción WHERE como WhereClause}
+Como la clausula \verb=WHERE= no es mas que una lista de condiciones en la que intervienen los mismos operadores lógicos, comparativos y específicos de SQL como por ejemplo el operador \verb=IN= se decidió crear una clase que lo contenga, en resumen no hay implementación especifica pues es la misma para todos, además el uso de una misma clase para generar las restricciones en las distintas sentencias facilita y ''unifica'' el uso de las mismas.
 
-\verb=WhereClause=  Representa una cláusula \verb=WHERE= como por ejemplo \verb|WHERE x = y | , la cláusula where esta formada por diferentes condiciones del tipo \verb=WhereCondition= e incluir cláusulas \verb=WhereClause= anidadas como por ejemplo \verb|WHERE (x = y AND (x=z OR x=b))|. Entonces cada conjunto de paréntesis puede ser visto como una cláusula \verb=WHERE=, y básicamente podemos ver a 
+En definitiva esta clase debe proveer un amplio abanico de funciones para facilitar el ingreso de los diferentes tipos de condiciones que intervienen en la clausula \verb=WHERE=. Entre las sentencias que utilizan esta clase tenemos a: \verb=SELECT=, \verb=UPDATE= y \verb=DELETE= estas deberán proveer un método que devuelva una referencia a un objeto \verb=WhereClause= que sera miembro de la misma e igualmente llamado, el método. Este método debe ser especificado en las diferentes interfaces que especifiquen el comportamiento de las sentencias que recién se nombraron. 
 
-\verb=WhereClause= como una lista de condiciones y/o cláusulas \verb=WHERE=.
+\subsection{Manejo de errores}
 
+\subsection{Diseño de cada una de las sentencias}
+Una vez que se presento el esqueleto del proyecto ya se puede empezar a ver las particularidades de cada una de las ramas finales que en este caso son las interfaces, aunque es bueno aclarar que estas particularidades son las que precisamente delinearon a la estructura que se expuso anteriormente, por lo que a continuación se explicara en mas detalle la relación de las interfaces que definen a las sentencias y las clases auxiliares como así también detalles que se creen importantes recordando que las interfaces quedan casi completamente definidas por la especificación que se dio en la sección \ref{seccion:especificacion:dialectos}.
 
-
-
-
-
-
+\subsubsection{La interfaz para CREATE TABLE}
+La sentencia \verb=CREATE TABLE= representada en la interfaz \verb=CreateTableQuery= básicamente sirve para definir columnas y restricciones de tabla, aunque en las columnas también es posible definir algunas de las restricciones pero estas están limitadas ya que solo se pueden definir sobre dicha columna. En el dialecto genérico que se definió anteriormente se encontraron compatibilidades con las definiciones de restricciones de columna pero al analizar la estructura necesaria para una implementación de la misma a nivel clases se termino por excluirlas por que complicaban la conversión del objeto a \verb=String= al ser necesario estar comprobando si una columna pertenece a una restricción de columna o a una restricción de tabla (lo que involucraba iteraciones extras) , además restringir el tipo de restricciones a las de tabla únicamente evidencio la  necesidad de una clase que almacene dicha restricción con la consiguiente simplificación de la interfaz principal.
 
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{figuras/jdbgm-dc-createtable.png}
+  \caption{Diagrama de clases para la interfaz de CreateTableQuery}
+  \label{fig:dc-createtable}
+\end{figure}
+
+
+La clase \verb=TableConstraint= representa a las restricciones de tabla la cual necesita referencias (punteros a los objetos) de las columnas que componen la tabla que se esta por crear y además es posible definir los otros atributos que tienen las restricciones de tabla que se pueden ver en la sección  \fullref{especificacion:dialectos:create}. Lo que no se contemplo en esta interfaz y tampoco es posible definir mediante la misma es el control de la integridad de la sentencia en el sentido de que si es correcta o no pues de hacerlo aumentaría el procesamiento necesario para poder convertir esta sentencia a cadena de caracteres complicando y agregando trabajo extra a la capa de software que accede a el motor, trabajo que en definitiva el terminara realizando de nuevo lo que en definitiva se resumiría en una redundancia innecesaria. Lo único que cambiara al obviar estas comprobaciones es quien terminara por reportar el error por lo que no se realizan este tipo de comprobaciones.
+
+Por ultimo hay que señalar el uso de la clase \verb=Column= para almacenar la definición de las columnas, que además después sera reutilizada como contenedora de valores. Esta clase originalmente contenía las definiciones de las restricciones de columnas pero desde la creación de la clase \verb=TableConstraint= estas fueron eliminadas con la única excepción de la restricción combinada de clave primaria con columna  auto-incrementada del tipo entera.
+
+\subsubsection{La interfaz para UPDATE}
+La sentencia \verb=UPDATE= al igual que la sentencia \verb=INSERT= precisa que se le indiquen las columnas sobre las cuales se quiere trabajar, pudiendo ser todas o solo algunas de las columnas, es por ello que se decidió crear una interfaz intermedia que defina este comportamiento para ambas sentencias, dicha interfaz es \verb=UpdateableQuery= la cual precisamente define los métodos necesarios para poder establecer cuales serán las columnas sobre las que se trabajara. Una vista completa de como se disponen las clases necesarias para esta sentencia se puede ver en la figura \ref{fig:dc-updatequery} en ella podemos apreciar que esta interfaz común hace uso de la clase \verb=Column= para almacenar los nombres y valores para las columnas además de los tipos de datos que se precisan para esa columna, aunque como quedo definida la interfaz se deja abierta la posibilidad de que \jj decida a que tipo de dato pertenece el valor que se le acaba de establecer. Y por ultimo antes de entrar directamente a la interfaz especifica para esta sentencia vemos que existe una implementación base para que el comportamiento no solo quede definido sino que también implementado. 
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{figuras/jdbgm-dc-update.png}
+  \caption{Diagrama de clases para la interfaz de UpdateQuery}
+  \label{fig:dc-updatequery}
+\end{figure}
+
+Poco le queda por definir a la interfaz \verb=UpdateQuery=, como se puede apreciar en la sección \ref{especificacion:dialectos:update} falta por definir la restricción \verb=WHERE= lo cual se hace mediante la clase auxiliar \verb=WhereClause=, por lo que esta interfaz debe poder devolver un objeto de dicha clase para crear la restricción, este objeto debe ser atributo de la clase que implemente esta interfaz para que luego la clase pueda interactuar con ella y obtener la restricción. 
+%El uso de las clases auxiliares y de la interfaz \verb=UpdateableQuery= simplifico mucho a 
+
+\subsubsection{La interfaz para INSERT}
+
+La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \verb=UpdateableQuery=
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{figuras/jdbgm-dc-insert.png}
+  \caption{Diagrama de clases para la interfaz de InsertQuery}
+  \label{fig:dc-insertquery}
+\end{figure}
+
+\subsubsection{La interfaz para UPDATE}
+\subsubsection{La interfaz para UPDATE}
+\subsection{Implementación del patrón Factory}
 
 
 
-\section{JDBC y su envoltorio}
+
+
+
+
+
+
+
+\section{Capa de acceso a el motor - JDBC}
 y otro
+
+\subsection{Como funciona JDBC}
 Java ya nos provee JDBC para acceder a las bases de datos, pero al hacer uso de el es necesario especificar con que motor se esta trabajando, para ejemplificar ello veamos el típico código que debemos escribir para conectarnos a una base de datos.
 
 \begin{lstlisting}[title=Porción de codigo java para la conexión a una base de datos]
@@ -209,4 +255,6 @@ Class.forName("com.mysql.jdbc.Driver");
 
 En esta porción de código lo que se hace inicialmente es instanciar el driver, es decir crear el objeto driver, luego el método estático \verb=getConnection= de 	\verb=DriverManager= nos devuelve un objeto que representa la conexión al motor con el que se esta trabajando. Este objeto del tipo \verb=Connection= nos provee métodos para generar objetos \verb=Statement= que nos permite hacer consultas a la base de datos mediante las funciones que dispone. Una descripción mucho mas extensa de JDBC puede ser encontrada en la documentación disponible en la web de Oracle\citep{java:jdbc}.
 Para nuestro proyecto necesitamos ocultar y simplificar el API de JDBC
+\subsection{Manejo de errores y excepciones}
 
+\subsection{Que se devuelve como resultado}

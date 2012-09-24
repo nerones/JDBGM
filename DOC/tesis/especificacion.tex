@@ -188,7 +188,7 @@ Faltan los tipos monetarios, booleanos
 \subsection{Sentencias SQL}
 En las siguientes secciones se pasa a analizar por separado cada una de las sentencias que se están por incluir en nuestro dialecto genérico, para ello se compararan las implementaciones que se hicieron sobre cada uno de los motores sobre los que se da soporte.
 
-\subsubsection{Especificación de CREATE TABLE}
+\subsubsection{Especificación de CREATE TABLE} \label{especificacion:dialectos:create}
 Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
 \begin{Verbatim}
   CREATE TABLE <table name> (
@@ -243,7 +243,7 @@ Como primer diferencia veremos las tipos de datos tienen diferentes nombres y si
 
 El parámetro\verb= COLLATE= también presenta diferencias, pero es en este caso es \p el que limita ya que no acepta\verb= COLLATE= en la definición de columna por lo que no sera adoptada en la especificación de \jj. En \p se puede especificar el ``collate'' a usar sobre todas las tablas en la creación de la base de datos. \verb= UNIQUE= y \verb= PRIMARY KEY= como restricción de columna no acepta ningún modificador en \m, por lo tanto se obviara el modificador\verb= <conflict cause>= de \s y otros que acepta \p. El parametro \verb= NOT NULL= tampoco acepta ningún modificador en \m, su contra parte el parámetro\verb= NULL= puede ser omitido ya que de no agregarse se toma por defecto que la columna puede aceptar valores nulos. Por ultimo hay que señalar que \m si bien implementa\verb= CHEK <expre>= este no es reconocido en la definición de columna.\\
 
-En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m una ultima diferencia la podemos ver en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando.  
+En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m una ultima diferencia la podemos ver en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando. Aun así es posible sortear este problema en \p es posible usar la palabra clave \verb=SERIAL= la cual es un atajo para crear una secuencia y asignársela a la columna, en este caso se usara para emular el funcionamiento de la clausula anterior y con \m lo único que hace falta es limitar esta clausula como lo hace \s.   
 
 \begin{Verbatim}
   <table constraint definition> ::=
@@ -322,7 +322,7 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
   <column constraint> ::=
     NOT NULL
   | UNIQUE
-  | PRIMARY KEY
+  | PRIMARY KEY [AUTO_INCREMENT]
   | <references specification>
 
   <table constraint definition> ::=
@@ -368,7 +368,7 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 
 
 
-\subsubsection{Especificación de UPDATE}
+\subsubsection{Especificación de UPDATE} \label{especificacion:dialectos:update}
 Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s\cite{sqlite:sql} 
 
 \begin{Verbatim}
@@ -424,7 +424,7 @@ Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son
 
 
 
-\subsubsection{Especificación de INSERT}
+\subsubsection{Especificación de INSERT} \label{especificacion:dialectos:insert}
 La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
 
 \begin{Verbatim}[frame=single, label=sintaxis para INSERT]
@@ -452,7 +452,7 @@ La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT=
 
 
 
-\subsubsection{Especificación de ALTER TABLE} \label{sec:altertable}
+\subsubsection{Especificación de ALTER TABLE} \label{especificacion:dialectos:altertable}
 \verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:\\
 
 %\begin{Verbatim}
@@ -488,7 +488,7 @@ Además de estas limitaciones hay algunas mas, al agregar nuevas columnas la def
 
 
 
-\subsubsection{Especificación de DELETE}
+\subsubsection{Especificación de DELETE} \label{especificacion:dialectos:delete}
 La sintaxis de \verb=DELETE= entendida por \s es la siguiente
 \begin{Verbatim}
   <delete statement> ::=
@@ -514,7 +514,7 @@ En ella podemos encontrar una diferencia con las demás motores de bases de dato
 
 
 
-\subsubsection{Especificación de SELECT}
+\subsubsection{Especificación de SELECT} \label{especificacion:dialectos:select}
 Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas analizamos a continuación \verb=SELECT= tal como es conocido por \s:
 
 \begin{Verbatim}
