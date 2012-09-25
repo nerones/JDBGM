@@ -35,8 +35,10 @@ public interface AlterTableQuery extends UpdateStatement{
 	void newTableName(String table);
 	
 	/**
-	 *Toma una columna y genera la definición necesaria para la creación de la columna dado que existen
-	 *ciertas restricciones sobre la definición de columnas en comparación a las definiciones en CREATE TABLE.  
+	 * Toma una columna y genera la definición necesaria para la creación de la columna dado que existen
+	 * ciertas restricciones sobre la definición de columnas en comparación a las definiciones en CREATE TABLE.
+	 * Por ello no se revisara si la columna ingresada tiene alguna restricción de columna salvo por la de clave foranea,
+	 * y de declararse la columna como clave foranea esta debe tener como valor por defecto a "null".  
 	 * @param column una columna a ser agregada a la tabla
 	 * @return la definición de la creación de la columna.
 	 */

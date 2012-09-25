@@ -23,7 +23,7 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 
 	/**
 	 * Constructor que toma el conversor de tipos de datos para poder mapear adecuadamente
-	 * los tipos de datos genericos a los de un DBMS en concreto.
+	 * los tipos de datos genéricos a los de un DBMS en concreto.
 	 * @param datatype un conversor de tipos de datos especifico para algún DBMS.
 	 */
 	public DefaultAlterTableQuery(DataTypes datatype) {
@@ -53,6 +53,8 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 		if (column.isNullable() == 0) {
 			ret += " NOT NULL ";
 		}
+		if (column.isForeignKey()) ret += " REFERENCES " + column.getForeignTable() + 
+				"(" + column.getForeignPrimaryKey() + ")";
 		/**
 		 * should this shiza be in MySQLDataTypes??
 		 * 
@@ -65,7 +67,6 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 				ret += " DEFAULT " + column.getColumnDefaultValue();
 		}
 		return ret;
-		
 	}
 	
 	public abstract String toString();

@@ -23,9 +23,8 @@ public class MySQLAlterTableQuery extends DefaultAlterTableQuery {
 			ret += "RENAME TO " + newTableName;
 			return ret;
 		} else {
-			for (int i = 0; i < adds.size(); i++) {
-				Column col = (Column) (adds.get(i));
-				ret += "ADD " + columnToString(col);
+			for (Column col : adds) {
+				ret += "ADD COLUMN " + columnToString(col);
 				ret += ",";
 			}
 			ret = ret.substring(0, ret.length() - 1);

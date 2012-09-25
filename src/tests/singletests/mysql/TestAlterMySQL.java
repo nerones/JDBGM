@@ -42,15 +42,16 @@ public class TestAlterMySQL {
 	@Test
 	public void testBasi(){
 		at.setTable("tabla");
-		at.addColumn(new Column("columna", java.sql.Types.DECIMAL, false));
-		assertEquals("ALTER TABLE tabla ADD columna DECIMAL", at.toString());
+		at.addColumn(new Column("columna", java.sql.Types.DECIMAL));
+		assertEquals("ALTER TABLE tabla ADD COLUMN columna DECIMAL", at.toString());
 	}
 	
 	@Test
 	public void testBasic(){
 		at.setTable("tabla");
-		at.addColumn(new Column("columna", java.sql.Types.DECIMAL, false));
-		assertEquals("ALTER TABLE tabla ADD columna DECIMAL", at.toString());
+		at.addColumn(new Column("columna", java.sql.Types.DECIMAL));
+		at.addColumn(new Column("columna2", java.sql.Types.INTEGER));
+		assertEquals("ALTER TABLE tabla ADD COLUMN columna DECIMAL", at.toString());
 		//sdsdsd
 	}
 
