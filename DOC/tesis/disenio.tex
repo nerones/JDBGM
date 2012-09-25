@@ -131,12 +131,12 @@ Como ya se denoto para un adecuado y consistente funcionamiento de el manejador 
 \item \verb=Column=
 \item \verb=TableConstraint=
 \item \verb=DataTypes=
-\item \verb=Formater=(No usado - revisar)
+\item \verb=Formater=
 \item \verb=Functions= (no decidido por completo)
 \item \verb=Join=
 \item \verb=SpecificSQLFactory=
 \item \verb=SQLFactory=
-\item \verb=SQLFormat, SQLDateTimeFormat, SQLTimeFormat=
+\item \verb=SQLFormat, SQLDateTimeFormat, SQLTimeFormat=(estas no son usadas o movidas a Formatter)
 \item \verb=WhereClause, WhereCondition, WhereFrame=
 \end{itemize}
 A continuación una descripción de ellas
@@ -153,8 +153,8 @@ Esta clase representa lo que en una sentencia \verb=CREATE TABLE= vendría a ser
 Esta es una clase abstracta que servirá para mapear los tipos de datos a los correspondientes a los de un motor especifico, esto se logra mediante un método que toma como entrada los tipos de datos definidos por \jd y los mapea a los tipos de datos encontrados en el capitulo anterior.
 
 
-\subsubsection{Formater}
-(No usado - revisar)
+\subsubsection{La interfaz Formatter}
+La Interfaz \verb=Formatter= sirve para definir el modo en que algunos tipos de datos han de ser convertidos a su equivalente como cadena de caracteres, se puede decir que define un formateador. Se provee una implementación por defecto de esta interfaz en \verb=DefaultFormatter= la cual puede llegar a servir sin modificaciones para el motor sobre el que se este trabajando, aun así esta implementación por defecto obligara a que se cree una clase que herede de la misma puesto que se tratara de una clase abstracta y como tal no puede ser instanciada directamente. La clase que herede de dicha implementación puede no definir nada y ser creada solamente para poder instanciar la implementación base a través de esta pero se exige su implementación por si llegase a ser necesario sobrescribir (\textit{override}) algunos de los métodos ya implementados para manejar adecuadamente algún tipo de dato según lo requiera el motor de bases de datos.
 
 \subsubsection{Functions}
 \verb=Functions= (no decidido por completo)
@@ -197,7 +197,7 @@ La clase \verb=TableConstraint= representa a las restricciones de tabla la cual 
 Por ultimo hay que señalar el uso de la clase \verb=Column= para almacenar la definición de las columnas, que además después sera reutilizada como contenedora de valores. Esta clase originalmente contenía las definiciones de las restricciones de columnas pero desde la creación de la clase \verb=TableConstraint= estas fueron eliminadas con la única excepción de la restricción combinada de clave primaria con columna  auto-incrementada del tipo entera.
 
 \subsubsection{La interfaz para UPDATE}
-La sentencia \verb=UPDATE= al igual que la sentencia \verb=INSERT= precisa que se le indiquen las columnas sobre las cuales se quiere trabajar, pudiendo ser todas o solo algunas de las columnas, es por ello que se decidió crear una interfaz intermedia que defina este comportamiento para ambas sentencias, dicha interfaz es \verb=UpdateableQuery= la cual precisamente define los métodos necesarios para poder establecer cuales serán las columnas sobre las que se trabajara. Una vista completa de como se disponen las clases necesarias para esta sentencia se puede ver en la figura \ref{fig:dc-updatequery} en ella podemos apreciar que esta interfaz común hace uso de la clase \verb=Column= para almacenar los nombres y valores para las columnas además de los tipos de datos que se precisan para esa columna, aunque como quedo definida la interfaz se deja abierta la posibilidad de que \jj decida a que tipo de dato pertenece el valor que se le acaba de establecer. Y por ultimo antes de entrar directamente a la interfaz especifica para esta sentencia vemos que existe una implementación base para que el comportamiento no solo quede definido sino que también implementado. 
+La sentencia \verb=UPDATE= al igual que la sentencia \verb=INSERT= precisa que se le indiquen las columnas sobre las cuales se quiere trabajar, pudiendo ser todas o solo algunas de las columnas, es por ello que se decidió crear una interfaz intermedia que defina este comportamiento para ambas sentencias, dicha interfaz es \verb=UpdateableQuery= la cual precisamente define los métodos necesarios para poder establecer cuales serán las columnas sobre las que se trabajara. Una vista completa de como se disponen las clases necesarias para esta sentencia se puede ver en la figura \ref{fig:dc-updatequery} en ella podemos apreciar que esta interfaz común hace uso de la clase \verb=Column= para almacenar los nombres y valores para las columnas además de los tipos de datos que se precisan para esa columna, aunque como quedo definida la interfaz se deja abierta la posibilidad de que \jj decida a que tipo de dato pertenece el valor que se le acaba de establecer, esto se hace mediante las implementaciones de la interfaz \verb=Formatter= que decide como se debe interpretar el valor de la columna. Y por ultimo antes de entrar directamente a la interfaz especifica para esta sentencia vemos que existe una implementación base para que el comportamiento no solo quede definido sino que también implementado. 
 
 \begin{figure}
   \centering
@@ -211,7 +211,7 @@ Poco le queda por definir a la interfaz \verb=UpdateQuery=, como se puede apreci
 
 \subsubsection{La interfaz para INSERT}
 
-La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \verb=UpdateableQuery=
+La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \verb=UpdateableQuery= para definir su comportamiento base, luego sera la interfaz \verb=InsertQuery= la que defina el comportamiento especifico para dicha sentencia. En esta interfaz se define el comportamiento especificado en la sección \pageref{especificacion:dialectos:insert}, no hay mas para aclarar con respecto al diseño salvo que esta sentencia puede ser armada a partir de tres fuentes distintas para las cuales existen sendas funciones, como el uso de estas fuentes debe ser excluyentes una de la otra, es decir solo se puede usar una fuente a la vez, se decidió que la interfaz optara como fuente para la sentencia a aquella que haya sido establecida en ultima instancia mediante la llamada a el método correspondiente.
 
 \begin{figure}
   \centering
@@ -220,7 +220,9 @@ La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \v
   \label{fig:dc-insertquery}
 \end{figure}
 
-\subsubsection{La interfaz para UPDATE}
+\subsubsection{La interfaz para ALTER TABLE}
+
+
 \subsubsection{La interfaz para UPDATE}
 \subsection{Implementación del patrón Factory}
 
