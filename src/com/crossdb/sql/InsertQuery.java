@@ -3,11 +3,14 @@ package com.crossdb.sql;
 /**
  * Esta clase representa una sentencia del tipo {@code INSERT} en ella se puede
  * elegir que los datos a insertar provengan de:
- * 	*Valores por defecto
- * 	*Valores ingresados explícitamente
- * 	*Valores provenientes de una consulta
+ * <ul>
+ * 	<li>Valores por defecto para la columna.</li>
+ * 	<li>Valores ingresados explícitamente.</li>
+ * 	<li>Valores provenientes de una consulta {@link SelectQuery}.</li>
+ * </ul>
+ * 
  * Pero solo se puede elegir una de estas tres opciones a la vez, de llegarse a llamar mas
- * de una vez a cualquiera de los metodos {@link #setFromDefault(boolean)}, {@link #setFromValues(boolean)} y
+ * de una vez a cualquiera de los métodos {@link #setFromDefault(boolean)}, {@link #setFromValues(boolean)} y
  * {@link #setSelectStmt(SelectQuery)} solo tendrá efecto el ultimo de los que fuera
  * llamado.
  * 
@@ -24,13 +27,18 @@ package com.crossdb.sql;
  */
 public abstract class InsertQuery extends DefaultUpdateableQuery {
 
-	public abstract void setTable(String table);
+	//public abstract void setTable(String table);
+
+	public InsertQuery(Formatter formatter) {
+		super(formatter);
+		// TODO Auto-generated constructor stub
+	}
 
 	// void addColumn(String column, String value, boolean auto_inc);
 	public abstract void addAutoIncrementColumn(String column); // uses default
 																// sequence
 
-	public abstract void addAutoIncrementColumn(String column, String sequence); 
+	//public abstract void addAutoIncrementColumn(String column, String sequence); 
 	
 	/**
 	 * Este método pone como origen de los datos para la sentencia insert a una sentencia SELECT del tipo

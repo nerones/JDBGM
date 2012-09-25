@@ -6,7 +6,7 @@
  */
 package com.crossdb.sql;
 
-import java.util.ArrayList;
+import java.util.Vector;
 /**
  * Implementación base de {@link AlterTableQuery} de la cual debe heredar cualquier
  * implementación especifica para algún DBMS.
@@ -18,7 +18,7 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 	protected String query1;
 	protected String table;
 	protected String newTableName;
-	protected ArrayList<Column> adds;
+	protected Vector<Column> adds;
 	protected DataTypes datatype;
 
 	/**
@@ -28,7 +28,7 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 	 */
 	public DefaultAlterTableQuery(DataTypes datatype) {
 		query1 = "";
-		adds = new ArrayList<Column>();
+		adds = new Vector<Column>();
 		this.datatype = datatype;
 	}
 

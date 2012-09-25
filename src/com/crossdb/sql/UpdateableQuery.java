@@ -113,4 +113,13 @@ public interface UpdateableQuery extends UpdateStatement{
 	 */
 	public String toString();
 	
+	/**
+	 * Devuelve la instancia adecuada a la implementación que se este haciendo, de esta
+	 * interfaz. {@link Formatter} define el comportamiento que permite formatear adecuadamente los tipos de datos
+	 * según corresponda a el motor que se este usando.
+	 * 
+	 * @return La instancia que corresponda a una implementación de Formatter
+	 */
+	public Formatter getFormatter();
+	
 }

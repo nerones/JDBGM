@@ -9,11 +9,7 @@
  */
 package com.spaceprogram.sql.mysql;
 
-import com.crossdb.sql.Formatter;
-import com.crossdb.sql.SQLDateTimeFormat;
 import com.crossdb.sql.DefaultFormatter;
-
-import java.util.Date;
 
 public class MySQLFormatter extends DefaultFormatter {
 

@@ -8,7 +8,7 @@
  * 
  */
 package com.crossdb.sql;
-
+@Deprecated
 public class SQLFormat {
 	/**
 	 * Escapes a string for using with db,

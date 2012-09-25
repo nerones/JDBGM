@@ -2,11 +2,9 @@
 package com.crossdb.sql;
 
 /**
- * default update query that other implementations can extend
+ * default update query that other implementations can  and must extend
  *
  * @author Travis Reeder - travis@spaceprogram.com
- * Date: Jun 27, 2002
- * Time: 7:24:05 PM
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
  * @version 0.3
  */
@@ -19,8 +17,8 @@ public abstract class DefaultUpdateQuery extends UpdateQuery {
 	//int limit[]; // 2 max that will be offset, count
 
 
-	public DefaultUpdateQuery() {
-		super();
+	public DefaultUpdateQuery(Formatter formatter) {
+		super(formatter);
 	}
 
 
@@ -45,6 +43,7 @@ public abstract class DefaultUpdateQuery extends UpdateQuery {
         addToColumn(column, 1);
     }
     //TODO falta probar con los tipos de datos.
-    protected abstract String columnValueToString(Column column);
+    
+    
     
 }
