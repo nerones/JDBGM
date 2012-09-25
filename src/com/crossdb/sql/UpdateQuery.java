@@ -1,16 +1,23 @@
 package com.crossdb.sql;
 
 /**
- * Representa una sentencia {@code UPDATE}.
+ * Representa una sentencia {@code UPDATE} define algunos métodos extras para
+ * poder realizar acciones de manera mas simple como por ejemplo el método {@link #addToColumn(String, int)}
+ * aunque la mas importante es el método {@link #addWhere()}. que se usa para poder
+ * establecer la restricción where.
  * 
- * This is an initial beta of a class that will represent a query string
  * @author Travis Reeder - travis@spaceprogram.com Space Program Inc. Copyright (c) 2002.
  * @author Nelson Efrain Abraham Cruz - neac03@gmail.com
- * @version 0.1
+ * @version 0.3
  */
 
 
 public abstract class UpdateQuery extends DefaultUpdateableQuery {
+
+	public UpdateQuery(Formatter formatter) {
+		super(formatter);
+		// TODO Auto-generated constructor stub
+	}
 
 	// TODO revisar si crea algún problema
 	/**

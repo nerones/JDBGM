@@ -25,6 +25,7 @@ import java.util.Date;
  * @author Nelson Efrain A. Cruz
  *
  */
+@Deprecated
 public interface WhereFrame {
 	
 	public abstract void addWhereCondition(String x, int comparison, String y);

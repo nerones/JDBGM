@@ -34,6 +34,8 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
      */
     protected DataTypes datatype;
     
+    //protected Formatter formatter;
+    
     /*
      * Cuenta la cantidad de columnas que forman la clave Primaria (pk) tener en
      * cuenta que si su valor final es 0 se trata de una pk formada por una única

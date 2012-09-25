@@ -20,10 +20,11 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 	 * Las columnas que intervienen en la sentencia.
 	 */
 	protected Vector<Column> columns; // SELECT columns
+	protected Formatter formatter;
 
-	public DefaultUpdateableQuery() {
+	public DefaultUpdateableQuery(Formatter formatter) {
 		columns = new Vector<Column>();
-
+		this.formatter = formatter;
 	}
 
 	// protected int no_alter_values = 0; // counts the number of no alter
@@ -88,6 +89,16 @@ public abstract class DefaultUpdateableQuery implements UpdateableQuery {
 		return columns;
 	}
 	
+//	/**
+//	 * Convierte el valor de la columna en string.
+//	 */
+//	protected abstract String columnValueToString(Column column);
+	
 	public abstract String toString();
+	
+	public Formatter getFormatter(){
+		return this.formatter;
+	}
+	
 
 }

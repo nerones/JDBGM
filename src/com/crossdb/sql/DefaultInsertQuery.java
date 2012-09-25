@@ -1,10 +1,13 @@
 package com.crossdb.sql;
 
 /**
+ * Implementación base de {@link InsertQuery} de la cual deben heredar toda las
+ * clases que implementen para un DBMS en particular.
+ * 
  * 
  * @author Travis Reeder - travis@spaceprogram.com
- * @author Nelson Efrain A. Cruz 2011 Date: Jun 27, 2002 Time: 8:55:57 PM
- * @version 0.2
+ * @author Nelson Efrain A. Cruz
+ * @version 0.3
  */
 public abstract class DefaultInsertQuery extends InsertQuery {
 	// contemplado casi todos los casos exepto por un par de opciones de sqlite
@@ -17,8 +20,12 @@ public abstract class DefaultInsertQuery extends InsertQuery {
 
 	protected SelectQuery select = null;
 
-	public DefaultInsertQuery() {
-		super();
+	/**
+	 * Este constructor marca por defecto a la sentencia como si se fuera a construir
+	 * a partir de los valores que se le especifiquen.
+	 */
+	public DefaultInsertQuery(Formatter formatter) {
+		super(formatter);
 		return_id = false;
 		isFromDefaultValues = false;
 		isFromSelect = false;
@@ -37,14 +44,14 @@ public abstract class DefaultInsertQuery extends InsertQuery {
 		// values.add(null);
 	}
 
-	public void addAutoIncrementColumn(String column, String sequence) {
-		Column c = new Column(column, null);
-		c.setAutoIncrementPK(true);
-		//TODO revisar setsequence
-		//c.setSequence(sequence);
-		columns.add(c);
-		// values.add(null);
-	}
+//	public void addAutoIncrementColumn(String column, String sequence) {
+//		Column c = new Column(column, null);
+//		c.setAutoIncrementPK(true);
+//		//TODO revisar setsequence
+//		//c.setSequence(sequence);
+//		columns.add(c);
+//		// values.add(null);
+//	}
 
 	public void returnID(boolean b) {
 		return_id = b;
@@ -82,7 +89,5 @@ public abstract class DefaultInsertQuery extends InsertQuery {
 		isFromDefaultValues = false;
 		this.isFromValues = true;
 	}
-
-	public abstract String toString();
 
 }
