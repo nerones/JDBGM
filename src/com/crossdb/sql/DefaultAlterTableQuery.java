@@ -1,9 +1,3 @@
-/**
- * @author Travis Reeder - travis@spaceprogram.com
- * Date: Jun 27, 2002
- * Time: 8:52:42 PM
- * 
- */
 package com.crossdb.sql;
 
 import java.util.Vector;
@@ -11,7 +5,7 @@ import java.util.Vector;
  * Implementación base de {@link AlterTableQuery} de la cual debe heredar cualquier
  * implementación especifica para algún DBMS.
  * @author Nelson Efrain A. Cruz
- *
+ * @author Travis Reeder - travis@spaceprogram.com
  */
 public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 
@@ -21,6 +15,7 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 	protected Vector<Column> adds;
 	protected DataTypes datatype;
 
+	
 	/**
 	 * Constructor que toma el conversor de tipos de datos para poder mapear adecuadamente
 	 * los tipos de datos genéricos a los de un DBMS en concreto.
@@ -36,6 +31,7 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 		this.table = table;
 	}
 
+	//TODO chequear la restricciones extras sobre la alteración de tablas
 	public void addColumn(Column col) {
 		adds.add(col);
 		newTableName = null;
@@ -53,12 +49,12 @@ public abstract class DefaultAlterTableQuery implements AlterTableQuery {
 		if (column.isNullable() == 0) {
 			ret += " NOT NULL ";
 		}
-		if (column.isForeignKey()) ret += " REFERENCES " + column.getForeignTable() + 
+		if (column.isForeignKey()) {
+			ret += " REFERENCES " + column.getForeignTable() + 
 				"(" + column.getForeignPrimaryKey() + ")";
-		/**
-		 * should this shiza be in MySQLDataTypes??
-		 * 
-		 */
+			//column.setDefaultColumnValue("null");
+		}
+		//should this shiza be in MySQLDataTypes??
 		if (column.getColumnDefaultValue() != null) {
 			if (column.getType() == java.sql.Types.VARCHAR
 					|| column.getType() == java.sql.Types.CHAR) {

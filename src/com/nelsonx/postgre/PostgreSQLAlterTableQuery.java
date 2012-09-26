@@ -1,9 +1,7 @@
 package com.nelsonx.postgre;
 
 import com.crossdb.sql.Column;
-import com.crossdb.sql.DataTypes;
 import com.crossdb.sql.DefaultAlterTableQuery;
-import com.spaceprogram.sql.mysql.MySQLDataTypes;
 
 public class PostgreSQLAlterTableQuery extends DefaultAlterTableQuery {
 

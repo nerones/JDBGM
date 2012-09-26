@@ -54,5 +54,14 @@ public class TestAlterMySQL {
 		assertEquals("ALTER TABLE tabla ADD COLUMN columna DECIMAL", at.toString());
 		//sdsdsd
 	}
+	
+	@Test
+	public void testRename(){
+		at.setTable("tabla");
+		at.newTableName("new_table_name");
+		assertEquals("ALTER TABLE tabla RENAME TO new_table_name", at.toString());
+		//sdsdsd
+	}
+	
 
 }

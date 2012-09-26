@@ -211,7 +211,7 @@ Poco le queda por definir a la interfaz \verb=UpdateQuery=, como se puede apreci
 
 \subsubsection{La interfaz para INSERT}
 
-La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \verb=UpdateableQuery= para definir su comportamiento base, luego sera la interfaz \verb=InsertQuery= la que defina el comportamiento especifico para dicha sentencia. En esta interfaz se define el comportamiento especificado en la sección \pageref{especificacion:dialectos:insert}, no hay mas para aclarar con respecto al diseño salvo que esta sentencia puede ser armada a partir de tres fuentes distintas para las cuales existen sendas funciones, como el uso de estas fuentes debe ser excluyentes una de la otra, es decir solo se puede usar una fuente a la vez, se decidió que la interfaz optara como fuente para la sentencia a aquella que haya sido establecida en ultima instancia mediante la llamada a el método correspondiente.
+La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \verb=UpdateableQuery= para definir su comportamiento base, luego sera la interfaz \verb=InsertQuery= la que defina el comportamiento especifico para dicha sentencia como se puede observar en la \figpage{fig:dc-insertquery}. En esta interfaz se define el comportamiento especificado en la sección \pageref{especificacion:dialectos:insert}, no hay mas para aclarar con respecto al diseño salvo que esta sentencia puede ser armada a partir de tres fuentes distintas para las cuales existen sendas funciones, como el uso de estas fuentes debe ser excluyentes una de la otra, es decir solo se puede usar una fuente a la vez, se decidió que la interfaz optara como fuente para la sentencia a aquella que haya sido establecida en ultima instancia mediante la llamada a el método correspondiente.
 
 \begin{figure}
   \centering
@@ -221,9 +221,19 @@ La sentencia \verb=INSERT= como ya se menciono hace uso de la interfaz común \v
 \end{figure}
 
 \subsubsection{La interfaz para ALTER TABLE}
+La sentencia \verb=ALTER TABLE= expresada en la interfaz \verb=AlterTAbleQuery= presenta una estructura bastante simple como se puede ver en la \figpage{fig:dc-altertabletquery} únicamente hace uso de la clase auxiliar \verb=Column= y nada mas tal como se puede apreciar en la sección \ref{especificacion:dialectos:altertable} del capitulo de especificación. Tampoco hay mucho para aclarar debido a la simplicidad de la especificación para dicha sentencia, en parte debido al pobre soporte que tiene sobre esta sentencia el motor \ss y además por que no esta contemplado dentro de lo que serian los métodos CRUD pero como \cc presentaba un soporte para esta se la termino por agregar.
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{figuras/jdbgm-dc-altertable.png}
+  \caption{Diagrama de clases para la interfaz de AlterTableQuery}
+  \label{fig:dc-altertabletquery}
+\end{figure}
 
+\subsubsection{La interfaz para DELETE}
+La sentencia \verb=DEELETE= definida en la interfaz \verb=DeleteQuery= es otra de las que es bastante sencilla
 
-\subsubsection{La interfaz para UPDATE}
+\subsubsection{La interfaz para SELECT}
+
 \subsection{Implementación del patrón Factory}
 
 
