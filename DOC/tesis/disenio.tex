@@ -230,9 +230,17 @@ La sentencia \verb=ALTER TABLE= expresada en la interfaz \verb=AlterTAbleQuery= 
 \end{figure}
 
 \subsubsection{La interfaz para DELETE}
-La sentencia \verb=DEELETE= definida en la interfaz \verb=DeleteQuery= es otra de las que es bastante sencilla
+La sentencia \verb=DELETE= definida en la interfaz \verb=DeleteQuery= es otra de las que es bastante sencilla según la especificación dada en la sección \fullref{especificacion:dialectos:delete} en la que se ve que aparte del nombre de la tabla sobre la que se esta trabajando necesita de una clausula \verb=WHERE= la cual es proveída por la clase \verb=WhereClause= tal como se puede ver en la \figpage{fig:dc-deletequery}.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{figuras/jdbgm-dc-delete.png}
+  \caption{Diagrama de clases para la interfaz de DeleteQuery}
+  \label{fig:dc-deletequery}
+\end{figure}
 
 \subsubsection{La interfaz para SELECT}
+La sentencia \verb=SELECT= definida en la interfaz \verb=SelectQuery=
 
 \subsection{Implementación del patrón Factory}
 

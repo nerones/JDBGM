@@ -16,15 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with JDBGM.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nelsonx.sqlite;
+package tests.singletests.mysql;
 
-import com.crossdb.sql.DefaultDeleteQuery;
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.spaceprogram.sql.mysql.MySQLDeleteQuery;
 
 /**
- * Implementación Especifica de {@link DefaultDeleteQuery} para el motor SQLite.
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
  *
  */
-public class SQLiteDeleteQuery extends DefaultDeleteQuery {
+public class TestMySQLDeleteQuery {
+	
+	public MySQLDeleteQuery delete;
+	public String expected; 
+	
+	@Before
+	public void setUp(){
+		delete = new MySQLDeleteQuery();
+	}
+	
+	@Test
+	public void testBasic() {
+		delete.setTable("table");
+		delete.addWhere().andEquals("campo", "valor");
+		expected = "DELETE FROM table WHERE (campo = 'valor')";
+		assertEquals(expected, delete.toString());
+	}
 
 }

@@ -82,6 +82,7 @@ public class WhereClause {
 	 * @return
 	 */
 	private String getValueAsString(Object value) {
+		//TODO mover al formateado
 		String valueAsString = "";
 		if (value instanceof java.util.Date) {
 			if (sqldf == null)
@@ -98,6 +99,7 @@ public class WhereClause {
 	}
 	
 	private String escapeArrayAsString(Object[] value){
+		//TODO mover al formateador
 		String valueAsString = "(";
 		for (int i = 0; i < value.length-1 ; i++) {
 			if (value[i] instanceof String)

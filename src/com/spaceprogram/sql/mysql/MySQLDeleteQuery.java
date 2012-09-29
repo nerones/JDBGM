@@ -1,18 +1,12 @@
 package com.spaceprogram.sql.mysql;
 
-/** This is an initial beta of a class that will represent a query string */
+import com.crossdb.sql.DefaultDeleteQuery;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.*;
-
-import com.crossdb.sql.*;
-
-//import StringUtils;
-
-
+/**
+ * Implementación Especifica de {@link DefaultDeleteQuery} para el motor MySQL
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
+ *
+ */
 public class MySQLDeleteQuery extends DefaultDeleteQuery {
-
-
 
 }
