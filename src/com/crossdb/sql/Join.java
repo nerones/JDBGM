@@ -1,127 +1,254 @@
 package com.crossdb.sql;
 
 /**
-
-This class will represent a table join that can
-be passed into select queries in the addTable function.
-<p>
- will hold the join type, the table to join, and any conditions (ON conditions)
-<p>
-/**
- * <p>Title: crossdb</p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2002</p>
- * <p>Company: Space Program Inc.</p>
- * @author Travis Reeder - travis@spaceprogram.com
- * @version 0.1
+ * Esta clase representa la union de tablas mediante {@code JOIN}, los diferentes
+ * métodos que ofrece esta clase son para establecer con que tipo de {@code JOIN}
+ * se hará la union, los tipos que se pueden usar están definidos por las constantes
+ * estáticas de esta clase pero no es posible usarlos para definir el tipo de {@code JOIN}
+ * si no que esto se debe hacer mediante la llamada de la función adecuada, sus nombres
+ * indican el tipo que se usará.
+ * <p>
+ * Los {@code JOIN} anidados se pueden hacer mediante llamadas sucesivas a los métodos
+ * estos se irán concatenando a medida que se los llama. <strong> No se revisa si es correcta
+ * o no la union que se esta armando </strong> de existir error este será reportado
+ * cuando se quiera usar la sentencia contra un motor.
+ * <p>
+ * Para cada tipo de {@code JOIN} (definido por el nombre de la función) existen
+ * tres funciones del mismo nombre que aceptan distintos parámetros:
+ * <ul>
+ * 	<li>La que acepta el nombre de la tabla sobre la que se quiere hacer {@code JOIN}
+ *  y la condición para la unión </li>
+ *  <li>La que acepta el nombre de la tabla, un alias para la tabla y la condición
+ *  para la unión con {@code JOIN}. Para los tipos {@code LEFT JOIN} y {@code LEFT OUTER JOIN}
+ *  es posible indicar si usara el elemento {@code NATURAL} mediante el primer parámetro </li>
+ *  <li>La que acepta una sentencia select como fuente, un alias para la tabla resultante de la consulta y la condición
+ *  para la unión con {@code JOIN}. Para los tipos {@code LEFT JOIN} y {@code LEFT OUTER JOIN}
+ *  es posible indicar si usara el elemento {@code NATURAL} mediante el primer parámetro </li>
+ * </ul>    
+ * @author Travis Reeder - travis@spaceprogram.com - Copyright (c) 2002 Space Program Inc.
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
+ * @version 0.2
  */
-
-import java.util.*;
-//import java.sql.*;
-
 public class Join {
 	
-	public static final int INNER_JOIN = 1;
-	public static final int LEFT_OUTER_JOIN = 10;
 	
-	String table_name;
-	int type;
-	WhereClause wclause = new WhereClause();
+	public static final String JOIN = "JOIN";
+	public static final String LEFT_JOIN = "LEFT_JOIN";
+	public static final String LEFT_OUTER_JOIN = "LEFT OUTTER JOIN";
+	public static final String INNER_JOIN = "INNER JOIN";
+	public static final String CROSS_JOIN = "CROSS_JOIN";
+	public static final String NATURAL = "NATURAL";
 	
-	public Join(int join_type, String table_name){
-		this.type = join_type;
-		this.table_name = table_name;
-	}
+	private String joinAsString;
+	//int type;
 	
-	public void addWhereCondition(WhereCondition cond){
-		wclause.addCondition(cond);
-	}
-	public void addWhereCondition(String x, int comparison, String y){
-		WhereCondition c = new WhereCondition(x, comparison, y);
-		wclause.addCondition(c);
-	}
-	public void addWhereCondition(String x, int comparison, int y){
-		WhereCondition c = new WhereCondition(x, comparison, "" + y);
-		wclause.addCondition(c);
+	//WhereClause wclause = new WhereClause();
+	
+	public Join(){
+		joinAsString = "";
+		//this.type = 1;//join_type;
+		//this.table_name = table_name;
 	}
 	
-	public void addCondition(String x, int comparison, String y){
-		WhereCondition c = new WhereCondition(x, comparison, y);
-		wclause.addCondition(c);
+	private void join(boolean isNatural, String tableName, String tableAlias, String joinOption, String joinCondition){
+		String as;
+		if (tableAlias.equals("")) as = "";
+		else as  = "AS " + tableAlias + " ";
+		if (isNatural) joinAsString += " " + NATURAL; 
+		joinAsString += " " + joinOption + " " + tableName + " "+ as;
+		if (!joinCondition.equals(""))	joinAsString +=	"ON " + joinCondition;
 	}
-	public void addCondition(String x, int comparison, int y){
-		WhereCondition c = new WhereCondition(x, comparison, "" + y);
-		wclause.addCondition(c);
+	
+	private void join(boolean isNatural, SelectQuery selectSource, String selectAlias, String joinOption, String joinCondition){
+		String as;
+		if (selectAlias.equals("")) as = "";
+		else as  = "AS " + selectAlias + " ";
+		if (isNatural) joinAsString += " " + NATURAL;
+		joinAsString += " " + joinOption + " (" + selectSource.toString()+ ") " + as;
+		if (!joinCondition.equals(""))	joinAsString +=	"ON " + joinCondition;
 	}
-	/*	void addWhereWhereCondition(String x, int comparison, int y);
-		void addWhereWhereCondition(String and_or, String x, int comparison, String y);
-		void addWhereWhereCondition(String and_or, String x, int comparison, int y);
-	 (*/
-		
-	public String getTableName(){
-		return table_name;
+	
+	/**
+	 * Agrega un elemento {@code JOIN} a la cláusula FROM de la sentencia select
+	 * a la que pertenece esta clase
+	 * @param tableName El nombre de la tabla sobre la que se quiere hacer {@code JOIN}.
+	 * @param joinCondition La condición  textual que se usa para realizar la union.
+	 */
+	public void join(String tableName, String joinCondition) {
+		join(false, tableName, "", JOIN, joinCondition);
 	}
-	public int getType(){
-		return type;
+	
+	/**
+	 * Agrega un elemento {@code JOIN} a la cláusula FROM de la sentencia select
+	 * a la que pertenece esta clase.
+	 * @param tableName El nombre de la tabla sobre la que se quiere hacer {@code JOIN}.
+	 * @param alias El alias que se le quiere asignar a la tabla.
+	 * @param joinCondition La condición  textual que se usa para realizar la union.
+	 */
+	public void join(String tableName, String alias, String joinCondition) {
+		join(false, tableName, alias, JOIN, joinCondition);
 	}
-	public WhereClause getConditions(){
-		return wclause;
+	
+	/**
+	 * Agrega un elemento {@code JOIN} a la cláusula FROM de la sentencia select
+	 * a la que pertenece esta clase.
+	 * @param selectSource El nombre de la sentencia {@code SELECT} sobre la que se quiere hacer {@code JOIN}.
+	 * @param alias El alias que se le quiere asignar a la tabla resultado de la sentencia {@code SELECT}.
+	 * @param joinCondition La condición  textual que se usa para realizar la union.
+	 */
+	public void join(SelectQuery selectSource, String alias, String joinCondition) {
+		join(false, selectSource, alias, JOIN, joinCondition);
 	}
+	
+	
+	/**
+	 * Agrega un elemento {@code LEFT JOIN} a la cláusula FROM de la sentencia select
+	 * a la que pertenece esta clase.
+	 * @param tableName El nombre de la tabla sobre la que se quiere hacer {@code JOIN}.
+	 * @param joinCondition La condición  textual que se usa para realizar la union.
+	 */
+	public void leftJoin(String tableName, String joinCondition) {
+		join(false, tableName, "", LEFT_JOIN, joinCondition);
+	}
+	
+	/**
+	 * Agrega un elemento {@code LEFT JOIN} a la cláusula FROM de la sentencia select
+	 * a la que pertenece esta clase.
+	 * @param isNatural Indica si se debe agregar el parámetro {@code NATURAL}.
+	 * @param tableName El nombre de la tabla sobre la que se quiere hacer {@code JOIN}.
+	 * @param alias El alias que se le quiere asignar a la tabla.
+	 * @param joinCondition La condición  textual que se usa para realizar la union.
+	 */
+	public void leftJoin(boolean isNatural, String tableName, String alias, String joinCondition) {
+		join(isNatural, tableName, alias, LEFT_JOIN, joinCondition);
+	}
+	
+	/**
+	 * Agrega un elemento {@code LEFT JOIN} a la cláusula FROM de la sentencia select
+	 * a la que pertenece esta clase.
+	 * @param isNatural Indica si se debe agregar el parámetro {@code NATURAL}.
+	 * @param selectSource El nombre de la sentencia {@code SELECT} sobre la que se quiere hacer {@code JOIN}.
+	 * @param alias El alias que se le quiere asignar a la tabla resultado de la sentencia {@code SELECT}.
+	 * @param joinCondition La condición  textual que se usa para realizar la union.
+	 */
+	public void leftJoin(boolean isNatural, SelectQuery selectSource, String alias, String joinCondition) {
+		join(isNatural, selectSource, alias, LEFT_JOIN, joinCondition);
+	}
+	
+	
+	
+	public void leftOuterJoin(String tableName, String joinCondition) {
+		join(false, tableName, "", LEFT_OUTER_JOIN, joinCondition);
+	}
+	
+	public void leftOuterJoin(boolean isNatural, String tableName, String alias, String joinCondition) {
+		join(isNatural, tableName, alias, LEFT_OUTER_JOIN, joinCondition);
+	}
+	
+	public void leftOuterJoin(boolean isNatural, SelectQuery selectSource, String alias, String joinCondition) {
+		join(isNatural, selectSource, alias, LEFT_OUTER_JOIN, joinCondition);
+	}
+	
+	
+	public void innerJoin(String tableName, String joinCondition) {
+		join(false, tableName, "", INNER_JOIN, joinCondition);
+	}
+	
+	public void innerJoin(String tableName, String alias, String joinCondition) {
+		join(false, tableName, alias, INNER_JOIN, joinCondition);
+	}
+	
+	public void innerJoin(SelectQuery selectSource, String alias, String joinCondition) {
+		join(false, selectSource, alias, INNER_JOIN, joinCondition);
+	}
+	
+	
+	public void crossJoin(String tableName, String joinCondition) {
+		join(false, tableName, "", CROSS_JOIN, joinCondition);
+	}
+	
+	public void crossJoin(String tableName, String alias, String joinCondition) {
+		join(false, tableName, alias, CROSS_JOIN, joinCondition);
+	}
+	
+	public void crossJoin(SelectQuery selectSource, String alias, String joinCondition) {
+		join(false, selectSource, alias, CROSS_JOIN, joinCondition);
+	}
+	
+	/**
+	 * Devuelve la restricción JOIN que forma parte de el parámetro FROM de la sentencia
+	 * select a la que pertenece esta clase.
+	 */
+	public String toString(){
+		return joinAsString;
+	}
+	
+	
+//	public String getTableName(){
+//		return table_name;
+//	}
+//	public int getType(){
+//		return type;
+//	}
+//	public WhereClause getConditions(){
+//		return wclause;
+//	}
 
 	/**
 	 * Auto join function. (self join is when you join a table to itself)
 	 *
 	 * Uses tables in nested WhereClauses to create tables if none are explicitly defined in SelectQuery
 	 */
-	public static void autoJoin(WhereClause wc, SelectQuery sq){
-		java.util.List tables = new java.util.ArrayList();
-		autoJoinRipper(tables, wc);
-		for (int i = 0; i < tables.size(); i++) {
-			String o = (String) tables.get(i);
-			//System.out.println("adding table: " + o);
-			sq.addTable(o);
-
-		}
-	}
-	private static void autoJoinRipper(List tables, WhereClause wc){
-		// rifle through conditions and separators
-		// if another clause found, call getWhereClause on that one
-		List conditions = wc.getConditions();
-		for(int i =0; i < conditions.size(); i++){
-			Object ob = conditions.get(i);
-			/*if(i != 0){
-				ret += separators.get(i) + " ";
-			}
-			*/
-
-			if(ob instanceof WhereCondition){
-				WhereCondition cond = (WhereCondition)ob;
-				String t = cond.getPreTable();
-				if(t != null){
-					//System.out.println("word: " + i + " - " + t);
-					if(!tables.contains(t)){
-						tables.add(t);
-					}
-				}
-
-				t = cond.getPostTable();
-				if(t != null){
-					//System.out.println("word: " + i + " - " + t);
-					if(!tables.contains(t)){
-						tables.add(t);
-					}
-				}
-
-			}
-			else{ // clause cause that's all it can be
-				WhereClause clause = (WhereClause)ob;
-
-				autoJoinRipper(tables, clause);
-
-			}
-
-		}
-
-	}
+	
+//	public static void autoJoin(WhereClause wc, SelectQuery sq){
+//		java.util.List tables = new java.util.ArrayList();
+//		autoJoinRipper(tables, wc);
+//		for (int i = 0; i < tables.size(); i++) {
+//			String o = (String) tables.get(i);
+//			//System.out.println("adding table: " + o);
+//			sq.addTable(o);
+//
+//		}
+//	}
+//	private static void autoJoinRipper(List tables, WhereClause wc){
+//		// rifle through conditions and separators
+//		// if another clause found, call getWhereClause on that one
+//		List conditions = wc.getConditions();
+//		for(int i =0; i < conditions.size(); i++){
+//			Object ob = conditions.get(i);
+//			/*if(i != 0){
+//				ret += separators.get(i) + " ";
+//			}
+//			*/
+//
+//			if(ob instanceof WhereCondition){
+//				WhereCondition cond = (WhereCondition)ob;
+//				String t = cond.getPreTable();
+//				if(t != null){
+//					//System.out.println("word: " + i + " - " + t);
+//					if(!tables.contains(t)){
+//						tables.add(t);
+//					}
+//				}
+//
+//				t = cond.getPostTable();
+//				if(t != null){
+//					//System.out.println("word: " + i + " - " + t);
+//					if(!tables.contains(t)){
+//						tables.add(t);
+//					}
+//				}
+//
+//			}
+//			else{ // clause cause that's all it can be
+//				WhereClause clause = (WhereClause)ob;
+//
+//				autoJoinRipper(tables, clause);
+//
+//			}
+//
+//		}
+//
+//	}
 
 }

@@ -131,82 +131,9 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 
     }
 
-    /**
-	 The following are convenience functions instead of making new whereconditions and adding them, you just
-	 use these methods.
-	 */
-	public void addWhereCondition(String pre, int comparison, String pred){
-		//Where where = new Where(pre, comparison, pred);
-		wclause.addCondition(new WhereCondition(pre, comparison, pred));
-	}
-    public void addWhereCondition(String pre, int comparison, int pred){
-		//Where where = new Where(pre, comparison, pred);
-		wclause.addCondition(new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
-	}
-	public void addWhereCondition(String pre, int comparison, long pred){
-		//Where where = new Where(pre, comparison, pred);
-		wclause.addCondition(new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
-	}
-	public void addWhereCondition(String pre, int comparison, java.util.Date pred){
-		//Where where = new Where(pre, comparison, pred);
-		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
-		wclause.addCondition(new WhereCondition(pre, comparison, "'" + sqldf.format(pred) + "'"));
-	}
-	public void addWhereCondition(String and_or, String pre, int comparison, String pred){
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, pred));
-	}
-    public void addWhereCondition(String and_or, String pre, int comparison, int pred){
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
-	}
-	public void addWhereCondition(String and_or, String pre, int comparison, long pred){
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "" + pred)); // could handle the ints better
-	}
-	public void addWhereCondition(String and_or, String pre, int comparison, java.util.Date pred){
-		SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "'" + sqldf.format(pred) + "'"));
-	}
+    
 
-    /**
-     * same as addWhereString("AND", pre, comparison, pred)
-     *
-     * @see #addWhereString(String, String, int, String)
-     */
-	public void addWhereString(String pre, int comparison, String pred){
-		wclause.addCondition(new WhereCondition(pre, comparison, "'" + SQLFormat.escape(pred) + "'"));
-	}
-    /**
-     * Use this for adding a string that you want to be SQL formatted.  All outside strings should use this.
-     * user addWhereCondition() for column comparison
-     */
-	public void addWhereString(String and_or, String pre, int comparison, String pred){
-		wclause.addCondition(and_or, new WhereCondition(pre, comparison, "'" + SQLFormat.escape(pred) + "'"));
-		}
-
-	public void addWhereCondition(WhereCondition cond){
-		wclause.addCondition(cond);
-	}
-
-	public void addWhereClause(IWhereClause wc){
-		wclause.addClause(wc);
-
-	}
-    public void addWhereClause(WhereClause wc){
-		wclause.addClause(wc);
-
-	}
-	public void addWhereNotNull(String col){
-		wclause.addCondition(new WhereCondition(col, WhereCondition.NOT_NULL, ""));
-	}
-	public void addWhereNotNull(String and_or, String col){
-		wclause.addCondition(and_or, new WhereCondition(col, WhereCondition.NOT_NULL, ""));
-	}
-	public void addWhereIsNull(String col){
-		wclause.addCondition(new WhereCondition(col, WhereCondition.IS_NULL, ""));
-	}
-	public void addWhereIsNull(String and_or, String col){
-		wclause.addCondition(and_or, new WhereCondition(col, WhereCondition.IS_NULL, ""));
-	}
-
+    
 
 
     public void addOrderBy(String order_by){

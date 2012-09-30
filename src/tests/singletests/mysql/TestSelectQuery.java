@@ -87,6 +87,7 @@ public class TestSelectQuery {
 		sq2.addColumn("nombre");
 		sq2.addTable("Mascotas");
 		sq.union(sq2);
+		sq.addJoin().innerJoin("Mascotas", "Animales.raza = Mascotas.idRaza");
 		//System.out.println(sq.toString());
 		assertEquals("SELECT DISTINCT raza, nombre FROM Animales, Registro WHERE Animales.raza = Registro.idRaza UNION " +
 				"SELECT nombre FROM Mascotas", sq.toString());

@@ -1,8 +1,5 @@
 package com.crossdb.sql;
 
-import java.util.Date;
-
-import com.crossdb.sql.optimization.OptimizationHint;
 
 /**
  * Esta clase representa una sentencia SELECT. Si nunca se agrega una columna,
@@ -12,9 +9,6 @@ import com.crossdb.sql.optimization.OptimizationHint;
  * Además provee una interfaz para agregar los comandos correspondientes a la
  * sentencia SQL 
  * 
- * todo: move all the addWhere functions to WhereClause and
- * deprecate them in this so that they can all be used in any query like delete
- * and update.
  * <p>
  * Copyright: Copyright (c) 2002 Company: Space Program Inc.
  * </p>
@@ -23,27 +17,33 @@ import com.crossdb.sql.optimization.OptimizationHint;
  * @author Nelson Efrain A.Cruz
  * @version 0.5
  */
-
-/*
- * Should have a predefined WhereClause in which the user can add conditions to
- * it.
- */
 public interface SelectQuery extends QueryStatement {
 
 	/**
+	 * Establece si la sentencia tiene la restricción {@code DISTINCT} o no, de ser
+	 * false no tiene dicha restricción y la sentencia se comporta como si tuviera
+	 * la restricción {@code ALL} la cual puede ser omitida pues es el comportamiento
+	 * por defecto.
+	 * 
+	 * @param distinct Establece si la columna presenta la restricción o no.
+	 */
+	void setDistinct(boolean distinct);
+	
+	//TODO las columnas pueden tener alias, no se agrego todavia.
+	/**
 	 * Agrega una columna a la sentencia SELECT que se esta armando. Si no hay
-	 * columnas agregadas a la sentencia (no se llamo a ningun metodo addColumn)
+	 * columnas agregadas a la sentencia (no se llamo a ningún método addColumn)
 	 * se devolverá de manera predeterminada todas las columnas (SELECT *)
 	 * 
 	 * @param column
-	 *            nombre de la columna a devolver en la lista de columnas de la
+	 *            Nombre de la columna a devolver en la lista de columnas de la
 	 *            sentencia select.
 	 */
 	void addColumn(String column);
 
 	/**
 	 * Agrega una columna a la sentencia SELECT pero haciendo referencia a una
-	 * columna column en una tabla table y por table.column, es usado cuando la
+	 * columna {@code column} en una tabla {@code table} por table.column, es usado cuando la
 	 * sentencia select se este realiza sobre mas de una tabla.
 	 * 
 	 * @param table
@@ -118,6 +118,7 @@ public interface SelectQuery extends QueryStatement {
 
 	void maxColumn(String table, String column);
 
+	//TODO la tabla de FROM puede provenir de una sentencia select
 	/**
 	 * Agrega una tabla a la sentencia SELECT sobre la cual se ara la consulta
 	 * con INNER JOIN como predeterminado. Es decir el identificador de tabla
@@ -128,44 +129,46 @@ public interface SelectQuery extends QueryStatement {
 	 *            consulta.
 	 */
 	void addTable(String table);
+	
+	Join addJoin();
 
-	/**
-	 * Agrega una tabla a la sentencia SELECT con la opción de JOIN
-	 * seleccionada. Las opciones de JOIN se obtienen de las constantes
-	 * declaradas en la clase {@link Join}.
-	 * 
-	 * @param joinType
-	 *            - type of join using the fields in Join.java
-	 * @param table
-	 *            - table name to add to query
-	 * @see Join
-	 */
-	void addTable(int joinType, String table);
-
-	/**
-	 * Instead of creating a Join then inserting it, since you can only have one
-	 * condition on a left outer join to work with oracle, this is the
-	 * convenient way to do it.
-	 * 
-	 * @param join_type
-	 *            - type of join using the fields in Join.java
-	 * @param table
-	 *            - table name to add to query
-	 * @see Join
-	 * @see WhereCondition
-	 */
-	void addTable(int join_type, String table, WhereCondition cond);
-
-	/**
-	 * WARNING: This may get deprecated as it is unecessary considering that you
-	 * can only have one join condition on an outer join (see requirements doc
-	 * at www.crossdb.com)
-	 * 
-	 * @param join
-	 *            - a join object that has all the information needed.
-	 * @see Join
-	 */
-	void addTable(Join join);
+//	/**
+//	 * Agrega una tabla a la sentencia SELECT con la opción de JOIN
+//	 * seleccionada. Las opciones de JOIN se obtienen de las constantes
+//	 * declaradas en la clase {@link Join}.
+//	 * 
+//	 * @param joinType
+//	 *            - type of join using the fields in Join.java
+//	 * @param table
+//	 *            - table name to add to query
+//	 * @see Join
+//	 */
+//	void addTable(int joinType, String table);
+//
+//	/**
+//	 * Instead of creating a Join then inserting it, since you can only have one
+//	 * condition on a left outer join to work with oracle, this is the
+//	 * convenient way to do it.
+//	 * 
+//	 * @param join_type
+//	 *            - type of join using the fields in Join.java
+//	 * @param table
+//	 *            - table name to add to query
+//	 * @see Join
+//	 * @see WhereCondition
+//	 */
+//	void addTable(int join_type, String table, WhereCondition cond);
+//
+//	/**
+//	 * WARNING: This may get deprecated as it is unecessary considering that you
+//	 * can only have one join condition on an outer join (see requirements doc
+//	 * at www.crossdb.com)
+//	 * 
+//	 * @param join
+//	 *            - a join object that has all the information needed.
+//	 * @see Join
+//	 */
+//	void addTable(Join join);
 
 	// void removeColumn(String column);
 	// Not sure how the function thing will work cause there are too many
@@ -177,67 +180,29 @@ public interface SelectQuery extends QueryStatement {
 	// an interface called SQLFunctions or something with all the functions in
 	// it.
 	// void addColumn(int function, String column); // functions map to
+	//TODO La clausula where puede tomar funciones en sus condiciones
 	/**
-	 * This one will compare a string with no alterations, so in general you
-	 * would use this one to compare 2 columns. like col1 = col2
-	 * 
-	 * @see #addWhereString
+	 * Agrega una cláusula {@code WHERE} representada por la clase {@link WhereClause} 
+	 * a la sentencia {@code SELECT}, dicha clase es la que se encarga de armar la
+	 * restricción. La función debe devolver siempre la misma referencia a la única
+	 * instancia miembro de la sentencia, puesto que no hay método para establecer
+	 * una instancia como miembro de esta clase.  	
 	 */
-	void addWhereCondition(String x, int comparison, String y);
-
-	// void addWhereCondition(
-	void addWhereCondition(String x, int comparison, int y);
-
-	void addWhereCondition(String x, int comparison, long y);
-
-	void addWhereCondition(String x, int comparison, Date y);
-
-	void addWhereCondition(String and_or, String x, int comparison, String y);
-
-	void addWhereCondition(String and_or, String x, int comparison, int y);
-
-	void addWhereCondition(String and_or, String x, int comparison, long y);
-
-	void addWhereCondition(String and_or, String x, int comparison, Date y);
-
+	WhereClause addWhere();
+	
 	/**
-	 * This one will be for comparing a column against a string. So the
-	 * implementation should escape the string as required. (generally escaping
-	 * single quotes.
-	 * 
-	 * The end user of this function need not worry about it, just pass in the
-	 * string to compare to
-	 * 
-	 * The implementation should wrap it with single quotes and escape it.
-	 * 
-	 * ex: col1 = 'somestring'
+	 * Agrega la cláusula {@code GROUP BY} con las condiciones que se le pasan como
+	 * cadena de caracteres.
+	 * @param groupBy Las condiciones explícitas por las que se quiere agrupar.
 	 */
-	void addWhereString(String x, int comparison, String y);
-
+	void addGroupBy(String groupBy);
+	
 	/**
-	 * @see #addWhereString
-	 * @param and_or
-	 * @param x
-	 * @param comparison
-	 * @param y
+	 * Agrega la cláusula {@code HAVING} con las condiciones que se le pasan como
+	 * cadena de caracteres.
+	 * @param havingExpresion Las condiciones explícitas por las que se quiere filtrar.
 	 */
-	void addWhereString(String and_or, String x, int comparison, String y);
-
-	void addWhereCondition(WhereCondition cond);
-
-	void addWhereClause(IWhereClause wc);
-
-	void addWhereNotNull(String col);
-
-	void addWhereNotNull(String and_or, String col);
-
-	void addWhereIsNull(String col);
-
-	void addWhereIsNull(String and_or, String col);
-
-	void addOrderBy(String order_by);
-
-	void addGroupBy(String group_by);
+	void addHaving(String havingExpresion);
 
 	// void setLimit(int count);
 	// void setLimit(int offset, int count);
@@ -266,47 +231,52 @@ public interface SelectQuery extends QueryStatement {
 	// public void setSchema(String schema);
 
 	/**
-	 * will UNION the passed in SelectQuery with the current one.
-	 * <p>
-	 * This is implemented like a linked list
+	 * Para establecer la {@code UNION} de la sentencia actual con la que se
+	 * esta pasando por parámetro.
 	 * 
-	 * @param sq
+	 * @param sq La sentencia {@code SELECT} con la que se quiere hacer UNION
 	 */
 	void union(SelectQuery sq);
-
+	
 	/**
-	 * set whether this query is distinct or not
+	 * Para establecer la {@code UNION ALL} de la sentencia actual con la que se
+	 * esta pasando por parámetro.
 	 * 
-	 * @param distinct
+	 * @param sq La sentencia {@code SELECT} con la que se quiere hacer UNION
 	 */
-	void setDistinct(boolean distinct);
+	void unionAll(SelectQuery sq);
 
+	
 	/**
-	 * Returns a certain number of rows from the result set
+	 * Agrega la restricción {@code ORDER BY} a la sentencia a través de una cadena
+	 * de texto.
+	 * @param orderBy Una cadena que contiene la lista de columnas por las que se quiere ordenar.
+	 */
+	void addOrderBy(String orderBy);
+	
+	/**
+	 * Limita el numero de filas que puede devolver como resultado la sentencia.
 	 * 
-	 * @param rowCount
+	 * @param rowCount La máxima cantidad de filas que debe devolver la sentencia.
 	 */
 	void setLimit(int rowCount);
 
 	/**
-	 * Example, if you want 125 - 150, you would do setLimit(125, 25);
-	 * 
-	 * This really doesn't seem to be supported by all dbs, so might drop this
-	 * in favor of setLimit(rowCount)
-	 * 
+	 * Limita el numero de filas que puede devolver como resultado la sentencia
+	 * pero indicando una cantidad de filas que se deben omitir.
 	 * @param offset
-	 *            into the results
+	 *            EL numero de filas que se omiten del resultado antes de devolver el resultado.
 	 * @param rowCount
-	 *            num to return
+	 *            El limite de filas que puede devolver como resultado.
 	 */
 	void setLimit(int offset, int rowCount);
 
-	/**
-	 * Adds an optimization hint to the query.
-	 * 
-	 * @see OptimizationHint
-	 * @param optimizationHint
-	 */
-	void addOptimizationHint(OptimizationHint optimizationHint);
+//	/**
+//	 * Adds an optimization hint to the query.
+//	 * 
+//	 * @see OptimizationHint
+//	 * @param optimizationHint
+//	 */
+//	void addOptimizationHint(OptimizationHint optimizationHint);
 
 }
