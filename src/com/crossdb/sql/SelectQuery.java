@@ -13,8 +13,8 @@ package com.crossdb.sql;
  * Copyright: Copyright (c) 2002 Company: Space Program Inc.
  * </p>
  * 
- * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A.Cruz
+ * @author Travis Reeder - travis@spaceprogram.com
  * @version 0.5
  */
 public interface SelectQuery extends QueryStatement {
@@ -29,7 +29,7 @@ public interface SelectQuery extends QueryStatement {
 	 */
 	void setDistinct(boolean distinct);
 	
-	//TODO las columnas pueden tener alias, no se agrego todavia.
+	//TODO las columnas pueden tener alias, no se agrego todavía.
 	/**
 	 * Agrega una columna a la sentencia SELECT que se esta armando. Si no hay
 	 * columnas agregadas a la sentencia (no se llamo a ningún método addColumn)
@@ -53,6 +53,8 @@ public interface SelectQuery extends QueryStatement {
 	 *            el nombre de la columna que se esta agregando.
 	 */
 	void addColumn(String table, String column);
+	
+	void addColumn(String table, String alias, String column);
 
 	/**
 	 * Usado para agregar las funciones agregadas que poseen los motores de BB

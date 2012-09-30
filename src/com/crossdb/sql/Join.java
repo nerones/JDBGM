@@ -33,8 +33,8 @@ public class Join {
 	
 	
 	public static final String JOIN = "JOIN";
-	public static final String LEFT_JOIN = "LEFT_JOIN";
-	public static final String LEFT_OUTER_JOIN = "LEFT OUTTER JOIN";
+	public static final String LEFT_JOIN = "LEFT JOIN";
+	public static final String LEFT_OUTER_JOIN = "LEFT OUTER JOIN";
 	public static final String INNER_JOIN = "INNER JOIN";
 	public static final String CROSS_JOIN = "CROSS_JOIN";
 	public static final String NATURAL = "NATURAL";

@@ -1,9 +1,5 @@
 package com.crossdb.sql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.crossdb.sql.optimization.OptimizationHint;
 
 /**
  * Implementación base de {@link SelectQuery}, cualquier implementación especifica
@@ -19,69 +15,77 @@ import com.crossdb.sql.optimization.OptimizationHint;
 public abstract class DefaultSelectQuery implements SelectQuery {
 
 	// TODO ver si se pueden declarar los ArrayList de algun tipo concreto
-	protected ArrayList<Object> columns; // = new ArrayList(); // SELECT columns
-	protected ArrayList<Object> tables;// = new ArrayList(); // FROM tables
+	protected StringBuilder columns; // = new ArrayList(); // SELECT columns
+	protected String table;// = new ArrayList(); // FROM tables
 	//List where_clauses; // WHERE where_clauses
-	protected ArrayList<Object> order_by; // ORDER BY order_by
-	protected ArrayList<Object> group_by; // GROUP BY order_by
+	protected String order_by; // ORDER BY order_by
+	protected String group_by; // GROUP BY order_by
+	protected String havingExpresion;
     //protected String limit;
-	protected WhereClause wclause = new WhereClause();
-    protected DefaultSelectQuery union;
-    private boolean isDistinct;
-    protected ArrayList<Object> optimizationHints = new ArrayList<Object>();
+	protected WhereClause wclause;
+    protected SelectQuery union;
+    protected boolean isUnionAll;
+    protected boolean isDistinct;
+    protected Join join;
+    protected int rowlimit;
+    protected int rowoffset;
+    
+    //protected ArrayList<Object> optimizationHints = new ArrayList<Object>();
 
     public DefaultSelectQuery(){
         //query1 = "";
-        tables = new ArrayList<Object>();
-        columns = new ArrayList<Object>();
+        table = null;
+        columns = new StringBuilder();
         //where_clauses = new ArrayList();
-        order_by = new ArrayList<Object>();
-        group_by = new ArrayList<Object>();
+        order_by = null;
+        group_by = null;
+        join = null;
+        wclause = null;
+        rowlimit = -1;
+        rowoffset = -1;
     }
 
-	
-	public void addTable(String table){
-
-		tables.add(table);
-	}
-
-	public void addTable(int join_type, String table){
-
-		tables.add(new Join(join_type, table));
-	}
-
-	public void addTable(int join_type, String table, WhereCondition cond){
-		Join j = new Join(join_type, table);
-		j.addWhereCondition(cond);
-		tables.add(j);
-
-
-	}
-	public void addTable(Join join){
-
-		tables.add(join);
-	}
-	public void addColumn(String column){
-
-		columns.add(column);
+    public void setDistinct(boolean distinct) {
+        this.isDistinct = distinct;
+    }
+    
+    public boolean isDistinct() {
+        return isDistinct;
+    }
+    
+    public void addColumn(String column){
+    	if (columns.length() != 0) columns.append(", ");
+		columns.append(column);
 	}
 
     public void addColumn(String table, String column) {
-        columns.add(table + "." + column);
+    	if (columns.length() != 0) columns.append(", ");
+        columns.append(table).append(".").append(column);
+    }
+    
+    public void addColumn(String table, String alias, String column) {
+    	if (columns.length() != 0) columns.append(", ");
+        columns.append(table).append(".").append(column);
+        columns.append(" AS ").append(alias);
     }
     
     abstract protected String getFunction(int functionId);
     // TODO  mover las funciones a Functions y ver los alias (AS)
+    
     public void addFunctionColumn(String function, String column) {
-        columns.add(function + "( " + column + " )");
+    	if (columns.length() != 0) columns.append(", ");
+        columns.append(function).append("( ").append(column).append(" )");
     }
 
     public void addFunctionColumn(String function, String table, String column) {
-        columns.add(function + "( " + table + "." + column + " )");
+    	if (columns.length() != 0) columns.append(", ");
+        columns.append(function).append("( ").append(table).append('.').append(column).append(" )");
     }
     
     public void addFunctionColumn(String alias, int functionId, String table, String column) {
-        columns.add(getFunction(functionId) + "( " + table + "." + column + " ) AS " + alias );
+    	if (columns.length() != 0) columns.append(", ");
+        columns.append(getFunction(functionId)).append("( ").append(table).append('.').append(column).append(" )");
+        columns.append(" AS ").append(alias);
     }
 
     public void sumColumn(String column) {
@@ -130,23 +134,77 @@ public abstract class DefaultSelectQuery implements SelectQuery {
         addFunctionColumn("MAX", table, column);
 
     }
-
     
-
     
-
-
-    public void addOrderBy(String order_by){
-
-		this.order_by.add(order_by);
+    
+    
+    
+    
+	
+	public void addTable(String table){
+		this.table = table;
 	}
+
+	public Join addJoin(){
+		if (join == null) join = new Join();
+		return join;
+	}
+	
+	public WhereClause addWhere(){
+		if (wclause == null) wclause = new WhereClause();
+		return wclause;
+	}
+
 	public void addGroupBy(String group_by){
 
-		this.group_by.add(group_by);
+		this.group_by = group_by;
+	}
+	
+	public void addHaving(String havingExpresion){
+		this.havingExpresion = havingExpresion;
+	}
+	
+	public void union(SelectQuery sq) {
+        this.union = sq;
+    }
+	
+	public void unionAll(SelectQuery sq) {
+        this.isUnionAll = true;
+		this.union = sq;
+    }
+	
+    public void addOrderBy(String order_by){
+		this.order_by = order_by;
+	}
+	
+    //protected int limit[]; // 2 max that will be offset, count
+
+	public void setLimit(int count){
+		this.rowlimit = count;
+//		if(limit == null){
+//			limit = new int[1];
+//		}
+//		limit[0] = count;
+	}
+
+	public void setLimit(int offset, int count){
+		this.rowlimit = count;
+		this.rowoffset = offset;
+//		if(limit == null){
+//			limit = new int[2];
+//		}
+//		limit[0] = offset;
+//		limit[1] = count;
 	}
 
 
-	public abstract String toString();
+	public abstract String sentenceAsSQL();
+	
+	public String toString(){
+		if (table == null) throw new RuntimeException("La sentencia no tiene tablas definidas," +
+				" la sentencia no se puede construir");
+		else return sentenceAsSQL();
+	}
 
 
 
@@ -180,36 +238,9 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 	}
 	*/
 
-    public void union(SelectQuery sq) {
-        this.union = (DefaultSelectQuery)sq;
-    }
+//    public void addOptimizationHint(OptimizationHint optimizationHint) {
+//        optimizationHints.add(optimizationHint);
+//    }
 
-    public void setDistinct(boolean distinct) {
-        this.isDistinct = distinct;
-    }
-
-    protected int limit[]; // 2 max that will be offset, count
-
-	public void setLimit(int count){
-		if(limit == null){
-			limit = new int[1];
-		}
-		limit[0] = count;
-	}
-
-	public void setLimit(int offset, int count){
-		if(limit == null){
-			limit = new int[2];
-		}
-		limit[0] = offset;
-		limit[1] = count;
-	}
-
-    public void addOptimizationHint(OptimizationHint optimizationHint) {
-        optimizationHints.add(optimizationHint);
-    }
-
-    public boolean isDistinct() {
-        return isDistinct;
-    }
+    
 }
