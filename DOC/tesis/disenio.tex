@@ -156,19 +156,19 @@ Esta es una clase abstracta que servirá para mapear los tipos de datos a los co
 \subsubsection{La interfaz Formatter}
 La Interfaz \verb=Formatter= sirve para definir el modo en que algunos tipos de datos han de ser convertidos a su equivalente como cadena de caracteres, se puede decir que define un formateador. Se provee una implementación por defecto de esta interfaz en \verb=DefaultFormatter= la cual puede llegar a servir sin modificaciones para el motor sobre el que se este trabajando, aun así esta implementación por defecto obligara a que se cree una clase que herede de la misma puesto que se tratara de una clase abstracta y como tal no puede ser instanciada directamente. La clase que herede de dicha implementación puede no definir nada y ser creada solamente para poder instanciar la implementación base a través de esta pero se exige su implementación por si llegase a ser necesario sobrescribir (\textit{override}) algunos de los métodos ya implementados para manejar adecuadamente algún tipo de dato según lo requiera el motor de bases de datos.
 
-\subsubsection{Functions}
-\verb=Functions= (no decidido por completo)
+\subsubsection{Parseando los datos de forma adecuada}
+\verb=SQLFormat, SQLDateTimeFormat, SQLTimeFormat=
+
+\subsubsection{Las funciones  en Functions}
+Como se detalla en la sección \fullref{especificacion:funciones} el soporte para las funciones es básico por lo que la clase \verb=Functions= contendrá una lista de constantes con los nombres de las funciones reconocidas por \jj como cadenas de texto \verb=String=, como algunas de estas funciones tienen distintos nombres en los otros motores se precisara que por cada motor en particular exista una clase que herede de \verb=Functions= y "sobre escriba" los valores asociados a las constantes cuyos nombres son diferentes. Como los nombres y valores de las constantes que define la clase \verb=Functions= se toman de las funciones que define \s la clase en particular que se implemente para este motor puede ser una clase que no defina nada. Además en ninguna parte se exigirá el uso de esta clase solo se sugerirá su uso pues lo único que brinda es nombres de funciones quedando el paso de los parámetros resumido en otra cadena de texto que deberá suplir el programador.  
 
 \subsubsection{Join}
-\verb=Join=
-\verb=Join= Básicamente representa las condiciones de \verb=JOIN= para las sentencias \verb=SELECT=.
+La clase \verb=Join= se encargara de dar soporte para la creación de las restricciones \verb=JOIN= que se le pueden agregar a \verb=SELECT=, esta clase no se debe encargar de verificar la existencia de errores en la restricción que se esta construyendo pues como ya se dijo seria una redundancia de trabajo. Como las restricciones de este tipo tienen una sintaxis bastante sencilla, que se puede ver en la sección \ref{especificacion:dialectos:select}, esta puede ser construida a partir de una única función con los parámetros adecuados pero esto significaría un uso excesivo de parámetros y por lo tanto más código por escribir por lo que la clase deberá proveer métodos que sean atajos para construir las diferentes restricciones posibles, además si se le ponen nombres lo suficientemente claros a las funciones estas pueden ayudar a una mejor lectura del código escrito.
 
 \subsubsection{SQLFactory y SpecificSQLFactory}
 \verb=SpecificSQLFactory=
 \verb=SQLFactory=
 Clases constructoras de Objetos (\textit{Factories})
-\subsubsection{Parseando los datos de forma adecuada}
-\verb=SQLFormat, SQLDateTimeFormat, SQLTimeFormat=
 
 \subsubsection{La restricción WHERE como WhereClause}
 Como la clausula \verb=WHERE= no es mas que una lista de condiciones en la que intervienen los mismos operadores lógicos, comparativos y específicos de SQL como por ejemplo el operador \verb=IN= se decidió crear una clase que lo contenga, en resumen no hay implementación especifica pues es la misma para todos, además el uso de una misma clase para generar las restricciones en las distintas sentencias facilita y ''unifica'' el uso de las mismas.
@@ -176,6 +176,18 @@ Como la clausula \verb=WHERE= no es mas que una lista de condiciones en la que i
 En definitiva esta clase debe proveer un amplio abanico de funciones para facilitar el ingreso de los diferentes tipos de condiciones que intervienen en la clausula \verb=WHERE=. Entre las sentencias que utilizan esta clase tenemos a: \verb=SELECT=, \verb=UPDATE= y \verb=DELETE= estas deberán proveer un método que devuelva una referencia a un objeto \verb=WhereClause= que sera miembro de la misma e igualmente llamado, el método. Este método debe ser especificado en las diferentes interfaces que especifiquen el comportamiento de las sentencias que recién se nombraron. 
 
 \subsection{Manejo de errores}
+El manejo de errores o excepciones en el manejador de sentencias estará limitado en dos aspectos: primero solo se lanzaran errores de tiempo de ejecución y segundo los errores se producirán cuando se quieran realizar acciones ilegales que no precisen de muchos controles, por ejemplo para una sentencia \verb=SELECT= no se puede ''construir''\footnote{En realidad si se puede crear una sentencia SELECT sin una tabla definida pero para el proposito de \jj esto no sirve.} si es que no se estableció una fuente para la misma, ya sea  desde una tabla u otra consulta embebida, para lo cual resulta sencillo verificar que se haya establecido o no algunas de estas fuentes en cambio chequear la sintaxis de toda la sentencia requiere de una mayor complejidad tanto a nivel estructural como de cálculos, además esta tarea ya la realizara el DBMS cuando reciba dicha sentencia.
+
+\subsubsection{Tipos de excepciones}
+En Java como en muchos lenguajes existen dos tipos de excepciones de las que se pueden hacer uso\citep{java:exeptions} para comunicar errores o comportamientos inesperados que hayan sido contemplados en el código:
+\begin{enumerate}
+\item \textbf{\textit{checked exceptions}}: aquellas excepciones de las que el programa se puede recuperar y que pueden ser capturadas para que el programa tome acciones con respecto de dicho error.
+
+\item \textbf{\textit{unchecked exceptions}}: aquellos errores de los que el programa no se puede recuperar y que por lo general se corresponden a ``bugs'' existentes en el código. Este tipo de excepciones es también conocido como excepciones de tiempo de ejecución.
+\end{enumerate}
+
+En el manejador de sentencias de \jj los errores que pueden ocurrir se resumen en un incorrecto uso de las funciones entregadas y el único modo en que se pueden corregir estos errores es corrigiendo el código que fue escrito por lo que no es posible tomar medidas en tiempo de ejecución para intentar corregir dicho error. Este precisamente es el tipo de errores irrecuperables que cubren las \textit{unchecked exceptions} por lo que es el tipo de errores que lanzara \jj para su manejador de sentencias mediante la clase \verb=RuntimeException= que es una de las clases que entra entre las excepciones de dicho tipo.
+
 
 \subsection{Diseño de cada una de las sentencias}
 Una vez que se presento el esqueleto del proyecto ya se puede empezar a ver las particularidades de cada una de las ramas finales que en este caso son las interfaces, aunque es bueno aclarar que estas particularidades son las que precisamente delinearon a la estructura que se expuso anteriormente, por lo que a continuación se explicara en mas detalle la relación de las interfaces que definen a las sentencias y las clases auxiliares como así también detalles que se creen importantes recordando que las interfaces quedan casi completamente definidas por la especificación que se dio en la sección \ref{seccion:especificacion:dialectos}.

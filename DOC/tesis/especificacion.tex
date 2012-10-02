@@ -1,4 +1,5 @@
-\chapter{Especificación}\label{capitulo:especificacion}
+\chapter{Especificación}
+\label{capitulo:especificacion}
 En este capitulo estableceremos los requisitos necesarios para cumplir con las necesidades que presentamos anteriormente, para ello estableceremos que medidas debemos tener en cuenta a la hora de establecer el API que nos permitirá comunicarnos con el motor de base de datos y además que se requiere para que el código escrito sea independiente del motor en particular que se este por utilizar.
 
 %trabajando con mysql 5.1 reference manual\\
@@ -75,7 +76,8 @@ Una vez definido el subconjunto de sentencias con las que se trabajaran es neces
 %}
 %\end{lstlisting}
 
-\subsection{Tipos de datos y sus diferencias}\label{subsection:datatypes}
+\subsection{Tipos de datos y sus diferencias}
+\label{subsection:datatypes}
 Al analizar los tipos usados en los diferentes motores quizá la diferencia mas notoria se da en el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo de dato declarado en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos usualmente definidos, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER=, que maneja \m.\\
 
  En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s). Observado esto podemos decir que al ser \s tan flexible los tipos de datos que se usaran estarán definidos en base a \m y \p.\\
@@ -183,12 +185,146 @@ Faltan los tipos monetarios, booleanos
 \end{table}
 
 \subsection{Funciones}
+\label{especificacion:funciones} 
+Las funciones que presentan los diferentes motores son variadas, en la documentación de  \p se puede leer\citep{postgre:functions} la siguiente aclaración:
+\begin{quotation}
+\textit{If you are concerned about portability then note that most of the functions and operators described in this chapter, with the exception of the most trivial arithmetic and comparison operators and some explicitly marked functions, are not specified by the SQL standard. Some of this extended functionality is present in other SQL database management systems, and in many cases this functionality is compatible and consistent between the various implementations.}
+\end{quotation}
+Que en resumen explica que la mayoría de las funciones ofrecidas por \p con excepción de algunas pocas no forman parte de ninguno de los estándares SQL por lo que no hay que esperar compatibilidad entre los diferentes motores aunque existen algunas funciones comunes que se pueden encontrar entre los diferentes motores. Así que a continuación se buscaran funciones similares entre los diferentes motores a los que se les esta dando soporte en este proyecto, para lo cual empezaremos con una tabla comparativa:
+
+\begin{table}[h]
+\begin{center}
+{
+\fontfamily{pcr}
+\selectfont
+\begin{tabular}{|c|c|c|}
+\hline 
+\s & \m & \p \\  
+\hline 
+abs(X) & igual & igual \\ 
+\hline 
+changes() & ROW\_COUNT() & - \\ 
+\hline 
+coalesce(X,Y,...) & igual & igual \\ 
+\hline 
+glob(X,Y) & - & - \\ 
+\hline 
+ifnull(X,Y) & igual & mediante coalesce(x,y) \\ 
+\hline 
+hex(X) & igual & - \\ 
+\hline 
+length(X) & LENGTH() & char\_length(string) \\ 
+\hline 
+like(X,Y,Z) & x LIKE y [ESCAPE z] & igual mysql \\ 
+\hline 
+lower(X) & igual & igual \\ 
+\hline 
+ltrim(X) & igual) & igual \\ 
+\hline 
+max(X,Y,...) & - & - \\ 
+\hline 
+min(X,Y,...) & - & - \\ 
+\hline 
+nullif(X,Y) & igual & igual \\ 
+\hline 
+quote(X) & igual & quote\_literal(string text) \\ 
+\hline 
+random()integer & RAND()float & random() float \\ 
+\hline 
+randomblob(N) & - & - \\ 
+\hline 
+replace(X,Y,Z) & igual & igual \\ 
+\hline 
+round(X), round(X,Y) & igual & igual \\ 
+\hline 
+rtrim(X) & igual & igual \\ 
+\hline 
+substr(X,Y,Z), substr(X,Y) & igual & igual \\ 
+\hline
+trim(X), trim(X,Y) & igual & igual \\ 
+\hline
+upper(X) & igual & igual \\ 
+\hline
+\end{tabular}
+}
+\end{center}
+\caption{Comparación de las funciones core de \s}
+\end{table}  
+
+En la tabla anterior están listadas las funciones que son parte de las funciones básicas\citep{sqlite:functions} o \textit{core functions} de \s que como se puede ver no son muchas, igual se obviaron algunas funciones especificas de \s aunque las aquí presentadas son una gran parte de las mismas, lo que se pretende mostrar con esta tabla es la equivalencia de estas funciones con las que presentan los otros motores para lo cual se estudio la documentación proveída por \p\cite{postgre:functions} y por \m\citep{mysql:functions} y se encontraron las equivalencias mostradas.
+
+Tal como fue señalado existe cierta universalidad entre las funciones que ofrecen los motores como por ejemplo ocurre con la función \verb=abs()= que se usa de igual manera en todos los motores y diferencias como con la función \verb=ifnull()= que en \p no existe pero se tiene un resultado igual con la función \verb=coalesce()=, además \s aclara en su documentación que \verb=ifnull(x,y)= es equivalente a \verb=coalesce(x,y)=, o diferencias también se pueden ver en funciones que no tienen equivalente en los otros motores como ocurre en el caso de la función \verb=randomblob(N)= de \s. De todos modos es posible definir nuevas funciones en cualquiera de los tres motores con lo que se puede llegar a una total compatibilidad pero esa no es la intención de este proyecto, lo que se pretende es buscar las compatibilidades existentes entre los motores por lo que \jj tendrá disponible un conjunto de funciones que son reconocidas por los tres motores de manera predeterminada.
+
+De las funciones ofrecidas por este proyecto solo se ofrecerá el nombre de la función quedando a cargo del usuario la correcta utilización de las mismas teniendo en cuenta que a pesar de tener los mismos nombres la implementación de una función en un motor puede ser mas permisiva que en otro en cuanto a los parámetros aceptados y las valores que devuelven, así que de existir un error este sera reportado cuando se intente usar la sentencia que se formo haciendo uso de cualquiera de estas funciones. \s tiene algunas funciones mas disponibles por defecto que están documentadas en dos capítulos aparte por lo que a continuación veamos dos tablas que muestran las equivalencias de las mismas en los otros motores.
+
+\begin{table}[h]
+\begin{center}
+{
+\fontfamily{pcr}
+\selectfont
+\begin{tabular}{|c|c|c|}
+\hline 
+\s & \m & \p \\ 
+\hline 
+avg(X) & igual & igual \\ 
+\hline 
+count(X) & igual & igual \\ 
+\hline 
+count(*) & igual & igual \\ 
+\hline 
+group\_concat & group\_concat & array\_to\_string \\ 
+(X[,Y]) & ( X [separator Y]) & (array\_agg(X), Y) \\
+\hline 
+sum(), total() & igual & igual \\ 
+\hline 
+max() & igual & igual \\ 
+\hline 
+min() & igual & igual \\ 
+\hline 
+\end{tabular} 
+}
+\end{center}
+\caption{Comparación de las funciones agregadas de \s}
+\end{table}  
+
+Entre las funciones agregadas de \s encontramos que casi todas son compatibles excepto por la función \verb=group_concat= que presenta una sintaxis algo diferente pero funciona igual en \m y se puede obtener el mismo resultado en \p mediante el uso de dos funciones distintas la otra función que no existe en los demás motores es \verb=total()= que es similar a \verb=sum()= pero  trabaja de manera diferente con los valores \verb=null= y además a diferencia de \verb=sum= devuelve siempre un \verb=float= como resultado. Cabe aclarar que \verb=max()= y \verb=min()= aparecen también en el \textit{core} de \s pero estas son diferentes pues toman distintos parámetros y se comportan de manera diferente.
+
+\begin{table}[h]
+\begin{center}
+{
+\fontfamily{pcr}
+\selectfont
+\begin{tabular}{|c|c|c|}
+\hline 
+\s & \m & \p \\ 
+\hline 
+date() & igual con now() & current\_date or date() \\ 
+\hline 
+datetime() & timestamp() , now() & to\_timestamp, current\_timestamp \\ 
+\hline 
+time() & time() con now() & "time"() or now()::time \\ 
+\hline 
+julianday() & - & - \\ 
+\hline 
+strftime() & - & varios \\ 
+\hline 
+\end{tabular} 
+}
+\end{center}
+\caption{Comparación de las funciones Fecha y Hora de \s}
+\label{table:functions:dates}
+\end{table}
+
+La tabla \ref{table:functions:dates} muestra las funciones que tiene \s para el manejo de fechas y horas y sus equivalentes de existir en los otros dos motores, las funciones que define \s tienden a estar sobrecargadas (o admiten valores por defecto para los parámetros como en PHP) por ejemplo la función \verb=date()= de usársela sin ningún parámetro devuelve la fecha (DATE) actual en el formato \verb='YYYY-MM-DD'= en cambio si se le pasa una cadena de texto equivalente a un \verb=TIMESTAMP= la misma función devuelve la porción de la fecha de la cadena de texto, para lograr esto en \m y \p se usan dos funciones para obtener la misma funcionalidad por ejemplo si en \s se quiere obtener la fecha (DATE) actual se debe usar \verb=date(now())= y \verb=date(D)= funcionaria como en \s donde \verb=D= es una fecha completa (TIMESTAMP). Para \verb=juliandays()= y \verb=strftime()= se pueden obtener resultados parecidos mediante el uso de más de una función para obtener el mismo resultado o incluso realizando algunos cálculos por lo que no existe una función equivalente para las mismas a menos que se la defina o se usen  más de una para obtener el mismo resultado.
+
+Como se dijo previamente el uso de las funciones puede llegar a comprometer la portabilidad y salvo por aquellas mas comunes se pueden obtener resultados diferentes ante las mismas entradas por lo que \jj debe ofrecer las funciones que tengan su equivalente en los otros motores y no debe chequear sintaxis pues esto ya lo hará el propio motor, el realizar esta comprobación seria una redundancia y un aumento de procesamiento con su correspondiente sobrecarga totalmente evitable. Por lo que el soporte para funciones se limitara a ofrecer una lista de funciones permitidas pero dejando la puerta abierta a el uso de otras a riesgo propio del programador.
 
 
 \subsection{Sentencias SQL}
 En las siguientes secciones se pasa a analizar por separado cada una de las sentencias que se están por incluir en nuestro dialecto genérico, para ello se compararan las implementaciones que se hicieron sobre cada uno de los motores sobre los que se da soporte.
 
-\subsubsection{Especificación de CREATE TABLE} \label{especificacion:dialectos:create}
+\subsubsection{Especificación de CREATE TABLE} 
+\label{especificacion:dialectos:create}
 Esta sentencia es usada para crear tablas en una base de datos relacional, un resumen de su sintaxis como se la define en el estándar SQL es la siguiente:
 \begin{Verbatim}
   CREATE TABLE <table name> (
@@ -368,7 +504,8 @@ Así que finalmente tenemos las siguiente sintaxis de \verb=CREATE TABLE= para e
 
 
 
-\subsubsection{Especificación de UPDATE} \label{especificacion:dialectos:update}
+\subsubsection{Especificación de UPDATE} 
+\label{especificacion:dialectos:update}
 Esta sentencia es usada para actualizar los datos de una tabla, es decir para modificar valores existentes de filas. El análisis de la siguiente sintaxis corresponde a como es entendida la sentencia \verb=UPDATE= por \s\cite{sqlite:sql} 
 
 \begin{Verbatim}
@@ -424,7 +561,8 @@ Las elementos \verb=[ INDEXED BY <index name> ]= y \verb=[ NOT INDEXED ]= no son
 
 
 
-\subsubsection{Especificación de INSERT} \label{especificacion:dialectos:insert}
+\subsubsection{Especificación de INSERT} 
+\label{especificacion:dialectos:insert}
 La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT= que sirve para insertar filas nuevas en una tabla dada, felizmente la sentencia de \verb=INSERT= entendida por \s solo difiere en dos aspecto de las otras, primero es que esta presenta el elemento \verb=<or option>= que no es soportado por los otros DBMS, segundo el elemento \verb=REPLACE= que tampoco es reconocido por los demas motores. Además es bueno aclarar que \s esta restringiendo las capacidades de los otros motores, como por ejemplo en \m existe el elemento \verb=ON DUPLICATE KEY UPDATE= el cual sirve para resolver conflictos cuando una insercción en una tabla provoca que alguna columna que deba ser única (\verb=PK= ó \verb=UNIQUE=) presente un valor duplicado. Así que sin mas la siguiente es la sintaxis elegida y compatible con los tres motores:
 
 \begin{Verbatim}[frame=single, label=sintaxis para INSERT]
@@ -452,7 +590,8 @@ La sintaxis que analizo a continuación corresponde a la sentencia \verb=INSERT=
 
 
 
-\subsubsection{Especificación de ALTER TABLE} \label{especificacion:dialectos:altertable}
+\subsubsection{Especificación de ALTER TABLE} 
+\label{especificacion:dialectos:altertable}
 \verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:\\
 
 %\begin{Verbatim}
@@ -488,7 +627,8 @@ Además de estas limitaciones hay algunas mas, al agregar nuevas columnas la def
 
 
 
-\subsubsection{Especificación de DELETE} \label{especificacion:dialectos:delete}
+\subsubsection{Especificación de DELETE} 
+\label{especificacion:dialectos:delete}
 La sintaxis de \verb=DELETE= entendida por \s es la siguiente
 \begin{Verbatim}
   <delete statement> ::=
@@ -514,7 +654,8 @@ En ella podemos encontrar una diferencia con las demás motores de bases de dato
 
 
 
-\subsubsection{Especificación de SELECT} \label{especificacion:dialectos:select}
+\subsubsection{Especificación de SELECT} 
+\label{especificacion:dialectos:select}
 Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas analizamos a continuación \verb=SELECT= tal como es conocido por \s:
 
 \begin{Verbatim}
