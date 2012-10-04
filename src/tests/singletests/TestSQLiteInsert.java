@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SelectQuery;
+import com.nelsonx.sqlite.SQLiteFormatter;
 import com.nelsonx.sqlite.SQLiteInsertQuery;
 import com.nelsonx.sqlite.SQLiteSelectQuery;
 /**
@@ -59,7 +60,7 @@ public class TestSQLiteInsert {
 		insert.setTable("tabla");
 		insert.addColumn("uno", "algo1");
 		insert.addColumn("dos", "algo2");
-		SelectQuery select = new SQLiteSelectQuery();
+		SelectQuery select = new SQLiteSelectQuery(new SQLiteFormatter());
 		select.addTable("Perro");
 		insert.setSelectStmt(select);		
 		String expected = "INSERT INTO tabla (uno, dos) SELECT * FROM Perro";
@@ -94,7 +95,7 @@ public class TestSQLiteInsert {
 		String expected = "INSERT INTO Perro DEFAULT VALUES";
 		assertEquals(expected, insert.toString());
 		
-		SelectQuery select = new SQLiteSelectQuery();
+		SelectQuery select = new SQLiteSelectQuery(new SQLiteFormatter());
 		select.addTable("Dogs");
 		insert.setSelectStmt(select);
 		expected = "INSERT INTO Perro (Id) SELECT * FROM Dogs";

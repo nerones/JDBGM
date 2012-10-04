@@ -27,7 +27,7 @@ public abstract class DefaultUpdateQuery extends UpdateQuery {
 	}
 	
 	public WhereClause addWhere(){
-		if (wclause == null) wclause = new WhereClause();
+		if (wclause == null) wclause = new WhereClause(formatter);
 		return wclause;
 	}
 

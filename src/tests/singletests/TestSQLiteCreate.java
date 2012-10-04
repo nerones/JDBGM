@@ -31,6 +31,7 @@ import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.TableConstraint;
 import com.nelsonx.sqlite.SQLiteCreateTableQuery;
+import com.nelsonx.sqlite.SQLiteFormatter;
 import com.nelsonx.sqlite.SQLiteSelectQuery;
 
 
@@ -76,7 +77,7 @@ public class TestSQLiteCreate {
 	@Test
 	public void testAsSelect(){
 		ct.setName("animal");
-		SQLiteSelectQuery select = new SQLiteSelectQuery();
+		SQLiteSelectQuery select = new SQLiteSelectQuery(new SQLiteFormatter());
 		select.addTable("animales");
 		ct.setSelectStatementSource(select);
 		assertEquals("CREATE TABLE animal AS SELECT * FROM animales", ct.toString());

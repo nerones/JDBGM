@@ -2,14 +2,15 @@ package com.nelsonx.postgre;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultUpdateQuery;
+import com.crossdb.sql.Formatter;
 
 public class PostgreSQLUpdateQuery extends DefaultUpdateQuery {
 
-	public PostgreSQLUpdateQuery() {
 
-		super(new PostgreSQLFormatter());
+
+	public PostgreSQLUpdateQuery(Formatter formatter) {
+		super(formatter);
 	}
-
 
 	public String toString() {
 		String updateAsString = "UPDATE " + table + " SET ";

@@ -10,13 +10,13 @@ package com.spaceprogram.sql.mysql;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultUpdateQuery;
+import com.crossdb.sql.Formatter;
 
 public class MySQLUpdateQuery extends DefaultUpdateQuery {
 
 
-	public MySQLUpdateQuery() {
-
-		super(new MySQLFormatter());
+public MySQLUpdateQuery(Formatter formatter) {
+		super(formatter);
 	}
 
 //	protected String columnValueToString(Column column){

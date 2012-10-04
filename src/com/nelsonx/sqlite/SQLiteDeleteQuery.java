@@ -19,6 +19,7 @@
 package com.nelsonx.sqlite;
 
 import com.crossdb.sql.DefaultDeleteQuery;
+import com.crossdb.sql.Formatter;
 
 /**
  * Implementación Especifica de {@link DefaultDeleteQuery} para el motor SQLite.
@@ -26,5 +27,10 @@ import com.crossdb.sql.DefaultDeleteQuery;
  *
  */
 public class SQLiteDeleteQuery extends DefaultDeleteQuery {
+
+	public SQLiteDeleteQuery(Formatter formatter) {
+		super(formatter);
+		// TODO Auto-generated constructor stub
+	}
 
 }

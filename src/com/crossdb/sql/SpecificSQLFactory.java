@@ -39,7 +39,6 @@ public interface SpecificSQLFactory {
 	UpdateQuery getUpdateQuery();
 	DeleteQuery getDeleteQuery();
 	AlterTableQuery getAlterTableQuery();
-
 	CreateTableQuery getCreateTableQuery();
 
     /**
@@ -48,7 +47,7 @@ public interface SpecificSQLFactory {
      * 
      * @return
      */
-    IWhereClause getWhereClause();
+    //IWhereClause getWhereClause();
 
 	/**
 	For setting a global schema to append to queries,<br>
@@ -64,6 +63,6 @@ public interface SpecificSQLFactory {
      * newly passed in suffix.  So whenever you getInsertQuery(), the insertquery will be set ot the appropriate
      * @param suffix
      */
-    void setSequenceSuffix(String suffix);
+    //void setSequenceSuffix(String suffix);
 
 }

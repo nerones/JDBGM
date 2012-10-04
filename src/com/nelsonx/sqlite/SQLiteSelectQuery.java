@@ -1,8 +1,14 @@
 package com.nelsonx.sqlite;
 
 import com.crossdb.sql.DefaultSelectQuery;
+import com.crossdb.sql.Formatter;
 
 public class SQLiteSelectQuery extends DefaultSelectQuery {
+
+	public SQLiteSelectQuery(Formatter formatter) {
+		super(formatter);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public String sentenceAsSQL() {

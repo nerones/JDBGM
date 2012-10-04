@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.spaceprogram.sql.mysql.MySQLDeleteQuery;
+import com.spaceprogram.sql.mysql.MySQLFormatter;
 
 /**
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
@@ -36,7 +37,7 @@ public class TestMySQLDeleteQuery {
 	
 	@Before
 	public void setUp(){
-		delete = new MySQLDeleteQuery();
+		delete = new MySQLDeleteQuery(new MySQLFormatter());
 	}
 	
 	@Test

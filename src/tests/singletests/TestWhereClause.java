@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.crossdb.sql.WhereClause;
+import com.nelsonx.sqlite.SQLiteFormatter;
 
 /**
  * 
@@ -36,7 +37,7 @@ public class TestWhereClause {
 	
 	@Before
 	public void setUp(){
-		where = new WhereClause();
+		where = new WhereClause(new SQLiteFormatter());
 	}
 	
 	@Test
@@ -47,7 +48,7 @@ public class TestWhereClause {
 		expectedWhere = " WHERE (perro_id = 1 AND oveja = 'blanca' OR gato = 'negro')";
 		System.out.println(where.toString());
 		Assert.assertEquals(expectedWhere, where.toString());
-		where = new WhereClause();
+		where = new WhereClause(new SQLiteFormatter());
 		where.andBetween("perro_id", 1, 3);
 		expectedWhere = " WHERE (perro_id BETWEEN 1 AND 3)";
 		System.out.println(where.toString());
@@ -57,7 +58,7 @@ public class TestWhereClause {
 	@Test
 	public void testComplexWhere() {
 		where.andLike("nombre", "%ardo%");
-		WhereClause where2 = new WhereClause();
+		WhereClause where2 = new WhereClause(new SQLiteFormatter());
 		where2.andEquals("oveja", "negra");
 		String[] array = {"edu","jorge","luis"};
 		where2.orIn("nombre", array);
@@ -71,7 +72,7 @@ public class TestWhereClause {
 	@Test
 	public void testComplexWhere2() {
 		where.andLike("nombre", "%ardo%");
-		WhereClause where2 = new WhereClause();
+		WhereClause where2 = new WhereClause(new SQLiteFormatter());
 		where2.andEquals("oveja", "negra");
 		Integer[] array = {1,2,3};
 		where2.orIn("nombre", array);

@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SelectQuery;
 import com.nelsonx.sqlite.SQLiteSelectQuery;
+import com.spaceprogram.sql.mysql.MySQLFormatter;
 import com.spaceprogram.sql.mysql.MySQLInsertQuery;
 
 /**
@@ -59,7 +60,7 @@ InsertQuery insert;
 		insert.setTable("tabla");
 		insert.addColumn("uno", "algo1");
 		insert.addColumn("dos", "algo2");
-		SelectQuery select = new SQLiteSelectQuery();
+		SelectQuery select = new SQLiteSelectQuery(new MySQLFormatter());
 		select.addTable("Perro");
 		insert.setSelectStmt(select);		
 		String expected = "INSERT INTO tabla (uno, dos) SELECT * FROM Perro";
@@ -94,7 +95,7 @@ InsertQuery insert;
 		String expected = "INSERT INTO Perro () VALUES ()";
 		assertEquals(expected, insert.toString());
 		
-		SelectQuery select = new SQLiteSelectQuery();
+		SelectQuery select = new SQLiteSelectQuery(new MySQLFormatter());
 		select.addTable("Dogs");
 		insert.setSelectStmt(select);
 		expected = "INSERT INTO Perro (Id) SELECT * FROM Dogs";

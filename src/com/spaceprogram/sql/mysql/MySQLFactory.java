@@ -31,13 +31,6 @@ public class MySQLFactory implements SpecificSQLFactory {
 		return ctq;
 	}
 
-    public IWhereClause getWhereClause() {
-        return new WhereClause();
-    }
-
-    public void setSequenceSuffix(String suffix) {
-    }
-
     public AlterTableQuery getAlterTableQuery(){
 		
 		MySQLAlterTableQuery atq = new MySQLAlterTableQuery();

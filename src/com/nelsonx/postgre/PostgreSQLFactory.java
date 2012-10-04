@@ -3,7 +3,6 @@ package com.nelsonx.postgre;
 import com.crossdb.sql.AlterTableQuery;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.DeleteQuery;
-import com.crossdb.sql.IWhereClause;
 import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.SpecificSQLFactory;
@@ -45,18 +44,6 @@ public class PostgreSQLFactory implements SpecificSQLFactory {
 	public CreateTableQuery getCreateTableQuery() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public IWhereClause getWhereClause() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setSequenceSuffix(String suffix) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

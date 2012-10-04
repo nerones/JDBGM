@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.UpdateQuery;
+import com.spaceprogram.sql.mysql.MySQLFormatter;
 import com.spaceprogram.sql.mysql.MySQLUpdateQuery;
 
 /**
@@ -39,7 +40,7 @@ public class TestMySQLUpdate {
 	
 	@Before
 	public void setup(){
-		update = new MySQLUpdateQuery();
+		update = new MySQLUpdateQuery(new MySQLFormatter());
 	}
 	
 	@Test

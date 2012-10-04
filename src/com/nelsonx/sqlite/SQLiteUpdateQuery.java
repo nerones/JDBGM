@@ -2,14 +2,14 @@ package com.nelsonx.sqlite;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultUpdateQuery;
+import com.crossdb.sql.Formatter;
 
 public class SQLiteUpdateQuery extends DefaultUpdateQuery {
 
-	public SQLiteUpdateQuery() {
 
-		super(new SQLiteFormatter());
+	public SQLiteUpdateQuery(Formatter formatter) {
+		super(formatter);
 	}
-
 
 	public String toString() {
 		String updateAsString = "UPDATE " + table + " SET ";

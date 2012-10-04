@@ -1,5 +1,6 @@
 package com.crossdb.sql;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -16,11 +17,31 @@ import java.util.Date;
  */
 public abstract class DefaultFormatter implements Formatter {
   
-	SQLDateTimeFormat sqldf = new SQLDateTimeFormat();
+	//TODO ver si falta implementar metodos para el formateador de fechas
+	SimpleDateFormat dateformater = new SimpleDateFormat();
 	
+	private final String dateFormat = "yyyy-MM-dd";
+	private final String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+	private final String timeFormat = "HH:mm:ss";
+	
+	
+	public String dateFormat(Date date){
+		dateformater.applyPattern(dateFormat);
+		return dateformater.format(date);
+	}
+	
+	public String dateTimeFormat(Date date){
+		dateformater.applyPattern(dateTimeFormat);
+		return dateformater.format(date);
+	}
+	
+	public String timeFormat(Date date){
+		dateformater.applyPattern(timeFormat);
+		return dateformater.format(date);
+	}
 	
     public String format(String s) {
-        return "'" + escape(s) + "'";
+        return "'" + escape(s) + "'";    
     }
 
 	@Override
@@ -35,7 +56,7 @@ public abstract class DefaultFormatter implements Formatter {
 	
 	public String format(Date d){
 		
-			return "'" + sqldf.format(d) + "'";
+			return "'" + dateTimeFormat(d) + "'";
 		}
 
 	public String escape(String s) {

@@ -1,6 +1,7 @@
 package com.spaceprogram.sql.mysql;
 
 import com.crossdb.sql.DefaultSelectQuery;
+import com.crossdb.sql.Formatter;
 
 /**
  * Implementación de {@link DefaultSelectQuery} para dar soporte al motor MySQL
@@ -11,8 +12,8 @@ import com.crossdb.sql.DefaultSelectQuery;
 public class MySQLSelectQuery extends DefaultSelectQuery {
 
 
-	public MySQLSelectQuery(){
-		super();
+	public MySQLSelectQuery(Formatter formatter) {
+		super(formatter);
 	}
 
 	public String sentenceAsSQL(){

@@ -29,9 +29,10 @@ public abstract class DefaultSelectQuery implements SelectQuery {
     protected Join join;
     protected int rowlimit;
     protected int rowoffset;
+    protected Formatter formatter;
     
 
-    public DefaultSelectQuery(){
+    public DefaultSelectQuery(Formatter formatter){
         //query1 = "";
         table = null;
         tableFromSelect = null;
@@ -44,6 +45,7 @@ public abstract class DefaultSelectQuery implements SelectQuery {
         wclause = null;
         rowlimit = -1;
         rowoffset = -1;
+        this.formatter = formatter;
     }
 
     public void setDistinct(boolean distinct) {
@@ -147,7 +149,7 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 	}
 	
 	public WhereClause addWhere(){
-		if (wclause == null) wclause = new WhereClause();
+		if (wclause == null) wclause = new WhereClause(formatter);
 		return wclause;
 	}
 

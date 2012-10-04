@@ -30,6 +30,7 @@ import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.TableConstraint;
 import com.nelsonx.postgre.PostgreSQLCreateTableQuery;
+import com.nelsonx.postgre.PostgreSQLFormatter;
 import com.nelsonx.postgre.PostgreSQLSelectQuery;
 
 /**
@@ -73,7 +74,7 @@ public class TestPostgreSQLCreate {
 	@Test
 	public void testAsSelect(){
 		ct.setName("animal");
-		PostgreSQLSelectQuery select = new PostgreSQLSelectQuery();
+		PostgreSQLSelectQuery select = new PostgreSQLSelectQuery(new PostgreSQLFormatter());
 		select.addTable("animales");
 		ct.setSelectStatementSource(select);
 		assertEquals("CREATE TABLE animal AS SELECT *  FROM animales", ct.toString());

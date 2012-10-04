@@ -51,10 +51,11 @@ public class WhereClause {
 	 * 
 	 * @see #toString()
 	 */
-	SQLDateTimeFormat sqldf;
+	Formatter formatter;
 
-	public WhereClause() {
+	public WhereClause(Formatter formatter) {
 		whereClauseString = "";
+		this.formatter = formatter;
 
 	}
 	
@@ -85,10 +86,8 @@ public class WhereClause {
 		//TODO mover al formateado
 		String valueAsString = "";
 		if (value instanceof java.util.Date) {
-			if (sqldf == null)
-				sqldf = new SQLDateTimeFormat();
 
-			valueAsString += "'" + sqldf.format((java.util.Date) value) + "'";
+			valueAsString += "'" + formatter.format((java.util.Date) value) + "'";
 		} else if (value instanceof String){
 			valueAsString += "'" + value + "'" ;
 		} else

@@ -13,11 +13,11 @@ package com.crossdb.sql;
 public abstract class DefaultDeleteQuery implements DeleteQuery {
 
 	protected String table;
+	protected Formatter formatter;
+	protected WhereClause wclause;
 
-	protected WhereClause wclause = new WhereClause();
-
-	public DefaultDeleteQuery() {
-
+	public DefaultDeleteQuery(Formatter formatter) {
+		this.formatter = formatter;
 	}
 
 
@@ -26,7 +26,7 @@ public abstract class DefaultDeleteQuery implements DeleteQuery {
 	}
 	
 	public WhereClause addWhere(){
-		if (wclause != null) wclause = new WhereClause();
+		if (wclause != null) wclause = new WhereClause(formatter);
 		return wclause;
 	}
 

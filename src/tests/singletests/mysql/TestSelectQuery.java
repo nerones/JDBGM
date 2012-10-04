@@ -8,9 +8,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crossdb.sql.Functions;
 import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.WhereClause;
+import com.spaceprogram.sql.mysql.MySQLFormatter;
+import com.spaceprogram.sql.mysql.MySQLFunctions;
 import com.spaceprogram.sql.mysql.MySQLSelectQuery;
 
 /**
@@ -24,8 +25,8 @@ public class TestSelectQuery {
 	
 	@Before
 	public void setUp() {
-		sq = new MySQLSelectQuery();
-		sq2 = new MySQLSelectQuery();
+		sq = new MySQLSelectQuery(new MySQLFormatter());
+		sq2 = new MySQLSelectQuery(new MySQLFormatter());
 	}
 	
 	@Test
@@ -36,6 +37,17 @@ public class TestSelectQuery {
 		assertEquals(expected, sq.toString());
 
 	}
+	
+	@Test
+	public void testTableFromSelect() {
+		sq2.addTable("dogs");
+		sq.addTable(sq2, "tab");
+		sq.addJoin().innerJoin("registro", "raza = idRaza");
+		expected = "SELECT * FROM (SELECT * FROM dogs) AS tab INNER JOIN registro ON raza = idRaza";
+		assertEquals(expected, sq.toString());
+
+	}
+	
 	@Test
 	public void testToStringMedium() {
 		sq.addColumn("raza");
@@ -109,7 +121,7 @@ public class TestSelectQuery {
 		sq.addColumn("raza");
 		sq.addColumn("Animales", "vida");
 		sq.addTable("Animales");
-		WhereClause wc = new WhereClause();
+		WhereClause wc = new WhereClause(new MySQLFormatter());
 		wc.andComparison("edad", "<", 30);
 		wc.andComparison("edad2", "<", 30);
 		//WhereClause wc2 = new WhereClause();
@@ -141,9 +153,9 @@ public class TestSelectQuery {
 	public void testFunctions1(){
 		sq.addColumn("column1");
 		sq.maxColumn("column2");
-		sq.addFunctionColumn("gastos", Functions.SUM, "Animales", "column");
+		sq.addFunctionColumn(MySQLFunctions.SUM, "column", "gastos");
 		sq.addTable("Animales");
-		expected = "SELECT column1, MAX( column2 ), SUM( Animales.column ) AS gastos FROM Animales";
+		expected = "SELECT column1, MAX( column2 ), SUM( column ) AS gastos FROM Animales";
 		//TODO falta agregar e implementar los alias AS
 		assertEquals(expected, sq.toString());
 	}

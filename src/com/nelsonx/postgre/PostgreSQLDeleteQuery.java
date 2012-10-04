@@ -19,6 +19,7 @@
 package com.nelsonx.postgre;
 
 import com.crossdb.sql.DefaultDeleteQuery;
+import com.crossdb.sql.Formatter;
 
 /**
  * Implementación Especifica de {@link DefaultDeleteQuery} para el motor PostgreSQL.
@@ -26,5 +27,10 @@ import com.crossdb.sql.DefaultDeleteQuery;
  *
  */
 public class PostgreSQLDeleteQuery extends DefaultDeleteQuery {
+
+	public PostgreSQLDeleteQuery(Formatter formatter) {
+		super(formatter);
+		// TODO Auto-generated constructor stub
+	}
 
 }
