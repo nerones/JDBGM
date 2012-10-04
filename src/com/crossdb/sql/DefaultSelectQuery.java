@@ -14,12 +14,12 @@ package com.crossdb.sql;
  */
 public abstract class DefaultSelectQuery implements SelectQuery {
 
-	// TODO ver si se pueden declarar los ArrayList de algun tipo concreto
 	protected StringBuilder columns; // = new ArrayList(); // SELECT columns
 	protected String table;// = new ArrayList(); // FROM tables
-	//List where_clauses; // WHERE where_clauses
-	protected String order_by; // ORDER BY order_by
-	protected String group_by; // GROUP BY order_by
+	protected SelectQuery tableFromSelect;
+	protected String aliasForTableFromSelect;
+	protected String orderByExpresion; // ORDER BY order_by
+	protected String groupByExpresion; // GROUP BY order_by
 	protected String havingExpresion;
     //protected String limit;
 	protected WhereClause wclause;
@@ -30,15 +30,16 @@ public abstract class DefaultSelectQuery implements SelectQuery {
     protected int rowlimit;
     protected int rowoffset;
     
-    //protected ArrayList<Object> optimizationHints = new ArrayList<Object>();
 
     public DefaultSelectQuery(){
         //query1 = "";
         table = null;
+        tableFromSelect = null;
+        aliasForTableFromSelect  = null;
         columns = new StringBuilder();
         //where_clauses = new ArrayList();
-        order_by = null;
-        group_by = null;
+        orderByExpresion = null;
+        groupByExpresion = null;
         join = null;
         wclause = null;
         rowlimit = -1;
@@ -63,28 +64,22 @@ public abstract class DefaultSelectQuery implements SelectQuery {
         columns.append(table).append(".").append(column);
     }
     
-    public void addColumn(String table, String alias, String column) {
+    public void addColumn(String table, String column, String alias) {
     	if (columns.length() != 0) columns.append(", ");
         columns.append(table).append(".").append(column);
         columns.append(" AS ").append(alias);
     }
     
-    abstract protected String getFunction(int functionId);
     // TODO  mover las funciones a Functions y ver los alias (AS)
     
     public void addFunctionColumn(String function, String column) {
     	if (columns.length() != 0) columns.append(", ");
         columns.append(function).append("( ").append(column).append(" )");
     }
-
-    public void addFunctionColumn(String function, String table, String column) {
-    	if (columns.length() != 0) columns.append(", ");
-        columns.append(function).append("( ").append(table).append('.').append(column).append(" )");
-    }
     
-    public void addFunctionColumn(String alias, int functionId, String table, String column) {
+    public void addFunctionColumn(String functionId, String column, String alias) {
     	if (columns.length() != 0) columns.append(", ");
-        columns.append(getFunction(functionId)).append("( ").append(table).append('.').append(column).append(" )");
+        columns.append(functionId).append("( ").append(column).append(" )");
         columns.append(" AS ").append(alias);
     }
 
@@ -135,16 +130,17 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 
     }
     
-    
-    
-    
-    
-    
-	
 	public void addTable(String table){
 		this.table = table;
+		this.tableFromSelect = null;
 	}
 
+	public void addTable(SelectQuery selectSource, String alias){
+		this.tableFromSelect = selectSource;
+		this.aliasForTableFromSelect = alias;
+		this.table = null;
+	}
+	
 	public Join addJoin(){
 		if (join == null) join = new Join();
 		return join;
@@ -157,7 +153,7 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 
 	public void addGroupBy(String group_by){
 
-		this.group_by = group_by;
+		this.groupByExpresion = group_by;
 	}
 	
 	public void addHaving(String havingExpresion){
@@ -174,10 +170,8 @@ public abstract class DefaultSelectQuery implements SelectQuery {
     }
 	
     public void addOrderBy(String order_by){
-		this.order_by = order_by;
+		this.orderByExpresion = order_by;
 	}
-	
-    //protected int limit[]; // 2 max that will be offset, count
 
 	public void setLimit(int count){
 		this.rowlimit = count;
@@ -201,46 +195,10 @@ public abstract class DefaultSelectQuery implements SelectQuery {
 	public abstract String sentenceAsSQL();
 	
 	public String toString(){
-		if (table == null) throw new RuntimeException("La sentencia no tiene tablas definidas," +
+		if (table == null && tableFromSelect == null) throw new RuntimeException("La sentencia no tiene tablas definidas," +
 				" la sentencia no se puede construir");
 		else return sentenceAsSQL();
 	}
-
-
-
-    /**
-     * will recurse through all SelectQuery's until union is null
-     * @return query unioned together
-     */
-    protected StringBuffer getUnionizedQuery(StringBuffer ret) {
-        if(union != null){
-            return ret.append( " UNION " + union.toString());
-        }
-        else{
-            return ret;
-        }
-    }
-    
-    /*
-    public CrossdbResultSet execute(Connection conn) throws SQLException{
-		Statement stmt = conn.createStatement();
-		CrossdbResultSet ret = execute(stmt);
-		// Can't close the statement here, because that also closes the Resultset!  ouch
-        //stmt.close();
-        // but lets set a flag that we made the statement so we should close it after
-        ret.setStatementCreated(stmt);
-		return ret;
-	}
-    public CrossdbResultSet execute(Statement stmt) throws SQLException{
-
-        String q = getUnionizedQuery();
-		return new DefaultResultSet(stmt.executeQuery(q));
-	}
-	*/
-
-//    public void addOptimizationHint(OptimizationHint optimizationHint) {
-//        optimizationHints.add(optimizationHint);
-//    }
 
     
 }

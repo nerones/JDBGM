@@ -9,12 +9,8 @@ package com.crossdb.sql;
  * Además provee una interfaz para agregar los comandos correspondientes a la
  * sentencia SQL 
  * 
- * <p>
- * Copyright: Copyright (c) 2002 Company: Space Program Inc.
- * </p>
- * 
- * @author Nelson Efrain A.Cruz
- * @author Travis Reeder - travis@spaceprogram.com
+ * @author Nelson Efrain A. Cruz
+ * @author Travis Reeder - travis@spaceprogram.com Copyright (c) 2002 Space Program Inc.
  * @version 0.5
  */
 public interface SelectQuery extends QueryStatement {
@@ -54,14 +50,23 @@ public interface SelectQuery extends QueryStatement {
 	 */
 	void addColumn(String table, String column);
 	
-	void addColumn(String table, String alias, String column);
+	/**
+	 * Agrega una columna a la sentencia SELECT pero haciendo referencia a una
+	 * columna {@code column} en una tabla {@code table} por table.column con el alias {@code alias}, es usado cuando la
+	 * sentencia select se este realiza sobre mas de una tabla.
+	 * 
+	 * @param alias Un alias para la columna
+	 * @param table El nombre de la tabla que contiene la columna que se quiere agregar
+	 * @param column El nombre de la columna que se esta agregando
+	 */
+	void addColumn(String table, String column, String alias);
 
 	/**
 	 * Usado para agregar las funciones agregadas que poseen los motores de BB
 	 * DD tales como: AVG, COUNT, MIN, MAX, SUM, etc.
 	 * 
 	 * @param function
-	 *            el nombre de la función.
+	 *            el nombre de la función tomado desde la Functions.
 	 * @param column
 	 *            el nombre de la columna.
 	 */
@@ -69,36 +74,22 @@ public interface SelectQuery extends QueryStatement {
 	void addFunctionColumn(String function, String column);
 
 	/**
-	 * For use with aggregate functions such as: AVG COUNT MIN MAX SUM etc...
-	 * <p>
-	 * Warning: Does not guarantee database independence if used, use the
-	 * aggregage functions such as countColumn to get database independence
-	 * 
-	 * @param function
-	 * @param table
-	 * @param column
-	 */
-	void addFunctionColumn(String function, String table, String column);
-
-	/**
 	 * Usado para agregar las funciones agregadas que poseen los motores de BB
 	 * DD tales como: AVG, COUNT, MIN, MAX, SUM, etc.
 	 * <p>
 	 * Warning: Does not guarantee database independence if used, use the
-	 * aggregage functions such as countColumn to get database independence
+	 * aggregate functions such as countColumn to get database independence
 	 * 
 	 * @param alias
 	 *            es la etiqueta o alias que tomara esta columna en la tabla
 	 *            resultante de la consulta
 	 * @param functionId
 	 *            el identificador de la función que se especifica en Functions
-	 * @param table
-	 *            especifica la tabla de la que se esta tomando la columna
 	 * @param column
 	 *            el identificador de la columna
 	 */
-	void addFunctionColumn(String alias, int functionId, String table,
-			String column);
+	void addFunctionColumn(String functionId, String column, String alias);
+	
 
 	void sumColumn(String column);
 
@@ -120,11 +111,16 @@ public interface SelectQuery extends QueryStatement {
 
 	void maxColumn(String table, String column);
 
-	//TODO la tabla de FROM puede provenir de una sentencia select
 	/**
-	 * Agrega una tabla a la sentencia SELECT sobre la cual se ara la consulta
-	 * con INNER JOIN como predeterminado. Es decir el identificador de tabla
-	 * que se agregara después de FROM.
+	 * Agrega una tabla a la sentencia SELECT sobre la cual se ara la consulta,
+	 * si se quieren agregar otras tablas mediante JOIN estas se deben agregar mediante
+	 * el método {@link #addJoin()}, solo la primer tabla se agrega mediante esta función
+	 * de modo que si se hace la consulta sobre una única tabla solo se debe llamar a esta
+	 * función. Como es posible establecer sentencia {@code SELECT} anidada en vez de una tabla 
+	 * mediante {@link #addTable(SelectQuery)} <strong>solo tendra efecto la ultima función en ser 
+	 * llamada </strong> por ejemplo si antes se había llamado a {@link #addTable(SelectQuery)} y luego
+	 * a esta función la sentencia representada en el parámetro SelectQuery será descartada y la sentencia
+	 * tomara para {@code FROM} el nombre de la tabla.
 	 * 
 	 * @param table
 	 *            el nombre de la tabla sobre la cual se esta haciendo la
@@ -132,56 +128,18 @@ public interface SelectQuery extends QueryStatement {
 	 */
 	void addTable(String table);
 	
+	/**
+	 * Realiza la misma función que {@link #addTable(String)} pero en este caso
+	 * la fuente para la consulta es otra consulta anidada, la que también puede
+	 * estar envuelta en una restricción {@code JOIN}.
+	 * 
+	 * @param selectSource La sentencia {@code SELECT} anidada para esta consulta.
+	 * @see #addTable(String)
+	 */
+	void addTable(SelectQuery selectSource, String alias);
+	
 	Join addJoin();
 
-//	/**
-//	 * Agrega una tabla a la sentencia SELECT con la opción de JOIN
-//	 * seleccionada. Las opciones de JOIN se obtienen de las constantes
-//	 * declaradas en la clase {@link Join}.
-//	 * 
-//	 * @param joinType
-//	 *            - type of join using the fields in Join.java
-//	 * @param table
-//	 *            - table name to add to query
-//	 * @see Join
-//	 */
-//	void addTable(int joinType, String table);
-//
-//	/**
-//	 * Instead of creating a Join then inserting it, since you can only have one
-//	 * condition on a left outer join to work with oracle, this is the
-//	 * convenient way to do it.
-//	 * 
-//	 * @param join_type
-//	 *            - type of join using the fields in Join.java
-//	 * @param table
-//	 *            - table name to add to query
-//	 * @see Join
-//	 * @see WhereCondition
-//	 */
-//	void addTable(int join_type, String table, WhereCondition cond);
-//
-//	/**
-//	 * WARNING: This may get deprecated as it is unecessary considering that you
-//	 * can only have one join condition on an outer join (see requirements doc
-//	 * at www.crossdb.com)
-//	 * 
-//	 * @param join
-//	 *            - a join object that has all the information needed.
-//	 * @see Join
-//	 */
-//	void addTable(Join join);
-
-	// void removeColumn(String column);
-	// Not sure how the function thing will work cause there are too many
-	// function variations
-	// Maybe have a separate function for each? like datediff() would actually
-	// be a function
-	// in a db dependent class implementation called Functions or something so
-	// you would need
-	// an interface called SQLFunctions or something with all the functions in
-	// it.
-	// void addColumn(int function, String column); // functions map to
 	//TODO La clausula where puede tomar funciones en sus condiciones
 	/**
 	 * Agrega una cláusula {@code WHERE} representada por la clase {@link WhereClause} 
@@ -206,31 +164,11 @@ public interface SelectQuery extends QueryStatement {
 	 */
 	void addHaving(String havingExpresion);
 
-	// void setLimit(int count);
-	// void setLimit(int offset, int count);
-
 	/**
 	 * Returns the SQL statement.
 	 */
 	// String toString();
 
-	/* *
-	 * Uses stmt to execute the query. This is so you can keep reusing the same
-	 * statement. Be sure to use new statements if you want more than one
-	 * resultset open at the same time. / CrossdbResultSet
-	 * execute(java.sql.Statement stmt) throws SQLException ;
-	 * 
-	 * /* * This one takes a java.sql.Connection and then creates a statement
-	 * and executes.
-	 * 
-	 * The statement created is closed when the return ResultSet is closed. /
-	 * CrossdbResultSet execute(Connection conn) throws SQLException ;
-	 * 
-	 * /**
-	 * 
-	 * @see SQLFactory#setSchema
-	 */
-	// public void setSchema(String schema);
 
 	/**
 	 * Para establecer la {@code UNION} de la sentencia actual con la que se
@@ -272,13 +210,5 @@ public interface SelectQuery extends QueryStatement {
 	 *            El limite de filas que puede devolver como resultado.
 	 */
 	void setLimit(int offset, int rowCount);
-
-//	/**
-//	 * Adds an optimization hint to the query.
-//	 * 
-//	 * @see OptimizationHint
-//	 * @param optimizationHint
-//	 */
-//	void addOptimizationHint(OptimizationHint optimizationHint);
 
 }

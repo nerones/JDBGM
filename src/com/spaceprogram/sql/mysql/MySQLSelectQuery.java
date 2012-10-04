@@ -1,10 +1,13 @@
 package com.spaceprogram.sql.mysql;
 
-/** This is an initial beta of a class that will represent a query string */
-
 import com.crossdb.sql.DefaultSelectQuery;
-import com.crossdb.sql.Functions;
 
+/**
+ * Implementación de {@link DefaultSelectQuery} para dar soporte al motor MySQL
+ * 
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class MySQLSelectQuery extends DefaultSelectQuery {
 
 
@@ -22,19 +25,24 @@ public class MySQLSelectQuery extends DefaultSelectQuery {
 			ret.append(" *");
 		}
 		else ret.append(' ').append(columns);
-		ret.append(" FROM ").append(table);
+		// como después de from puede ir table o tableFromSelect veo cual de ellos es nulo
+		if (table != null){
+			ret.append(" FROM ").append(table);
+		} else {
+			ret.append(" FROM (").append(tableFromSelect.toString()).append(") AS ").append(aliasForTableFromSelect);
+		}
 		if (join != null) ret.append(join.toString());
 		if (wclause != null) ret.append(wclause.toString());		
-		if(group_by != null) {
+		if(groupByExpresion != null) {
 			ret.append(" GROUP BY ");
-			ret.append(group_by);
+			ret.append(groupByExpresion);
 		}
 		if(havingExpresion != null) {
 			ret.append(" HAVING ");
 			ret.append(havingExpresion);
 		}
-		if(order_by != null ){
-			ret.append(" ORDER BY ").append(order_by);
+		if(orderByExpresion != null ){
+			ret.append(" ORDER BY ").append(orderByExpresion);
 		}
 		if(rowlimit > -1){
 			ret.append(" LIMIT ").append(rowlimit);
@@ -47,16 +55,5 @@ public class MySQLSelectQuery extends DefaultSelectQuery {
 		}
 		return ret.toString();
 	}
-
-	/* (non-Javadoc)
-	 * @see com.crossdb.sql.DefaultSelectQuery#getFunction(int)
-	 */
-	@Override
-	protected String getFunction(int functionId) {
-		// TODO ver si es necesario heredar de la clase Function para obtener el nombre de la función
-		return Functions.getFunctionName(functionId);
-	}
-
-
 
 }
