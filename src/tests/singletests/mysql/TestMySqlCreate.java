@@ -29,7 +29,6 @@ import org.junit.Test;
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.TableConstraint;
-import com.nelsonx.sqlite.SQLiteFormatter;
 import com.spaceprogram.sql.mysql.MySQLCreateTableQuery;
 import com.spaceprogram.sql.mysql.MySQLFormatter;
 import com.spaceprogram.sql.mysql.MySQLSelectQuery;

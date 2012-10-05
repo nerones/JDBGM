@@ -31,7 +31,7 @@ com.crossdb.sql.SQLFactory factory = (com.crossdb.sql.SQLFactory)(factory_class.
  * @author Travis Reeder - travis@spaceprogram.com
  * @version 0.1
  */
-
+@Deprecated
 public interface SpecificSQLFactory {
 
 	InsertQuery getInsertQuery();
@@ -40,29 +40,7 @@ public interface SpecificSQLFactory {
 	DeleteQuery getDeleteQuery();
 	AlterTableQuery getAlterTableQuery();
 	CreateTableQuery getCreateTableQuery();
+	WhereClause getWhereClause();
 
-    /**
-     * this will return an implementation specific WhereClause and should be used instead of
-     * using WhereClause class directly.
-     * 
-     * @return
-     */
-    //IWhereClause getWhereClause();
-
-	/**
-	For setting a global schema to append to queries,<br>
-	ex: schema.table_name<br>
-	So that you don't have to define the schema in the actual code, in
-	case the schema changes from db to db, you can just set it once in the factory.
-	 */
-	//void setSchema(String schema);
-
-
-    /**
-     * Setting the sequence suffix here will change the default suffix (which is TABLENAME_seq) to the
-     * newly passed in suffix.  So whenever you getInsertQuery(), the insertquery will be set ot the appropriate
-     * @param suffix
-     */
-    //void setSequenceSuffix(String suffix);
 
 }

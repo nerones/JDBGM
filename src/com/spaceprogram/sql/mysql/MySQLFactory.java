@@ -1,43 +1,50 @@
 package com.spaceprogram.sql.mysql;
 
-import com.crossdb.sql.*;
+import com.crossdb.sql.AlterTableQuery;
+import com.crossdb.sql.CreateTableQuery;
+import com.crossdb.sql.DeleteQuery;
+import com.crossdb.sql.InsertQuery;
+import com.crossdb.sql.SQLFactory;
+import com.crossdb.sql.SelectQuery;
+import com.crossdb.sql.UpdateQuery;
+import com.crossdb.sql.WhereClause;
 
-/** This is an initial beta of a class that will represent a query string */
 
-//import java.util.List;
-//import java.sql.*;
-
-public class MySQLFactory implements SpecificSQLFactory {
+public class MySQLFactory extends SQLFactory {
+	
+	private MySQLFormatter formatter;
+	
+	public MySQLFactory() {
+		formatter = new MySQLFormatter();
+	}
 	
 	public InsertQuery getInsertQuery(){
-		MySQLInsertQuery iq = new MySQLInsertQuery();
-		return iq;
+		return new MySQLInsertQuery();
 	}
 	
 	public SelectQuery getSelectQuery() {
-		MySQLSelectQuery sq = new MySQLSelectQuery();
-		return sq;
+		return new MySQLSelectQuery(formatter);
 	}
-	public UpdateQuery getUpdateQuery(){
-		MySQLUpdateQuery uq = new MySQLUpdateQuery();
-		return uq;
+	
+	public UpdateQuery getUpdateQuery(){	
+		return new MySQLUpdateQuery(formatter);
 	}
+	
 	public DeleteQuery getDeleteQuery(){
-		MySQLDeleteQuery dq = new MySQLDeleteQuery();
-		return dq;
+		return new MySQLDeleteQuery(formatter);
 	}
+	
 	public CreateTableQuery getCreateTableQuery(){
-		MySQLCreateTableQuery ctq = new MySQLCreateTableQuery();
-		return ctq;
+		return new MySQLCreateTableQuery();	 
 	}
 
     public AlterTableQuery getAlterTableQuery(){
-		
-		MySQLAlterTableQuery atq = new MySQLAlterTableQuery();
-		return atq;
+    	return new MySQLAlterTableQuery();
+	}
+    
+	@Override
+	public WhereClause getWhereClause() {
+		return new WhereClause(formatter);
 	}
 
-	
-	
-	
 }

@@ -1,12 +1,8 @@
 package com.nelsonx.postgre;
 
-import java.util.ArrayList;
-
 import com.crossdb.sql.Column;
-import com.crossdb.sql.DataTypes;
 import com.crossdb.sql.DefaultCreateTableQuery;
 import com.crossdb.sql.TableConstraint;
-import com.spaceprogram.sql.mysql.MySQLDataTypes;
 
 public class PostgreSQLCreateTableQuery extends DefaultCreateTableQuery {
 

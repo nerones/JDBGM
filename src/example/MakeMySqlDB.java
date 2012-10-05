@@ -4,33 +4,31 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
 import com.crossdb.sql.Column;
-import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.InsertQuery;
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
-import com.crossdb.sql.SpecificSQLFactory;
 import com.nelsonx.jdbgm.DefaultExceptionHandler;
 import com.nelsonx.jdbgm.GenericManager;
 import com.nelsonx.jdbgm.JDException;
 import com.nelsonx.jdbgm.ManagerFactory;
-import com.nelsonx.jdbgm.MySqlManager;
 
 public class MakeMySqlDB {
 	GenericManager manager;
 	String user,location,password;
 	Random ranGene;
-	SpecificSQLFactory sqlFactory;
+	SQLFactory sqlFactory;
 	
 	public MakeMySqlDB(String location, String user, String password) {
 		// TODO Auto-generated constructor stub
 		this.user = user;
 		this.password = password;
 		this.location = location;
+		
 		//manager = new MySqlManager(location, user, password);
 		try {
 			manager = ManagerFactory.getManager(ManagerFactory.MYSQL_DB, user, location, password);

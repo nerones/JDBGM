@@ -4,7 +4,6 @@
 package com.nelsonx.jdbgm;
 
 import com.crossdb.sql.SQLFactory;
-import com.crossdb.sql.SpecificSQLFactory;
 
 /**
  * @author Nelson Efrain A. Cruz
@@ -15,8 +14,10 @@ public class ManagerFactory {
 	public static final int MYSQL_DB = 1;
 	public static final int SQLITE_DB = 2;
 	public static final int POSTGRE_DB = 3;
+	public static int currentVendor; 
 	public static GenericManager manager;
-	public static SpecificSQLFactory sqlFactory;
+	public static SQLFactory sqlFactory;
+	public static boolean isRegistered = false;
 	
 	
 	public static GenericManager getManager(int vendor,String user, String location, String password) throws JDException{
@@ -33,11 +34,13 @@ public class ManagerFactory {
 		default:
 			return null;
 		}
-		sqlFactory = SQLFactory.getFactory(vendor);
+		isRegistered = true;
+		currentVendor = vendor;
+		sqlFactory = SQLFactory.getFactory();
 		return manager;
 	}
 	
-	public static SpecificSQLFactory getSQLFactory(){
+	public static SQLFactory getSQLFactory(){
 		return sqlFactory;
 	}
 

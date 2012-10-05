@@ -4,46 +4,52 @@ import com.crossdb.sql.AlterTableQuery;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.DeleteQuery;
 import com.crossdb.sql.InsertQuery;
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
-import com.crossdb.sql.SpecificSQLFactory;
 import com.crossdb.sql.UpdateQuery;
+import com.crossdb.sql.WhereClause;
 
-public class PostgreSQLFactory implements SpecificSQLFactory {
+public class PostgreSQLFactory extends SQLFactory {
 
+	private PostgreSQLFormatter formatter;
+	
+	public PostgreSQLFactory() {
+		formatter = new PostgreSQLFormatter();
+	}
+	
 	@Override
 	public InsertQuery getInsertQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostgreSQLInsertQuery();
 	}
 
 	@Override
 	public SelectQuery getSelectQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostgreSQLSelectQuery(formatter);
 	}
 
 	@Override
 	public UpdateQuery getUpdateQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostgreSQLUpdateQuery(formatter);
 	}
 
 	@Override
 	public DeleteQuery getDeleteQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostgreSQLDeleteQuery(formatter);
 	}
 
 	@Override
 	public AlterTableQuery getAlterTableQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostgreSQLAlterTableQuery();
 	}
 
 	@Override
 	public CreateTableQuery getCreateTableQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostgreSQLCreateTableQuery();
+	}
+
+	@Override
+	public WhereClause getWhereClause() {
+		return new WhereClause(formatter);
 	}
 
 }
