@@ -252,18 +252,41 @@ La sentencia \verb=DELETE= definida en la interfaz \verb=DeleteQuery= es otra de
 \end{figure}
 
 \subsubsection{La interfaz para SELECT}
-La sentencia \verb=SELECT= definida en la interfaz \verb=SelectQuery=
+La sentencia \verb=SELECT= definida en la interfaz \verb=SelectQuery= es la mas complicada de todas con las que se estuvo trabajando, para no sobrecargarla muchas de las tareas se relegaron  a clases auxiliares, la primera de ellas es la clase \verb=WhereClause= que ya se había utilizado previamente para crear restricciones del tipo \verb=WHERE=, la segunda clase auxiliar que fue creada exclusivamente para esta sentencia es la clase \verb=JOIN= que se encarga de ofrecer los métodos necesarios para establecer las restricciones de origen \verb=FROM=. La clase que se podría haber utilizado pero que no se usa es \verb=Column= puesto que para \verb=SELECT= lo que realmente importa es el nombre de la columna y quizá un alias y nombre de la tabla de la misma, pero estos datos no justifican el uso de \verb=Column= por lo que se decidió no usar la misma.
 
-\subsection{Implementación del patrón Factory}
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{figuras/jdbgm-dc-select.png}
+  \caption{Diagrama de clases para la interfaz de SelectQuery}
+  \label{fig:dc-selectquery}
+\end{figure}
 
+En la figura \ref{fig:dc-selectquery} se puede ver el diagrama de clases para \verb=SELECT= en el que se puede ver que la clase hace uso de si misma y además \verb=Join= también hace uso de la misma, pues es posible hacer \verb=UNION= con otra sentencia \verb=SELECT=, la clase \verb=Join= también hace uso de esta interfaz por que se la puede usar como sentencia anidada dentro de una restricción \verb=JOIN=. Otro punto importante dentro de esta clase es el soporte de las funciones agregadas de las bases de datos, estas como ya se dijo no son parte del estándar y por lo tanto se encuentra disparidad ente ellas, por lo que se opto que las funciones se podrán elegir desde un catalogo de constantes disponibles en la clase \verb=Functions= que proveerá nombres de funciones que tienen equivalentes en los tres motores quedando a cargo del programador el correcto uso de la misma.
 
+\subsection{Controlando la creación de objetos}
 
+Observando la estructura que se fue proponiendo hasta ahora tenemos una tres implementaciones concretas por cada una de las interfaces que definen a las diferentes sentencias, una por cada motor al que se le da soporte, así que con lo expuesto hasta ahora el programador debe decidir cual es la implementación que necesita usar y en base a ello instanciar siempre las del mismo tipo teniendo en cuenta el motor que se quiere usar. Siguiendo esta lógica el código resultante puede resultar difícil de mantener, obstruyendo el objetivo primordial de \jj,  pues en el momento que se desea migrar de motor sera necesario buscar una por una las variables que se fueron declarando para las sentencias SQL para corregir el tipo con el que fueron declaradas y además cambiar a el constructor adecuado o también puede ocurrir que el programador haya usado correctamente como tipo de dato para las variables a su correspondiente interfaz en cuyo caso aun restaría por corregir el uso del constructor adecuado. Así que para sortear este problema se hará uso de el patrón \textit{Abstract Factory}
 
+\subsubsection{El patrón Abstract Factory}
+Podemos decir en forma resumida que el patrón Abstract Factory le permite a un cliente crear objetos que son parte de una familia de objetos relacionados o dependientes. El tema o rasgo en común de esta familia de objetos puede llegar a ser pertinente a muchas mas clases por lo que en estos casos se suele crear paquetes paralelos que mantienen separadas estas familias de objetos dependiendo de como las afecte el rasgo en común. Una clase que implemente este patrón le provee a una clase cliente una fabrica que le permite crear objetos que están relacionados mediante un rasgo en común. Una descripción mucho mas detallada y sencilla de comprender puede ser encontrada en el siguiente libro\cite{Metsker:2002:DPJ}. 
 
+%The ABSTRACT FACTORY pattern lets you arrange for a client to create objects that are part of a family of related, or dependent, objects. The theme, or common trait of the family, such as which country the classes pertain to, may run across many classes. In this case, you may maintain parallel packages, perhaps placing each family in its own package. For GUI factories, you may not need more than one package if different "classes" of GUI components differ only in such attributes as text size and cursor type. However you organize your code, ABSTRACT FACTORY lets you provide a client with a factory that produces objects that are related by a common theme.
+Bajando un poco el nivel de abstracción podemos ver que para que las diferentes familias de clases estén relacionadas estas deben implementar u heredar de una interfaz o clase abstracta en común, entonces una implementación posible de este patrón consiste en crear una interfaz Fabrica que defina métodos para obtener las implementaciones de cada una de las interfaces de la familia, de este modo cada una de las familias implementara esta interfaz Fabrica para devolver instancias de objetos que se correspondan con su familia, utilizando siempre como tipo a las interfaces que definen a la familia. Con esto se obtendrán tantas Fabricas especificas como familias existan por lo que resta obtener la fabrica adecuada dependiendo de la variable externa que hace de tema común para la familia. el concepto quedara mas claro cuando se exponga el modo en que fue implementado el patrón en este caso.
+ 
+\subsubsection{Implementación del patrón}
 
+En el manejador de sentencias las familias vendrían a estar formadas por el conjunto de implementaciones de las interfaces que definen las sentencias SQL soportadas y habría una familia por cada motor al que se le este dando soporte, para estas el tema en común seria precisamente el motor en especifico que se este usando. Viéndolo desde otro punto de vista dependiendo de el motor en particular que estemos usando deberemos instanciar objetos de una familia determinada. Algo que queda un poco implícito con el uso de este patrón es que una vez que se tiene la ``fabrica'' adecuada ya no es necesario preocuparse por que tipo de objetos se esta instanciando y si se usan como tipo de datos a las interfaces, para cambiar de motor lo único que se tiene que hacer es cambiar de ``fabrica''.
 
+En este proyecto la clase que se encargara de implementar el patrón Abstract Factory sera \verb=SQLFactory=, que tiene que realizar dos tareas principales: primero se encargara de definir métodos abstractos para devolver instancias de las diferentes clases que implementen las interfaces base; segundo se encargara de decidir de cual familia de clases se deben instanciar los objetos. Para la segunda tarea la clase deberá verificar si es que ya se estableció con que motor se desea trabajar y en base a esto decidir que implementación especifica de la clase \textit{factory} debe trabajar, pues la razón de definir como clase abstracta a \verb=SQLFactory= es que los métodos abstractos de la misma sean implementados en clases especificas para que estas devuelvan el tipo adecuado de objetos, esto se puede apreciar mejor en la figura \ref{fig:crossdb-factory} que sintetiza lo que se vino explicando. 
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.85\textwidth]{figuras/crossdb-factory.png}
+  \caption{Diagrama de clases para las clases ``Fabrica''}
+  \label{fig:crossdb-factory}
+\end{figure}
 
+En dicha figura no se muestran todos los métodos abstractos que debe tener \verb=SQLFactory= pero debe existir uno por cada interfaz base y siguiendo el mismo molde \verb=get[Interfaz](): Interfaz=, el método de clase \verb=getSQLFactory()= debe verificar que se haya establecido el motor con el cual se quiere trabajar para poder decidir de que implementación se debe instanciar. Las clases que implemente a la fabrica lo único que deben hacer es implementar de forma adecuada los métodos abstractos.  
 
 \section{Capa de acceso a el motor - JDBC}
 y otro
