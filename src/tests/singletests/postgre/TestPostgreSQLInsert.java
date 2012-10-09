@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with JDBGM.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tests.singletests;
+package tests.singletests.postgre;
 
 import static org.junit.Assert.assertEquals;
 

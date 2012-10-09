@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with JDBGM.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tests.singletests;
-
+package tests.singletests.postgre;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,26 +29,24 @@ import org.junit.Test;
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
 import com.crossdb.sql.TableConstraint;
-import com.nelsonx.sqlite.SQLiteCreateTableQuery;
-import com.nelsonx.sqlite.SQLiteFormatter;
-import com.nelsonx.sqlite.SQLiteSelectQuery;
-
+import com.nelsonx.postgre.PostgreSQLCreateTableQuery;
+import com.nelsonx.postgre.PostgreSQLFormatter;
+import com.nelsonx.postgre.PostgreSQLSelectQuery;
 
 /**
  * @author Nelson Efrain A. Cruz
  *
  */
-public class TestSQLiteCreate {
-
+public class TestPostgreSQLCreate {
 	CreateTableQuery ct;
 	Column col;
-	String expectedSQL;
+	String expectedSQL = "";
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ct = new SQLiteCreateTableQuery();
+		ct = new PostgreSQLCreateTableQuery();
 	}
 	
 	@Test
@@ -60,10 +57,10 @@ public class TestSQLiteCreate {
 		ct.addColumn(test);
 		ct.addAutoincrementPrimaryKeyColumn(new Column("id", Types.INTEGER));
 		ct.addColumn(new Column("carac", Types.INTEGER));
-		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id INTEGER AUTO_INCREMENT PRIMARY KEY, carac INTEGER )";
+		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id SERIAL PRIMARY KEY, carac INTEGER )";
 		assertEquals( expectedSQL, ct.toString());
 		
-		ct = new SQLiteCreateTableQuery();
+		ct = new PostgreSQLCreateTableQuery();
 		ct.setName("animales");
 		ct.addPrimaryKeyColumn(new Column("id",Types.INTEGER));
 		ct.addForeignKeyColumn(new Column("reino_id", Types.VARCHAR, "reinos", "id"));
@@ -77,10 +74,10 @@ public class TestSQLiteCreate {
 	@Test
 	public void testAsSelect(){
 		ct.setName("animal");
-		SQLiteSelectQuery select = new SQLiteSelectQuery(new SQLiteFormatter());
+		PostgreSQLSelectQuery select = new PostgreSQLSelectQuery(new PostgreSQLFormatter());
 		select.addTable("animales");
 		ct.setSelectStatementSource(select);
-		assertEquals("CREATE TABLE animal AS SELECT * FROM animales", ct.toString());
+		assertEquals("CREATE TABLE animal AS SELECT *  FROM animales", ct.toString());
 	}
 	
 	@Test
@@ -125,7 +122,7 @@ public class TestSQLiteCreate {
 		ct.addColumn(new Column("carac", Types.INTEGER));
 		//System.out.println(ct.toString());
 		expectedSQL = "CREATE TABLE Animales4 ( Genero CHAR(50) NOT NULL, Genero2 CHAR(50), Cientifico CHAR(50)," +
-				" Id INTEGER AUTO_INCREMENT PRIMARY KEY, carac INTEGER," +
+				" Id SERIAL PRIMARY KEY, carac INTEGER," +
 				" FOREIGN KEY (Genero, Genero2) REFERENCES Entes(Genero, Genero2)," +
 				" FOREIGN KEY (Cientifico) REFERENCES Estudio(Cientifico2) )"; 
 		assertEquals( expectedSQL, ct.toString());
@@ -243,6 +240,6 @@ public class TestSQLiteCreate {
 				"col34 BLOB, " +
 				"col35 VARCHAR(50) )", ct.toString());
 	}
-
+	
 
 }
