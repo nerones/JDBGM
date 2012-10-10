@@ -1,3 +1,21 @@
+/**
+ * Copyright 2011 Nelson Efrain Abraham Cruz
+ *
+ * This file is part of JDBGM.
+ * 
+ * JDBGM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JDBGM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JDBGM.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.nelsonx.jdbgm;
 
 import java.sql.Connection;
@@ -19,30 +37,32 @@ import com.sun.rowset.CachedRowSetImpl;
  * @version 0.5
  * @since  0.5
  */
-public class JDBCManager implements GenericManager {
+public abstract class JDBCManager implements GenericManager {
 	
 	protected ExceptionHandler handler;
+	//TODO usar un pool de conexiones?
 	protected Connection connection;
 	protected Statement st;
 	protected String location, user, password, locationURL;
 	protected boolean isAutoCommit = true;
 	protected boolean connectionStarted = false;
 	
-//	@Deprecated
-//	protected Connection getConection(String location, String user, String password) {
-//		if (connection == null) {
-//			String url = "jdbc:mysql://" + location;
-//			System.out.println(url);
-//			try {
-//				connection = DriverManager.getConnection(url,user,password);
-//			} catch (SQLException e) {
-//				
-//				e.printStackTrace();
-//			}
-//		}
-//		return connection;
-//		
-//	}
+	
+	private boolean isInTransaction(){
+		if (isAutoCommit) return false;
+		else return true;
+	}
+	
+	private void rollbackIfTransaction(String infoErr) throws JDException{
+		if (isInTransaction()) {
+			try {
+				getConnection().rollback();
+			} catch (SQLException e) {
+				throw new JDException("No se pudieron deshacer los cambios, " + infoErr, e);
+			}
+			
+		}
+	}
 	
 	public Connection getConnection() throws JDException {
 		if ( (connection == null) ) {
@@ -58,9 +78,6 @@ public class JDBCManager implements GenericManager {
 
 	
 	public void beginConnection() throws JDException {
-		/*
-		 *  
-		 */
 		try {
 			getConnection();
 			connectionStarted = true;
@@ -71,6 +88,7 @@ public class JDBCManager implements GenericManager {
 			 * se puede acceder a la base de datos o bien los parámetros usados en
 			 * DriverManager.getConnection están erróneos. 
 			 */
+			//TODO cambiar el tipo de excepción devuelto
 			throw e;
 		}
 	}
@@ -122,7 +140,8 @@ public class JDBCManager implements GenericManager {
 			stat = connection.createStatement();
 			result = stat.executeUpdate(sql);
 		} catch (SQLException e) {
-			throw new JDException("problema mientras se ejecutaba la sentencia", e);
+			rollbackIfTransaction("problema mientras se ejecutaba la sentencia: "+ sql);
+			throw new JDException("problema mientras se ejecutaba la sentencia: "+ sql, e);
 			// TODO Auto-generated catch block
 		} finally {
 			try {
@@ -148,7 +167,8 @@ public class JDBCManager implements GenericManager {
 			stat = connection.createStatement();
 			resultset = stat.executeQuery(sql);
 		} catch (SQLException e) {
-			throw new JDException("problema mientras se ejecutaba la sentencia", e);
+			rollbackIfTransaction("problema mientras se ejecutaba la sentencia: "+ sql);
+			throw new JDException("problema mientras se ejecutaba la sentencia: "+sql, e);
 
 		}
 		return resultset;
@@ -219,25 +239,6 @@ public class JDBCManager implements GenericManager {
 		return queryAndClose(query.toString());
 	}
 	
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void setExceptionHandler(ExceptionHandler handler) {
-		this.handler= handler;
-		// TODO Auto-generated method stub
-		
-	}
-	/**
-	 * 
-	 */
-	@Override
-	public ExceptionHandler getExceptionHandler() {
-		return handler;
-		// TODO Auto-generated method stub
-		
-	}
 	@Override
 	public void beginTransaction() throws JDException {
 		
@@ -248,28 +249,44 @@ public class JDBCManager implements GenericManager {
 			connection.setAutoCommit(false);
 			isAutoCommit = false;
 		} catch (SQLException e) {
-			throw new JDException("beginTransaction", "nose", e);
+			throw new JDException("beginTransaction", "hubo un error desconocido al intentar" +
+					"comenzar con una nueva transacción", e);
 		
 		}
 	}
 	
 	@Override
 	public void endTransaction() throws JDException {
-		if ( !connectionStarted ) 
-			throw new JDException("la conexion no fue inicializada o fue cerrada", null);
-		if ( isAutoCommit ) return;
-		
-		try {
-			getConnection().commit();
-		} catch (SQLException e) {
-			throw new JDException("endTransaction", "no se pudo hacer commit", e);
-		}
+		commit();
 		try {
 			getConnection().setAutoCommit(true);
 			isAutoCommit = true;
 		} catch (SQLException e) {
 			throw new JDException("endTransaction", "no se pudo volver a autocommit", e);
 			
+		}
+	}
+
+
+	@Override
+	public void commit() throws JDException {
+		if ( !connectionStarted ) 
+			throw new JDException("la conexion no fue inicializada o fue cerrada", null);
+		if ( isAutoCommit ) 
+			throw new JDException("No se esta dentro de una tranzacción no se puede" +
+					"usar commit()", null);
+		
+		try {
+			getConnection().commit();
+		} catch (SQLException e) {
+			try {
+				getConnection().rollback();
+			} catch (SQLException e1) {
+				throw new JDException("endTransaction","No se pudieron deshacer los cambios" +
+						"despues de fallar el intento de hacer permanente los cambios", e1);
+			}
+			throw new JDException("endTransaction", "no se pudieron hacer permanentes los cambios" +
+					"en la base de datos.", e);
 		}
 	}
 

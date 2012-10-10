@@ -1,5 +1,20 @@
 /**
+ * Copyright 2011 Nelson Efrain Abraham Cruz
+ *
+ * This file is part of JDBGM.
  * 
+ * JDBGM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JDBGM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JDBGM.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.nelsonx.jdbgm;
 
@@ -30,7 +45,9 @@ public interface GenericManager {
 	/**
 	 * Método que provee un modo de probar (testear) que se posible realizar la conexión,
 	 * usando los datos de conexión a la base de datos, debería ser invocado solamente 
-	 * en el constructor de la clase que implemente esta interface.
+	 * en el constructor de la clase que implemente esta interface. Aunque si es invocado
+	 * mas de una vez no tiene efecto, por lo que lo recomendable es que se lo llame una sola
+	 * vez en el constructor.
 	 *   
 	 * @throws JDException si no es posible realizar la conexión o autenticación con
 	 * la base de datos. 
@@ -76,7 +93,7 @@ public interface GenericManager {
 	
 	/**
 	 * <p>
-	 * Actúa igual que <code> update(String sql) </code> realiza una actualización
+	 * Actúa igual que {@link #update(String)} realiza una actualización
 	 * sobre la capa de persistencia. </p> 
 	 * 
 	 * Pero en este caso el método obtiene una
@@ -112,29 +129,40 @@ public interface GenericManager {
 	
 	CachedRowSet queryAndClose(QueryStatement query) throws JDException;
 
-	/**
-	 * Establece la interfaz que estará encargada de gestionar las excepciones
-	 * que puedan producir cualquiera de los métodos definidos en esta interfaz
-	 * 
-	 * @see ExceptionHandler
-	 */
-	void setExceptionHandler(ExceptionHandler handler);
-	
-	/**
-	 * Obtiene la interfaz encargada de gestionar las excepciones que puedan
-	 * producir cualquiera de los métodos definidos en la interfaz.   
-	 */
-	ExceptionHandler getExceptionHandler();
+//	/**
+//	 * Establece la interfaz que estará encargada de gestionar las excepciones
+//	 * que puedan producir cualquiera de los métodos definidos en esta interfaz
+//	 * 
+//	 * @see ExceptionHandler
+//	 */
+//	void setExceptionHandler(ExceptionHandler handler);
+//	
+//	/**
+//	 * Obtiene la interfaz encargada de gestionar las excepciones que puedan
+//	 * producir cualquiera de los métodos definidos en la interfaz.   
+//	 */
+//	ExceptionHandler getExceptionHandler();
 	
 	/**
 	 * Demarca el inicio de una secuencia de acciones sobre la capa de persistencia
 	 * tratando de realizar todas las acciones como una única transacción por lo
 	 * cual ninguna acción tendrá un efecto real hasta que la transacción halla
-	 * finalizado, indicando esta situación con el método <code>endTransaction()</code>
+	 * finalizado, indicando esta situación con el método {@link #endTransaction()}
+	 * el cual terminara por hacer permanente los cambios si es que no se produjo ningún error
+	 * cuando se fueron ejecutando las sentencias enviadas.
 	 * 
 	 * @see #endTransaction()
 	 */
 	void beginTransaction() throws JDException;
+	
+	/**
+	 * Cuando se esta en medio de una transacción mediante este método es posible
+	 * hacer permanentes las acciones que ya fueron cargadas, pero sin terminar la
+	 * transacción por lo que las acciones siguientes tambien serán parte de una
+	 * transacción.
+	 * @throws JDException
+	 */
+	void commit() throws JDException;
 	
 	/**
 	 * Demarca el final de una transacción, intenta hacer permanente los cambios

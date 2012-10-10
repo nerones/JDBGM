@@ -36,7 +36,6 @@ public class MakeMySqlDB {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		manager.setExceptionHandler(new DefaultExceptionHandler());
 		ranGene = new Random();
 		sqlFactory = ManagerFactory.getSQLFactory();
 	}
@@ -454,7 +453,7 @@ public class MakeMySqlDB {
 	
 	public static void main(String[] args) throws IOException, SQLException, JDException {
 		MakeMySqlDB mkdb = new MakeMySqlDB("localhost/AsistenciaAlumnos", "tester", "tester");
-		//mkdb.makeDB2();
+		mkdb.makeDB2();
 		mkdb.fillDB();
 	}
 

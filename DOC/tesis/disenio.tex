@@ -289,27 +289,48 @@ En este proyecto la clase que se encargara de implementar el patrón Abstract Fa
 En dicha figura no se muestran todos los métodos abstractos que debe tener \verb=SQLFactory= pero debe existir uno por cada interfaz base y siguiendo el mismo molde \verb=get[Interfaz](): Interfaz=, el método de clase \verb=getSQLFactory()= debe verificar que se haya establecido el motor con el cual se quiere trabajar para poder decidir de que implementación se debe instanciar. Las clases que implemente a la fabrica lo único que deben hacer es implementar de forma adecuada los métodos abstractos.  
 
 \section{Capa de acceso a el motor - JDBC}
-y otro
+Una vez diseñado el manejador de sentencias es necesario diseñar la capa que se encargara de abstraer el uso de \jd, esta capa como ya se menciono trabajara las sentencias SQL con el formato propuesto en el manejador de sentencias de modo que obligara el uso del mismo en pos de mantener la compatibilidad. La principal tarea de esta capa será la de ocultar el uso de \jd  a la vez que se ofrece una interfaz mucho mas simple y fácil de usar junto con pre-configuraciones para poder usarlo sin necesidad de muchas configuraciones. En orden de establecer el diseño para esta capa es necesario entender algunos puntos importantes en el funcionamiento de la API que se esta ocultando.
 
 \subsection{Como funciona JDBC}
-Java ya nos provee JDBC para acceder a las bases de datos, pero al hacer uso de el es necesario especificar con que motor se esta trabajando, para ejemplificar ello veamos el típico código que debemos escribir para conectarnos a una base de datos.
+\jd es un API bastante completo para poder acceder, según su documentación, virtualmente a cualquier tipo de datos tabulares contándose entre estos a las bases de datos relacionales, el flujo de trabajo minimo cuando se usa \jd se puede resumir en los siguientes pasos:
 
-\begin{lstlisting}[title=Porción de codigo java para la conexión a una base de datos]
+\begin{enumerate}
+\item Establecer una conexión. %Establishing a connection.
+\item Crear un \verb=statement=. % Create a .
+\item Ejecutar una consulta. %Execute the query.
+\item Procesar el objeto. \verb=ResultSet=. %Process the ResultSet object.
+\item Cerrar la conexión. %Close the connection.
+\end{enumerate}
+
+Para \textbf{establecer la conexión} con la  fuente de los datos, una BD relacional en este caso aunque puede tratarse de otros medio, es necesario contar con el \textit{driver} jdbc adecuado para poder obtener un objeto de la clase \verb=Connection= que es la que representara la conexión después de esto mediante la conexión ya se puede \textbf{crear un objeto de} \verb=Statement= que es una interfaz que representa sentencias SQL "vacias" y brinda diferentes métodos para poder \textbf{ejecutar} sentencias sobre el motor, existen tres tipos \verb=Statement, Preparedstatement= y \verb=CallableStatement= siendo estas dos ultimas extensiones de la primera. Una vez ejecutada la sentencia, dependiendo del tipo de sentencia que se haya ejecutado se, se obtienen resultados como \verb=int= o \verb=ResultSet= que es la que interesa pues da acceso a los datos que son resultado de la consulta mediante un cursor para ir obteniendo fila por fila los datos obtenidos, por ultimo una vez que se obtuvieron o modificaron los datos necesarios es necesario liberar los recursos mediante los métodos \verb=close()= que ofrece \verb=Statement= para liberar los recursos de la consulta y \verb=Connection= para terminar la conexión con la base de datos lo cual cierra completamente la comunicación con el motor, mientras que el método anterior libera los recursos usados por la consulta\citep{java:jdbc:tutorial}.
+
+Para entender un poco mejor el funcionamiento se analizara una porción de código mínima que ilustra el uso de esta API y muestre que al hacer uso de el es necesario hacer algunas configuraciones especificas que pueden ser ``automatizadas''.
+
+\begin{lstlisting}[title=Porción de código java para la conexión a una base de datos]
 class conectDB(){
 ...
 
-Class.forName("com.mysql.jdbc.Driver");
+	Class.forName("com.mysql.jdbc.Driver");
 	Connection conexion = DriverManager.getConnection(
 		"jdbc:mysql://localhost/AsistenciaAlumnos", "tester",
 		"tester");
 	Statement st = (Statement) conexion.createStatement();
+	String query = "SELECT * FROM tabla";
+	ResultSet rs = stmt.executeQuery(query);
+	while (rs.next()) {
+		String coffeeName = rs.getString("COF_NAME");
+		System.out.printline(coffeeName);
+	}
+	rs.close();
 
 ...
 }
 \end{lstlisting}
 
-En esta porción de código lo que se hace inicialmente es instanciar el driver, es decir crear el objeto driver, luego el método estático \verb=getConnection= de 	\verb=DriverManager= nos devuelve un objeto que representa la conexión al motor con el que se esta trabajando. Este objeto del tipo \verb=Connection= nos provee métodos para generar objetos \verb=Statement= que nos permite hacer consultas a la base de datos mediante las funciones que dispone. Una descripción mucho mas extensa de JDBC puede ser encontrada en la documentación disponible en la web de Oracle\citep{java:jdbc}.
-Para nuestro proyecto necesitamos ocultar y simplificar el API de JDBC
+En esta porción de código lo que se hace inicialmente es instanciar el driver el cual es necesario que exista para poder obtener una conexión a la BD, es decir crear el objeto driver, luego el método estático \verb=DriverManager.getConnection()= nos devuelve un objeto que representa la conexión al motor con el que se esta trabajando. Este objeto del tipo \verb=Connection= nos provee métodos para generar los objetos \verb=Statement= que nos permite hacer consultas a la base de datos mediante las funciones que dispone como por ejemplo el método \verb=executeQuery()= que nos permite hacer consultas del tipo \verb=SELECT= y que como resultado devuelve un objeto \verb=ResultSet= del que se pueden ir extrayendo fila por fila los datos obtenidos. Los objetos \verb=ResultSet= y \verb=Statement= estan sumamente relacionados por ejemplo si se cierra una sentencia mediante \verb=Statement.close()= el \verb=ResultSet= obtenido de la misma también sera cerrado y además solo pueden existir en una relación uno a uno. Una descripción mucho mas extensa de JDBC puede ser encontrada en la documentación disponible en la web de Oracle\citep{java:jdbc}.
+
+\subsection{El diseño}
+La API que ofrecerá \jj sera muy simple como se comento en el capitulo \ref{capitulo:especificacion} debe ofrecer métodos para realizar consultas y 
 \subsection{Manejo de errores y excepciones}
 
 \subsection{Que se devuelve como resultado}
