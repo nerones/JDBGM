@@ -1,5 +1,7 @@
 package com.nelsonx.jdbgm;
 
+import java.sql.SQLException;
+
 /**
  * Envuelve las posibles excepciones que puedan ocurrir al manejar los métodos
  * de JDBC
@@ -14,16 +16,16 @@ public class JDException extends Exception {
 	 */
 	private static final long serialVersionUID = 8845283186962440284L;
 	private String extraInfo;
-	private Exception cause;
+	private SQLException cause;
 	private String context;
 	
-	public JDException(String info, Exception cause) {
+	public JDException(String info, SQLException cause) {
 		extraInfo = info;
 		this.cause = cause;
 		System.err.println(extraInfo);
 	}
 	
-	public JDException(String context, String info, Exception cause) {
+	public JDException(String context, String info, SQLException cause) {
 		extraInfo = info;
 		this.cause = cause;
 		this.context = context;
@@ -50,7 +52,7 @@ public class JDException extends Exception {
 		return cause;
 	}
 
-	public void setCause(Exception cause) {
+	public void setCause(SQLException cause) {
 		this.cause = cause;
 	}
 	
