@@ -39,6 +39,8 @@ import com.sun.rowset.CachedRowSetImpl;
  */
 public abstract class JDBCManager implements GenericManager {
 	
+	private static long expirationTime = 300000; // 5 minutos
+	private static long initTime = 0;
 	protected ExceptionHandler handler;
 	//TODO usar un pool de conexiones?
 	protected Connection connection;
@@ -68,11 +70,31 @@ public abstract class JDBCManager implements GenericManager {
 		if ( (connection == null) ) {
 			try {
 				connection = DriverManager.getConnection(locationURL, user, password);
+				initTime = System.currentTimeMillis();
 			} catch (SQLException e) {
 				// TODO arreglar mensaje de error
 				throw new JDException("problema al conectar con la base de datos", e);
 			}
+			//Si paso demasiado tiempo con la misma conexión (5 minutos) debo revisar que aun sirva
+		} else if ( (System.currentTimeMillis() - initTime) > expirationTime) {
+		
+			try {
+				Statement st = connection.createStatement();
+				st.executeQuery("SELECT 1");
+				//Si ocurre un error al intentar ejecutar una sentencia quiere decir que la conexión ya no sirve
+			} catch (SQLException e) {
+				try {
+					//creo una conexión nueva la anterior murió de vieja
+					//connection.close();
+					connection = DriverManager.getConnection(locationURL, user, password);
+				} catch (SQLException e1) {
+					throw new JDException("problema al conectar con la base de datos", e);
+				}
+			}
+			
 		}
+		//reseteo el tiempo para contar el timeout
+		initTime = System.currentTimeMillis();
 		return connection;
 	}
 
@@ -137,7 +159,7 @@ public abstract class JDBCManager implements GenericManager {
 		Statement stat = null;
 		int result = -1;
 		try {
-			stat = connection.createStatement();
+			stat = getConnection().createStatement();
 			result = stat.executeUpdate(sql);
 		} catch (SQLException e) {
 			rollbackIfTransaction("problema mientras se ejecutaba la sentencia: "+ sql);
@@ -164,7 +186,7 @@ public abstract class JDBCManager implements GenericManager {
 		Statement stat = null;
 		ResultSet resultset = null;
 		try {
-			stat = connection.createStatement();
+			stat = getConnection().createStatement();
 			resultset = stat.executeQuery(sql);
 		} catch (SQLException e) {
 			rollbackIfTransaction("problema mientras se ejecutaba la sentencia: "+ sql);
@@ -246,7 +268,7 @@ public abstract class JDBCManager implements GenericManager {
 			throw new JDException("la conexion no fue inicializada o fue cerrada", null);
 		if ( !isAutoCommit ) return;
 		try {
-			connection.setAutoCommit(false);
+			getConnection().setAutoCommit(false);
 			isAutoCommit = false;
 		} catch (SQLException e) {
 			throw new JDException("beginTransaction", "hubo un error desconocido al intentar" +
