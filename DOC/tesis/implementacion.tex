@@ -1,19 +1,106 @@
 \chapter{Implementación}
-Después de decidir las características de las que dispondrá \jj es necesario analizar como se implementaran estas. Por el lado de \cc tenemos que las interfaces que definen el comportamiento de las clases que contendrán a las sentencias SQL comparten muchas cosas por lo que hay que analizar adecuadamente las herencias y definición de interfaces. Elegir adecuadamente la estructura del proyecto puede hacer la diferencia entre una librería\footnote{como lo defino al final!!!!!!} mantenible y ampliable contra una pila de código difícil de entender. Así que como en el capitulo anterior analizaremos \jj por secciones  primero la sección que se encarga de manejar la conexión con la base de datos y después la que se encarga de abstraer el uso de SQL.
+Una vez que la arquitectura del proyecto fue definida es necesario bajar el nivel de abstracción para obtener una vista mas detallada de las diferentes clases y sus herencias pues es necesario empezar a lidiar con los detalles propios del lenguaje ya que si bien se estuvo pensando desde un API propio del lenguaje se lo estuvo analizando de forma muy abstracta. En este capitulo se analizaran los detalles que fueron surgiendo a la hora de escribir el código de \jj y como se los encaro.
+%
+%
+%
+\section{Implementación de la capa de acceso a el motor}
+A primera vista la implementación de esta interfaz aparenta ser bastante sencilla, en especial por que el conjunto de funciones que define esta pensado para que sea sencillo de utilizar y de recordar pero el problema radica precisamente en mantener esta simplicidad. Dos son lo principales problemas: el manejo de las excepciones y el correcto manejo de los recursos, en nuestro caso estos problemas principalmente se presentan en la clase abstracta \verb=JDBCManager= que es la que implementara la interfaz definida en base a lo que ofrece \jd.
+%
+\subsection{Manejo de las excepciones}
+Como ya se explico prácticamente todas las funciones definidas el API de \jd pueden lanzar excepciones del tipo \verb=SQLException= las que deben ser desviadas de nuevo por el API que se esta definiendo para que estas sean manejadas por el programador, entonces el mayor problema   no es volver a lanzar la misma excepción que se puede hacer de manera muy sencilla marcando que la función donde estén ocurriendo las excepciones con la palabra reservada \verb=throw= que indica que la función puede lanzar errores, tantos como se declare después de dicha palabra reservada. El mayor problema surge mas bien a la hora de brindar información extra sobre donde u por que ocurrieron las excepciones puesto que existe mas de un motivo para que una función lance una excepción, por ejemplo cuando se llama a el método \verb=Statementet.executeQuery()= este puede lanzar excepciones por lo menos por dos causas primero por que la sentencia SQL que se le envío es invalida o bien por que no es posible conectarse con la base de datos lo que puede ocurrir por ejemplo por un error en la red sobre la que se comunicaba con la base de datos. Para clarificar un poco este asunto se analizara un ejemplo real extraído de \verb=JDBCManager=.
+%
+\begin{lstlisting}[title=función extraída de JDBCManager]
+public abstract class JDBCManager implements GenericManager{
 
+	String message1 = "la conexion no fue inicializada o fue cerrada";
+	String message2 = "problema mientras se ejecutaba la sentencia: ";
+	
+	public int update(String sql) throws JDException{
+		if ( !connectionStarted ) 
+			throw new JDException(message1, null);
+		Statement stat = null;
+		int result = -1;
+		try {
+			stat = connection.createStatement();
+			result = stat.executeUpdate(sql);
+		} catch (SQLException e) {
+			rollbackIfTransaction(message2 + sql);
+			throw new JDException(message2 + sql, e);
+		} finally {
+			try {
+				stat.close();
+			} catch (SQLException e) {
+				throw new ConnectionIssueException(e);
+			}
+			
+		}
+	return result; 
+	}
+}
+\end{lstlisting}
+%
+La función \verb=update(String)= que se muestra en este extracto de código se corresponde con una función privada que se usa para implementar la función \verb=update(UpdateStatement)= que se define en la interfaz \verb=GenericManager=, esta función esta encargada de brindar un modo para ejecutar las sentencias SQL que no son del tipo \verb=SELECT=, lo primero para notar son las variables \verb=message1= y \verb=message2= cuya única función es la de almacenar mensajes de información para cuando ocurran las excepciones después ya dentro de la función se puede notar que el primer control es independiente de los métodos de \jd y lanza una excepción propia  cuyo único contenido es el mensaje de error que corresponde cuando no se a inicializado la conexión con el DBMS mediante el método adecuado, después si ya se usa explícitamente los métodos de \jd donde se intenta crear un objeto \verb=Statement= y a partir del mismo ejecutar la sentencia que fue pasada como parámetro. Ambas acciones pueden terminar con una excepción por lo cual deben ser encerradas en un bloque \verb=try/catch= el cual sirve para manejar excepciones pero único que se hace en este caso es envolver la excepción \verb=SQLException= dentro de la excepción propia de \jd la cual como se ve en su constructor \verb=JDException(String, SQLException)= recibe una excepción de dicho tipo esto es así por que la única información coherente que se puede dar sobre la excepción en la función es que ocurrió un error mientras se estaba intentando ejecutar la sentencia pero por debajo puede estar ocurriendo un error de conexión con la BD o el uso de una sentencia mal formada en cuyo caso el programador deberá indagar sobre esto en la excepción que se esta envolviendo. El método \verb=rollBackIfTransaction(String)= cuya declaración también es privada es usado cuando el método \verb=update(String)= es llamado durante una transacción y puesto que de haber entrado en \verb=catch{}= quiere decir que ocurrió una excepción entonces se deben volver a el momento en el que se marco el inicio de la transacción mediante \verb=Connection.rollback()= método que es usado dentro de \verb=rollBackIfTransaction()=, y por supuesto este método también puede terminar con una excepción que de ocurrir sera lanzada por \verb=rollback()= la cual sera envuelta en un objeto \verb=JDException= y sera lanzado por la función  deteniendo su ejecución ya que \verb=catch{}= no captura errores.
 
+Un manejo similar ocurre con los otros métodos implementados siempre se trata de capturar las excepciones producidas en los métodos subyacentes para brindar información sobre el momento en que se producen estas excepciones en \jj, a veces para ello anidando bloques \verb=try/catch= para poder discernir sobre el motivo y elegir el mensaje adecuado puesto que una vez que se declara que la función lanza excepciones de un dado tipo se pueden obviar los bloques \verb=try/catch= para ese tipo de excepciones, pudiendo volverse muy confuso en ese caso el origen de la excepción.
+%
+\subsection{Manejo de los recursos}
+Como \jd se trata de acceder a recursos externos, no es suficiente con manejar las excepciones que puedan ocurrir en el uso de el API subyacente puesto que se a de tener cuidado con la disponibilidad de los recursos externos los cuales como siempre son limitados y a veces costosos de obtener, entonces para simplificar el API que se esta desarrollando es necesario que esta administración de recursos sea lo mas transparente posible para el programador. Para analizar como se encaro este manejo de recursos se utilizara el mismo extracto de código que recién se utilizo reproducido nuevamente a continuación:
+%
+\begin{lstlisting}[title=función extraída de JDBCManager]
+...
+	public int update(String sql) throws JDException{
+		if ( !connectionStarted ) 
+			throw new JDException(message1, null);
+		Statement stat = null;
+		int result = -1;
+		try {
+			stat = connection.createStatement();
+			result = stat.executeUpdate(sql);
+		} catch (SQLException e) {
+			rollbackIfTransaction(message2 + sql);
+			throw new JDException(message2 + sql, e);
+		} finally {
+			try {
+				stat.close();
+			} catch (SQLException e) {
+				throw new ConnectionIssueException(e);
+			}
+			
+		}
+	return result; 
+	}
+...
+\end{lstlisting}
+%
+El primer y principal recurso es la conexión con la base de datos representado con un objeto \verb=Connection= el cual es el mas costoso de obtener en cuanto a tiempo, \jd intentara mantener una única conexión disponible la que a pesar de haberse obtenido exitosamente puede llegar a morir si es que ocurre un determinado tiempo de inactividad superior al \textit{timeout} establecido en el DBMS, transcurrido este tiempo limite es el propio motor el que cierra la conexión pero \jd no puede saber cuando sucede esto por lo que el objeto \verb=Connection= queda en un estado inconsistente ya que para el objeto la conexión sigue viva, para solucionar esto se estableció un contador interno que controla un propio \textit{timeout} transcurrido el cual al intentarse usar la conexión se revisa si es que la conexión sigue viva, si la conexión ya no sirve se deberá crear una nueva para poder continuar operando normalmente.
 
+Una vez obtenida la conexión el otro objeto que representa uso de recursos del motor son las instancias de \verb=Statement=, en este caso se debe analizar dos casos separados. El primer caso lo tenemos cuando usamos el método \verb=Statement.executeUpdate()= el cual devuelve como resultado un valor del tipo \verb=int= que indica la cantidad de filas que fueron ejecutadas por las sentencias, en este caso resulta sencillo administrar los recursos usados ya que una vez ejecutada la sentencia el valor devuelto no significa uso de recurso alguno del motor por lo que se pueden liberar los recursos consumidos por \verb=Statement= mediante \verb=close()= lo que en el método \verb=update()= se hace en la sección \verb=finally{}= del bloque \verb=try/catch= que se ejecuta si o si al final de la ejecución del bloque, esto implica que cada llamada a \verb=update()= crea su propio \verb=Statement= el cual después de haber sido usado es eliminado. En el segundo caso la situación es un poco mas compleja por que no se pueden disponer de los recursos usados por \verb=Statement=, esto ocurre cuando se llama a \verb=Statement.executeQuery()= el cual devuelve un objeto del tipo \verb=ResultSet= que sirve para obtener los datos de la consulta que se acaba de realizar, sucede que dicho objeto esta fuertemente relacionado con el objeto \verb=Statement= del cual fue creado y si se lo cierra mediante \verb=close()= el objeto \verb=ResultSet= también perderá conexión con el motor.
+%
+\begin{lstlisting}[title=función extraída de JDBCManager]
+...
+	public ResultSet query(String sql) throws JDException{
+		if ( !connectionStarted ) 
+			throw new JDException(message1, null);
+		Statement stat = null;
+		ResultSet resultset = null;
+		try {
+			stat = getConnection().createStatement();
+			resultset = stat.executeQuery(sql);
+		} catch (SQLException e) {
+			rollbackIfTransaction(message2 + sql);
+			throw new JDException(message2 + sql, e);
 
+		}
+		return resultset;
+	}
+...
+\end{lstlisting}
+%
+La porción de código anterior se corresponde con el método \verb=query(String)= que análogamente a \verb=update(String)= sirve para ejecutar únicamente sentencias del tipo \verb=SELECT= y como se puede ver existen dos diferencias claves: se usa \verb=Statement.executeQuey()= en vez de \verb=Statement.executeUpdate()= y no existe el elemento \verb=finally{}= en el correspondiente bloque \verb=try/catch= puesto que no se pueden disponer de los recursos consumidos por el correspondiente objeto \verb=Statement= sin indirectamente disponer también de el objeto \verb=ResultSet= que resulta de la ejecución de la consulta, dicho esto es este el único caso en el que el programador deberá explícitamente hacerse cargo de disponer de los recursos del objeto producto de la consulta mediante \verb=ResultSet.close()=. Al igual que con \verb=update()= por cada llamada al mismo se creara un \verb=Statement= diferente lo cual es un comportamiento esperado puesto que si se quiere realizar mas de una consulta a la vez es necesario crear un nuevo \verb=Statement= ya que dada la estrecha relación de este con \verb=ResultSet= solo es posible que exista una relación de uno a uno entre ellos.
 
+Como aclaración final sobre el manejo de los recursos cabe aclarar la importancia de ir ``cerrando'' los diferentes objetos puesto que si bien \jd en su especificación aclara que al llamar al método \verb=Connection.close()= se cerrara cualquier objeto \verb=Statement= y \verb=ResultSet= que se haya creado sobre el mismo liberando así los recursos consumidos por los mismos esto no siempre es así puesto que los proveedores de los drivers \jd a veces no manejan correctamente los recursos al cerrar la conexión, lo que puede llevar a problemas con conexiones futuras a el mismo DBMS o incluso a uso excesivos de memoria al no cerrarse adecuadamente dichos objetos.
 
-\section{Implementación de el envoltorio de \jj}
-
-A few words
-
-
-
-
-\section{Implementación de \cc}
+\section{Implementación de el manejador de sentencias}
 
 
 
