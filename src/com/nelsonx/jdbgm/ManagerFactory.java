@@ -15,12 +15,13 @@ public class ManagerFactory {
 	public static final int SQLITE_DB = 2;
 	public static final int POSTGRE_DB = 3;
 	public static int currentVendor; 
-	public static GenericManager manager;
+	private static GenericManager manager;
 	public static SQLFactory sqlFactory;
 	public static boolean isRegistered = false;
 	
 	
 	public static GenericManager getManager(int vendor,String user, String location, String password) throws JDException{
+		if (isRegistered) throw new RuntimeException("No se puede registrar mas de una vez el DBMS");
 		switch (vendor) {
 		case MYSQL_DB:
 			manager = new MySqlManager(location, user, password);
@@ -32,7 +33,7 @@ public class ManagerFactory {
 			manager = new PostgreSQLManager(location, user, password);
 			break;
 		default:
-			return null;
+			throw new RuntimeException("Unkonw vendor for DBMS vendor");
 		}
 		isRegistered = true;
 		currentVendor = vendor;
@@ -40,6 +41,11 @@ public class ManagerFactory {
 		return manager;
 	}
 	
+	public static GenericManager getManager(){
+		if (!isRegistered) throw new RuntimeException("Imposible obtener una instancia de GenericManager" +
+				" no se a registrado el DBMS");
+		return manager;
+	}
 	public static SQLFactory getSQLFactory(){
 		return sqlFactory;
 	}
