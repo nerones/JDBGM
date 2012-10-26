@@ -99,192 +99,118 @@ Una vez obtenida la conexión el otro objeto que representa uso de recursos del 
 La porción de código anterior se corresponde con el método \verb=query(String)= que análogamente a \verb=update(String)= sirve para ejecutar únicamente sentencias del tipo \verb=SELECT= y como se puede ver existen dos diferencias claves: se usa \verb=Statement.executeQuey()= en vez de \verb=Statement.executeUpdate()= y no existe el elemento \verb=finally{}= en el correspondiente bloque \verb=try/catch= puesto que no se pueden disponer de los recursos consumidos por el correspondiente objeto \verb=Statement= sin indirectamente disponer también de el objeto \verb=ResultSet= que resulta de la ejecución de la consulta, dicho esto es este el único caso en el que el programador deberá explícitamente hacerse cargo de disponer de los recursos del objeto producto de la consulta mediante \verb=ResultSet.close()=. Al igual que con \verb=update()= por cada llamada al mismo se creara un \verb=Statement= diferente lo cual es un comportamiento esperado puesto que si se quiere realizar mas de una consulta a la vez es necesario crear un nuevo \verb=Statement= ya que dada la estrecha relación de este con \verb=ResultSet= solo es posible que exista una relación de uno a uno entre ellos.
 
 Como aclaración final sobre el manejo de los recursos cabe aclarar la importancia de ir ``cerrando'' los diferentes objetos puesto que si bien \jd en su especificación aclara que al llamar al método \verb=Connection.close()= se cerrara cualquier objeto \verb=Statement= y \verb=ResultSet= que se haya creado sobre el mismo liberando así los recursos consumidos por los mismos esto no siempre es así puesto que los proveedores de los drivers \jd a veces no manejan correctamente los recursos al cerrar la conexión, lo que puede llevar a problemas con conexiones futuras a el mismo DBMS o incluso a uso excesivos de memoria al no cerrarse adecuadamente dichos objetos.
-
+%
+\section{El patrón \textit{factory method}}
+La implementación de este patrón es bastante sencillo con la salvedad de que no estamos frente a un caso puro de este patrón como ya se explico en el capitulo \ref{cap:disenio} de diseño, de todos modos para implementar este patrón se creo la clase \verb=ManagerFactory= aunque según el patrón se debería haber puesto en la clase que implemente \verb=GenericManager= que en este caso viene a ser \verb=JDBCManager= puesto que es la clase base para las subclases que precisan de el patrón puesto que se precisara al menos un método mas para obtener la \verb=fabrica= de el manejador de sentencias, el patrón en si como indica su nombre se implementa en un método y es por esa razón que usualmente se lo pone en la clase "Padre" en este caso el método es \verb=ManagerFactory.getManager()= que si estuviéramos frente a un caso puro para este patrón no debiera recibir ningún parámetro pues el mismo seria el encargado de decidir que instancia a  de crear pero en este caso si los recibe (por eso no es puro) y estos son:
+\begin{itemize}
+\item \verb=vendor:= establece el DBMS con el que se esta por trabajar.
+\item \verb=user:= el nombre de usuario para conectarse a la base de datos.
+\item \verb=password:= la contraseña del usuario para conectarse a la base de datos.
+\item \verb=location:= la URI para conectarse a la base de datos.
+\end{itemize}
+Como se ve de estos parámetros el primero establece el tipo de \verb=Manager= que se a de instanciar y los demás establecen los parámetros necesarios para realizar la conexión a la base de datos, este método se estableció como método de clase (\verb=static=) para que se lo pueda usar sin tener que instanciar la clase, algo que es innecesario puesto que solo precisamos llamar una vez a este método para registrar el DBMS que se esta por usar por lo que se definió el método sobrecargado \verb=ManagerFactory.getManager()= que no toma ningún parámetro y devuelve el mismo objeto que se obtuvo con la llamada a el anterior método. Para que sea única la instancia de \verb=GenericManager= esta es guardada como atributo de clase de \verb=ManagerFactory= al igual que las constantes que definen a los diferentes proveedores de DBMS que soporta \jj y de este modo además se hace accesible para cualquier clase de el programa que importe esta clase.
+%
 \section{Implementación de el manejador de sentencias}
+La implementación de el manejador de sentencias fue más complicada que en el caso de la capa de acceso principalmente por la existencia de funcionalidades en común, algunas de ellas comunes para todas las sentencias y otras solo para algunas. La arquitectura base que se mostró en el capitulo de \ref{cap:disenio} de diseño declara la existencia de clases auxiliares las cuales aparecieron recién después de varias versiones preliminares, inicialmente las funcionalidades en común eran copiadas y pegadas en las diferentes interfaces que compartían dicho comportamiento puesto que se quería ofrecer una sintaxis lo mas sencilla posible, por ejemplo las sentencias \verb=SELECT (SelectStatement)= y \verb=UPDATE (UpdateStatemeny)= tienen en común el uso de la restricción \verb=WHERE= para lo cual se declaraban, entre otros muy similares pero con diferentes parámetros, los siguientes métodos en sus correspondientes interfaces:
+%
+\begin{enumerate}
+\item \verb=SelectStatement.addWhereCondition(String x, int comparison, int y): void= \\
+	\verb=SelectStatement.addWhereCondition(String x, int comparison, long y): void= \\
+	\verb=SelectStatement.addWhereCondition(String x, int comparison, Date y): void= \\
+\item \verb=UpdateStatement.addWhereCondition(String x, int comparison, int y): void= \\
+	\verb=UpdateStatement.addWhereCondition(String x, int comparison, long y): void= \\
+	\verb=UpdateStatement.addWhereCondition(String x, int comparison, Date y): void= \\
+\end{enumerate}   
+%
+el método \verb=addWhere(String,int,int)= al igual que los otros estaba duplicado tanto en las declaraciones de las interfaces como en las implementaciones de las mismas en la correspondientes clases por defecto, con esto surgían varios problemas derivados de la duplicación de código para empezar si se quería corregir algo se lo debía hacer en ambas clases por separado recordando que el comportamiento para \verb=WHERE= es siempre el mismo, además se debía estar chequeando con los eventuales cambios que este fuera replicado en todas las implementaciones de las mismas.
 
+Implementado así el código escrito usando \jj resultaba bastante reducido pero a costo de tener un código no mantenible, por lo que se decidió relegar dicho trabajo a clases auxiliares, cabe aclarar que en la primera version que recién se expuso ya existía una clase \verb=WhereClause= heredada de \cc pero cuya única función a fin de cuentas era la de representar un tipo de datos complejo para ser usado a la hora de traducir a SQL. Con la nueva implementación lo que se hizo es que \verb=whereClause= se encargue completamente de el armado de la restricción de este modo la clase que la usen no necesita saber como es que se arma una restricción \verb=WHERE= solo necesitan saber que esta clase proveerá la restricción traducida a SQL, de este modo se agrupan todas las funciones disponibles para crear la restricción dentro de la clase que representa a la restricción, quedando de la siguiente manera las interfaces anteriores:
+%
+\begin{enumerate}
+\item \verb=SelectStatement.addWhere(): WhereClause=
+\item \verb=UpdateStatement.addWhere(): whereClause=
+\end{enumerate}
+%
+De este modo las funciones que se declaraban al principio pasan a ser parte \verb=WhereClause= y ya no se las debe declarar dentro de las interfaces por lo tanto a la hora de armar las restricciones \verb=WHERE= se debe trabajar sobre un objeto \verb=WhereClause= y no directamente sobre un objeto \verb=SelectStatement=, por ejemplo ahora para armar la restricción primero se tiene que obtener un objeto \verb=WhereClause= lo que se hace mediante el método \verb=addWhere()= y recién sobre el llamar al método que se desee por lo el código resultante quedaría de la siguiente manera:
+\begin{lstlisting}[title=Nueva implementación para el uso de las clases auxiliares]
+...
+SelectStatement select = factory.getSelectStatement();
+select.addWhere().andEquals(value, key);
 
+//o bien
 
+WhereClause where = select.addWhere();
+where.andEquals(value, key);
+...
+\end{lstlisting}
+Como se ve en el ejemplo es necesario usar el método extra \verb=addWhere()= para armar la restricción, ahora dependiendo de como se lo use al método se pierde o no facilidad de lectura:  si se lo usa como \verb=select.addWhere().andEquals(value, key)= la lectura del código se hace bastante sencilla en cambio si se usa una variable intermedia, \verb=where= en el ejemplo, se puede perder fácilmente la claridad del código aunque obviamente las dos formas son totalmente validas lo único que cambia es cuan explicito es el uso de las variables intermedias.
+
+Este problema puede ser visto como una mal interpretación de la programación orientada a objetos (POO) pues es el caso de un objeto que hace uso de otro objeto "auxiliar" para poder llevar a cabo su trabajo y cuyo objeto auxiliar a su ves sirve a varios otros objetos "principales", el problema en realidad acá era que tan sucinto resultaría el código que se escribiría con \jj. Lo que se pretendía evitar era el uso de funciones extras por decirlo de alguna manera, en la implementación que se termino eligiendo la función extra es \verb=addWhere()= pues como se ve es necesario llamar a esta función para poder agregar una restricción \verb=WHERE= en cambio en la primera version esto se podía hacer directamente sobre el objeto principal con lo que se ganaba simplicidad pero se perdía mantenibilidad y poniendo ambos aspectos en una balanza claramente se tenia que decantar por la mantenibilidad. Otro modo de encarar el problema era que mediante herencia múltiple, pensando siempre en que se quería evitar el uso de funciones extras, pero lamentablemente Java no admite herencia múltiple\cite{java:jdbc:tutorial} y dada la arquitectura propuesta sin herencia múltiple se hacia inviable agregar las funcionalidades mediante herencia, la otra opción que si era posible pero no correcta era usar implementación de múltiples interfaces para declarar en una interfaz que especifique el comportamiento de la restricción pero como para todas las clases el comportamiento era el mismo la implementación de dichas interfaces también resultaría en una duplicación de código.
+%
+\subsection{Facilitando la escritura de código}
+Como ya se comento la indecisión a la hora de implementar el uso de las clases auxiliares se debía mas que nada a la necesidad de ofrecer una escritura de código lo mas sencilla posible, ahora la cuestión es cuantos métodos son necesarios para alcanzar dicho objetivo? Para responder esta pregunta primero es necesario hacer una aclaración, la pregunta no se refiere a la cantidad de funciones para cubrir las funcionalidades necesarias llamémosle funciones básicas si no a aquellas que proveen un uso mas sencillo de las funciones básicas las cuales serán llamadas funciones auxiliares, para ilustrar esto veamos el siguiente ejemplo sobre la misma clase auxiliar \verb=WhereClause= pero cuyo razonamiento puede ser extrapolado.
+
+Debido a la naturaleza de la restricción \verb=WHERE= una única, en realidad tres, función básica seria la necesaria para poder realizar la función principal de la restricción por ejemplo con el método \verb=addCondition(String and_or, String column, String operator, Object value)= se cubren prácticamente todos los aspectos necesarios, pero su uso fuerza a pasarle cuatro parámetros dos de los cuales son para configurar el tipo de restricción que se esta agregando (\verb=and_or= y \verb=operator=) pues bien el uso de los mismo no solo aumenta la cantidad de parámetros a ser pasados a la función si no que también obligan a recordar valores validos para dichos parámetros con la correspondiente comprobación de los mismos. Ahora es cuando entran en juego las funciones auxiliares que trabajando sobre la función básica proveen un uso mas acotado de la misma por ejemplo los siguientes métodos son un extracto de los que se declararon en \verb=WhereClause=:
+%
+\begin{lstlisting}[title=Extracto de WhereClause]
+...
+public void andLike(String key, String value);
+public void orLike(String key, String value);
+public void andNotLike(String key, String value);
+public void orNotLike(String key, String value);
+...
+\end{lstlisting}
+%
+Todos ellos son atajos para \verb=addCondition()= en los que los parámetros \verb=and_not= y \verb=operator= son valores fijos dependiendo de el método que se llame por ejemplo para el caso de \verb=andLike()= tenemos \verb|and_not="AND"|  y \verb|operator="LIKE"|. Como se ve estos métodos auxiliares sirven para escribir menos código y evitar el tener que recordar valores validos para algunos parámetros, ahora es posible retomar la pregunta cuantos métodos son necesarios? La respuesta es que depende de que tan extenso sea el abanico de posibilidades para una función. en el caso de \verb=WhereClause= se considera que se consiguió cubrir una importante cantidad de posibilidades pero aun así se dejo la puerta abierta para agregar las restricciones mediante otros métodos puesto que siempre pueden quedar posibilidades que no se tuvieron en cuenta, por lo que en este caso mas es mejor.
+
+Aun así hay que tener en cuenta que demasiados métodos pueden representar menos código para escribir pero también mucho mas para recordar por lo que hay que poner en la balanza sintético contra curva de aprendizaje, así que lo mejor es cubrir únicamente las  funcionalidades mas usadas con las funciones auxiliares dejando el resto para las funciones básicas.
+%
+\subsection{Interfaces y clases abstractas}
+%
+Las interfaces están echas para definir comportamiento, esto se hace cuando diferentes clases comparten las mismas funciones pero internamente estas funciones se implementan de diferente manera dependiendo de la clase a la que pertenece el mismo. En el caso de el manejador de sentencias estamos frente a una situación similar a esta pero en este caso solo alguna de las funciones deben ser implementadas de diferente manera, en este caso lo correcto o mas sencillo hubiera sido crear una clase abstracta en la que los métodos que son iguales para todas las subclases que puedan existir estén implementados y aquellos que se deban implementar de diferente manera se declaren como abstractos. Esta ultima clase abstracta si existe en el manejador de sentencias pero no es explícitamente la que define el comportamiento para las sentencias si no es una interfaz la que define esto, interfaz que es implementada en parte por la clase abstracta. En el manejador de sentencias tal como indica el capitulo \ref{cap:disenio} de diseño la interfaz por ejemplo para \verb=SELECT= es \verb=SelectQuery= y la clase abstracta correspondiente es \verb=DefaultSeletQuery=, la cuestión es que la interfaz termina no siendo estrictamente necesaria por lo que en un momento de la etapa de implementación se pensó en la posibilidad de dejar de lado la interfaz y quedarse únicamente con la clase abstracta pues esta podía completamente definir el comportamiento para una de las sentencias cualquiera, pero de todos modos se conservo la interfaz puesto que usando como el tipo de dato a esta y no la clase abstracta se deja abierta la posibilidad a que en un futuro se cree otra clase abstracta que implemente de diferente manera los métodos correspondientes, de una manera mas eficiente quizás o directamente con controles de seguridad extra, y las subclases correspondientes podrán ser instanciadas directamente por la clase \textit{factory} dependiendo de lo que se desee. 
+%
+\subsection{Fabricas de objetos, \textit{abstract factory}}
+%
+Al igual que en la capa de abstracción para un correcto uso de el manejador de sentencia es necesario disponer de una clase \textit{factory} que maneje adecuadamente las instancias que se deben crear. Para el manejador de sentencias la clase que implementa el patrón es \verb=SQLFactory= que sirve tanto de base para las \textit{fabricas} especificas como de selector de las instancias que se han de crear, el primer problema frente a esto era como saber el tipo adecuado de clase que se debía instanciar sin tener que estar usando parámetros en \verb=SQLFactory.getFactory()= por que obligaba a que el programador a revisar cada vez que llamase a este método de pasarle el valor adecuado para dicho parámetro el cual en definitiva siempre debe ser el mismo pues se esta trabajando con un único DBMS, la solución es simple basto con agregar algunos atributos extras a \verb=ManagerFactory= que es en definitiva quien registra el tipo de DBMS con el que se quiere trabajar y almacena a nivel de clase una referencia a el \verb=Manager= adecuado, se agregaron dos atributos de clase:
+\begin{itemize}
+\item \verb=ManagerFactory.currentVendor= que indica el tipo de DBMS (el proveedor) con el que se esta trabajando.
+\item \verb=ManagerFactory.isRegistered= que indica si algún motor fue o no registrado, se podría haber usado el parámetro anterior para revisar esto pero no resultaba tan claro y sencillo como usar un parámetro especifico para esto.
+\end{itemize}
+De este modo con los parámetros nuevos resulta sencillo comprobar si se registro algún DBMS y además también saber cual DBMS se esta usando sin tener que recurrir a parámetros en la función  \verb=SQLFactory.getFactory()= además internamente resulta sencillo ver si ya se instancio alguna implementación de \verb=SQLFactory= para usar siempre una única instancia.
+
+Para las subclases de \verb=SQLFactory= no hay ninguna apreciación puesto que lo unico que deben hacer es implementar los métodos abstractos de su superclase. 
+%
+\subsection{Implementación de cada una de las sentencias}
+Entrando a lo que es la implementación en especifico de cada una de las sentencias no hay mucho que remarcar mas allá de lo señalado en la sección \ref{seccion:especificacion:dialectos} del capitulo de Diseño que indica cuales son las clases auxiliares que usa cada una de las sentencias, salvo por el caso de algunas sentencias que no precisan de redefinir el método \verb=toString()= que traduce la sentencia a SQL puesto que la sintaxis soportada es tan sencilla que es perfectamente entendible por los tres motores sin tener que realizar ninguna modificación aun así es forzosa la existencia de una subclase especifica puesto que las clases base (las superclases) son abstractas para precisamente forzar este comportamiento por lo que dicho método que usualmente no se implementa y se deja como un método abstracto si se implementa quedando por ejemplo en el caso de \verb=DefaultDeleteQuery= de la siguiente manera:
+%
+\begin{lstlisting} [title=Extracto de la clase DefaultDeleteQuery]
+public abstract class DefaultDeleteQuery implements DeleteQuery {
+...
+	public String toString() {
+		String ret = "DELETE FROM " + table;
+		if (wclause != null) {
+		ret += wclause.toString();//" WHERE ";
+		}
+		return ret;
+	}
+}
+\end{lstlisting}
+%
+Como se ve en el extracto de código el método \verb=toSring()= se implementa dejando la clase abstracta sin ningún método abstracto, aunque esto no se ve es así, pero no hay problema la clase puede seguir siendo abstracta sin importar que no tenga métodos abstractos pero lo que se logra es que esta clase no pueda ser instanciada directamente obligando a que exista una subclase como podemos ver por ejemplo en el caso de \verb=MySQLDeleteQuery= en su código:
+%
+\begin{lstlisting} [title=Código completo de MySQLDeleteQuery]
+public class MySQLDeleteQuery extends DefaultDeleteQuery {
+
+	public MySQLDeleteQuery(Formatter formatter) {
+		super(formatter);
+	}
+
+}
+\end{lstlisting}
+%
+Se ve que lo único que hace esta clase es heredar de \verb=DefaultDeleteQuery= y declarar el constructor que recibe como parámetro a un objeto \verb=Formatter= necesario para pasárselo a su superclase, esto es así por que a pesar de que se podría crear un nuevo objeto de este tipo in situ del modo \verb=super(new MySQLFormatter());= esto hubiera significado que cada vez que se estuviera creando un nuevo objeto \verb=MySQLDeleteQuery= se tendría que crear inútilmente por debajo otro objeto mas, puesto que \verb=Formatter= es un conjunto de métodos de ayuda que pueden ser rehusados sin ninguna complicación y dado que es mucho mas caro crear un nuevo objeto que usar una referencia ya existente a el mismo, la creación repetida de este objeto implica un desperdicio de recursos.
+
+De todos modos el programador tampoco debe preocuparse por elegir la implementación adecuada de \verb=Formatter= que se debe usar, por ejemplo para \verb=MySQLDeleteQuery= es necesario usar una instancia de \verb=MySQLFormatter=, por que la clase \textit{factory} sera la encargada de elegir la correcta implementación a usar y además asegurarse de que sea una única instancia de \verb=MySQLFormatter= la que se este usando al pasarle a todas las peticiones de creación de objetos el mismo objeto \verb=formatter=.  
+%
 \subsection{Clases extras}\label{sec:extras}
 
-
-\subsection{Implementación de AlterTableQuery}
-Todas las interfaces menos \verb=SelectQuery= descienden de \verb=UpdateStatement=, esta es una interfaz que no define comportamiento alguno solo sirve para categorizar las interfaces hijas en cuanto a pertenencia o no a el grupo de las sentencias que no devuelven datos de la base de datos si no sobre la base de datos, su implementación a continuación:
-
-\begin{lstlisting}[title=interfaz UpdateStatement]
-package com.crossdb.sql;
-
-public interface UpdateStatement {
-
-}
-\end{lstlisting}
-
-La interfaz \verb=AlterTable= si ya define el comportamiento para las clases hijas de la misma que servirán para armar las sentencias \verb=ALTER TABLE=, al ser la sintaxis soportada muy limitada la interfaz es bastante simple. Se definen los métodos necesarios para poblar la sentencia de datos y despúes armarla. La función que devuelve la sentencia propiamente dicha sera la típica \verb=toString()= pero redefinida para que devuelva adecuadamente la sentencia SQL adecuada. 
-
-\begin{lstlisting}[title=interfaz AlterTableQuery]
-package com.crossdb.sql;
-
-public interface AlterTableQuery extends UpdateStatement{
-	
-	void setTable(String table);
-	
-	void addColumn(Column c);
-	
-	void newTableName(String table);
-}
-\end{lstlisting}
-Hay algunas cosas a tener presentes por ejemplo el método \verb=addColumn(Column)= utiliza la clase \verb=Column= que representa una columna tal como se definió en \ref{sec:extras}. Además las funciones \verb=addColumn(Column)= y \verb=newTableName(String)= que respectivamente sirven para añadir columnas a la tabla y renombrar la misma son mutuamente excluyentes en el sentido que una sentencia solo puede realizar unas de las acciones previamente nombradas a la vez, por lo que si en un mismo objeto se llamase a las dos funciones solo tendrá efecto la ultima en ser llamada.\\
-
-En cuanto a la implementación base \verb=DefaultALterTableQuery= hay poco que comentar pues únicamente agrega los atributos necesarios para implementar las funciones definidas en \verb=AlterTableQuery=, las hijas de esta clase ya serán especificas para un \dd concreto, en nuestra implementación contamos con tres a saber:
-\begin{itemize}
-\item \verb=MySQLAlterTableQuery=
-\item \verb=SQLiteAlterTableQuery=
-\item \verb=PostgreSQLAlterTableQuery=
-\end{itemize}
-Cuya única misión es implementar, o re-implementar si se quiere, el método \verb=toString()= que entregara la sentencia SQL en forma de cadena de texto dentro de un objeto String.
-
-
-
-
-\subsection{Implementación de DeleteQuery}
-La sintaxis soportada para \verb=DeleteQuery= es muy limitada por lo que es posible observar casi todo el código de la Interfaz principal para estas sentencias:
-
-\begin{lstlisting}[title=código interfaz QueryStatement]
-package com.crossdb.sql;
-
-public interface DeleteQuery extends UpdateStatement{
-
-	void setTable(String table);
-
-	void addWhereCondition(String x, int comparison, String y);
-
-	void addWhereCondition(String x, int comparison, int y);
-
-	void addWhereCondition(String x, int comparison, java.util.Date y);
-
-	void addWhereCondition(String and_or, String x, int comparison, String y);
-
-	void addWhereCondition(String and_or, String x, int comparison, int y);
-
-	void addWhereCondition(String and_or, String x, int comparison,
-			java.util.Date y);
-
-	void addWhereCondition(WhereCondition cond);
-
-	void addWhereClause(WhereClause wc);
-
-	void addWhereString(String x, int comparison, String y);
-
-	void addWhereString(String and_or, String x, int comparison, String y);
-
-	void addWhereNotNull(String col);
-
-	void addWhereNotNull(String and_or, String col);
-
-	void addWhereIsNull(String col);
-
-	void addWhereIsNull(String and_or, String col);
-	new
-
-}
-\end{lstlisting}
-
-
-
-\subsection{Implementación de UpdateQuery e InsertQuery}
-
-
-
-
-\subsection{Implementación de CreateTableQuery}
-
-
-
-
-\subsection{Implementación de selectQuery}
-
-Esta interfaz es la única que desciende de la interfaz padre \verb=QueryStatement= la cual podemos ver en su totalidad ya que se trata de una interfaz muy simple:
-
-\begin{lstlisting}[title=código interfaz QueryStatement]
-package com.crossdb.sql;
-
-public interface QueryStatement {
-
-}
-\end{lstlisting}
-
-Como ya se dijo no necesita definir ningún comportamiento, salvo por la pertenencia a un grupo que es en este caso la de el tipo de sentencias que ejecutan consultas sobre la base de datos. La interfaz hija si ya define comportamientos específicos que servirán para poblar de datos y armar las sentencias \verb=SELECT= las métodos mas importantes de su implementación la podemos ver a continuación:
-
-\begin{lstlisting}[title=código interfaz UpdateStatement]
-package com.crossdb.sql;
-
-import java.util.Date;
-import com.crossdb.sql.optimization.OptimizationHint;
-
-public interface SelectQuery extends QueryStatement {
-
-	void addColumn(String column);
-
-	void addFunctionColumn(String function, String column);
-
-	void sumColumn(String column);
-
-	void countColumn(String column);
-
-	void countColumn(String table, String column);
-
-	void averageColumn(String column);
-
-	void averageColumn(String table, String column);
-
-	void minColumn(String column);
-
-	void minColumn(String table, String column);
-
-	void maxColumn(String column);
-
-	void maxColumn(String table, String column);
-
-	void addTable(String table);
-
-	void addTable(int joinType, String table);
-
-	void addTable(int join_type, String table, WhereCondition cond);
-
-	void addTable(Join join);
-
-	void addWhereCondition(String x, int comparison, String y);
-
-	void addWhereCondition(String x, int comparison, int y);
-
-	void addWhereCondition(String x, int comparison, long y);
-
-	void addWhereCondition(String x, int comparison, Date y);
-
-	void addWhereCondition(String and_or, String x, int comparison, String y);
-
-	void addWhereCondition(String and_or, String x, int comparison, int y);
-
-	void addWhereCondition(String and_or, String x, int comparison, long y);
-
-	void addWhereCondition(String and_or, String x, int comparison, Date y);
-
-	void addWhereString(String x, int comparison, String y);
-
-	void addWhereString(String and_or, String x, int comparison, String y);
-
-	void addWhereCondition(WhereCondition cond);
-
-	void addWhereClause(IWhereClause wc);
-
-	void addOrderBy(String order_by);
-
-	void addGroupBy(String group_by);
-
-	void union(SelectQuery sq);
-
-	void setDistinct(boolean distinct);
-
-	void setLimit(int offset, int rowCount);
-
-}
-\end{lstlisting}
