@@ -26,9 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.crossdb.sql.Column;
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.UpdateQuery;
-import com.spaceprogram.sql.mysql.MySQLFormatter;
-import com.spaceprogram.sql.mysql.MySQLUpdateQuery;
+import com.nelsonx.jdbgm.ManagerFactory;
 
 /**
  * @author Nelson Efrain A. Cruz
@@ -37,10 +37,10 @@ import com.spaceprogram.sql.mysql.MySQLUpdateQuery;
 public class TestMySQLUpdate {
 
 	UpdateQuery update;
-	
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	@Before
 	public void setup(){
-		update = new MySQLUpdateQuery(new MySQLFormatter());
+		update = factory.getUpdateQuery();
 	}
 	
 	@Test

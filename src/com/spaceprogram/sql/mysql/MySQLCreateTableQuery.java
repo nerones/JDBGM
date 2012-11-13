@@ -14,7 +14,7 @@ import com.crossdb.sql.TableConstraint;
  */
 public class MySQLCreateTableQuery extends DefaultCreateTableQuery {
 
-    public MySQLCreateTableQuery() {
+    MySQLCreateTableQuery() {
         super(new MySQLDataTypes());
     }
     

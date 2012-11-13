@@ -12,7 +12,7 @@ import com.crossdb.sql.Formatter;
 public class MySQLSelectQuery extends DefaultSelectQuery {
 
 
-	public MySQLSelectQuery(Formatter formatter) {
+	MySQLSelectQuery(Formatter formatter) {
 		super(formatter);
 	}
 

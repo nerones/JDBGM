@@ -28,10 +28,11 @@ import org.junit.Test;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
+import com.crossdb.sql.SQLFactory;
+import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.TableConstraint;
-import com.nelsonx.postgre.PostgreSQLCreateTableQuery;
+import com.nelsonx.jdbgm.ManagerFactory;
 import com.nelsonx.postgre.PostgreSQLFormatter;
-import com.nelsonx.postgre.PostgreSQLSelectQuery;
 
 /**
  * @author Nelson Efrain A. Cruz
@@ -41,12 +42,13 @@ public class TestPostgreSQLCreate {
 	CreateTableQuery ct;
 	Column col;
 	String expectedSQL = "";
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.POSTGRE_DB);
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ct = new PostgreSQLCreateTableQuery();
+		ct = factory.getCreateTableQuery();
 	}
 	
 	@Test
@@ -60,7 +62,7 @@ public class TestPostgreSQLCreate {
 		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id SERIAL PRIMARY KEY, carac INTEGER )";
 		assertEquals( expectedSQL, ct.toString());
 		
-		ct = new PostgreSQLCreateTableQuery();
+		ct = factory.getCreateTableQuery();
 		ct.setName("animales");
 		ct.addPrimaryKeyColumn(new Column("id",Types.INTEGER));
 		ct.addForeignKeyColumn(new Column("reino_id", Types.VARCHAR, "reinos", "id"));
@@ -74,7 +76,7 @@ public class TestPostgreSQLCreate {
 	@Test
 	public void testAsSelect(){
 		ct.setName("animal");
-		PostgreSQLSelectQuery select = new PostgreSQLSelectQuery(new PostgreSQLFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("animales");
 		ct.setSelectStatementSource(select);
 		assertEquals("CREATE TABLE animal AS SELECT *  FROM animales", ct.toString());

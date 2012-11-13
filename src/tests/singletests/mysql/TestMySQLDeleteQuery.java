@@ -18,13 +18,14 @@
  */
 package tests.singletests.mysql;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.spaceprogram.sql.mysql.MySQLDeleteQuery;
-import com.spaceprogram.sql.mysql.MySQLFormatter;
+import com.crossdb.sql.DeleteQuery;
+import com.crossdb.sql.SQLFactory;
+import com.nelsonx.jdbgm.ManagerFactory;
 
 /**
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
@@ -32,12 +33,13 @@ import com.spaceprogram.sql.mysql.MySQLFormatter;
  */
 public class TestMySQLDeleteQuery {
 	
-	public MySQLDeleteQuery delete;
+	public DeleteQuery delete;
 	public String expected; 
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	
 	@Before
 	public void setUp(){
-		delete = new MySQLDeleteQuery(new MySQLFormatter());
+		delete = factory.getDeleteQuery();
 	}
 	
 	@Test

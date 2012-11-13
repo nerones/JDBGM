@@ -7,7 +7,7 @@ import com.crossdb.sql.Formatter;
 public class SQLiteUpdateQuery extends DefaultUpdateQuery {
 
 
-	public SQLiteUpdateQuery(Formatter formatter) {
+	SQLiteUpdateQuery(Formatter formatter) {
 		super(formatter);
 	}
 

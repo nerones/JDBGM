@@ -5,7 +5,7 @@ import com.crossdb.sql.Formatter;
 
 public class PostgreSQLSelectQuery extends DefaultSelectQuery {
 
-	public PostgreSQLSelectQuery(Formatter formatter) {
+	PostgreSQLSelectQuery(Formatter formatter) {
 		super(formatter);
 		// TODO Auto-generated constructor stub
 	}

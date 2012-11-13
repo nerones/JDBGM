@@ -28,7 +28,7 @@ import com.crossdb.sql.Formatter;
  */
 public class SQLiteDeleteQuery extends DefaultDeleteQuery {
 
-	public SQLiteDeleteQuery(Formatter formatter) {
+	SQLiteDeleteQuery(Formatter formatter) {
 		super(formatter);
 		// TODO Auto-generated constructor stub
 	}

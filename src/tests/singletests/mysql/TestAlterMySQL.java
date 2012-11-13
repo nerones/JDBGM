@@ -25,7 +25,8 @@ import org.junit.Test;
 
 import com.crossdb.sql.AlterTableQuery;
 import com.crossdb.sql.Column;
-import com.spaceprogram.sql.mysql.MySQLAlterTableQuery;
+import com.crossdb.sql.SQLFactory;
+import com.nelsonx.jdbgm.ManagerFactory;
 
 /**
  * @author Nelson Efrain A. Cruz
@@ -33,10 +34,10 @@ import com.spaceprogram.sql.mysql.MySQLAlterTableQuery;
  */
 public class TestAlterMySQL {
 	AlterTableQuery at;
-	
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	@Before
 	public void setUp() throws Exception {
-		at = new MySQLAlterTableQuery();
+		at = factory.getAlterTableQuery();
 	}
 	
 	@Test

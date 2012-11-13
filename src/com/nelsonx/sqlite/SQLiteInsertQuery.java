@@ -5,7 +5,7 @@ import com.crossdb.sql.DefaultInsertQuery;
 
 public class SQLiteInsertQuery extends DefaultInsertQuery {
 
-	public SQLiteInsertQuery() {
+	SQLiteInsertQuery() {
 		super(new SQLiteFormatter());
 	}
 

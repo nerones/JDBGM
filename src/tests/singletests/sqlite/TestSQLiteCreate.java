@@ -29,10 +29,10 @@ import org.junit.Test;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
+import com.crossdb.sql.SQLFactory;
+import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.TableConstraint;
-import com.nelsonx.sqlite.SQLiteCreateTableQuery;
-import com.nelsonx.sqlite.SQLiteFormatter;
-import com.nelsonx.sqlite.SQLiteSelectQuery;
+import com.nelsonx.jdbgm.ManagerFactory;
 
 
 /**
@@ -44,12 +44,13 @@ public class TestSQLiteCreate {
 	CreateTableQuery ct;
 	Column col;
 	String expectedSQL;
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.SQLITE_DB);
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ct = new SQLiteCreateTableQuery();
+		ct = factory.getCreateTableQuery();
 	}
 	
 	@Test
@@ -63,7 +64,7 @@ public class TestSQLiteCreate {
 		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id INTEGER AUTO_INCREMENT PRIMARY KEY, carac INTEGER )";
 		assertEquals( expectedSQL, ct.toString());
 		
-		ct = new SQLiteCreateTableQuery();
+		ct = factory.getCreateTableQuery();
 		ct.setName("animales");
 		ct.addPrimaryKeyColumn(new Column("id",Types.INTEGER));
 		ct.addForeignKeyColumn(new Column("reino_id", Types.VARCHAR, "reinos", "id"));
@@ -77,7 +78,7 @@ public class TestSQLiteCreate {
 	@Test
 	public void testAsSelect(){
 		ct.setName("animal");
-		SQLiteSelectQuery select = new SQLiteSelectQuery(new SQLiteFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("animales");
 		ct.setSelectStatementSource(select);
 		assertEquals("CREATE TABLE animal AS SELECT * FROM animales", ct.toString());

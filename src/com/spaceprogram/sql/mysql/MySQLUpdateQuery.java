@@ -15,7 +15,7 @@ import com.crossdb.sql.Formatter;
 public class MySQLUpdateQuery extends DefaultUpdateQuery {
 
 
-public MySQLUpdateQuery(Formatter formatter) {
+	MySQLUpdateQuery(Formatter formatter) {
 		super(formatter);
 	}
 

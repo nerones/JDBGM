@@ -5,7 +5,7 @@ import com.crossdb.sql.Formatter;
 
 public class SQLiteSelectQuery extends DefaultSelectQuery {
 
-	public SQLiteSelectQuery(Formatter formatter) {
+	SQLiteSelectQuery(Formatter formatter) {
 		super(formatter);
 		// TODO Auto-generated constructor stub
 	}

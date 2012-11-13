@@ -8,7 +8,7 @@ public class PostgreSQLUpdateQuery extends DefaultUpdateQuery {
 
 
 
-	public PostgreSQLUpdateQuery(Formatter formatter) {
+	PostgreSQLUpdateQuery(Formatter formatter) {
 		super(formatter);
 	}
 

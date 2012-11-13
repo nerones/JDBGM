@@ -44,7 +44,42 @@ public abstract class SQLFactory {
 	 * Contiene la instancia de la implementación de esta clase que se esta usando
 	 * la intención es que sea única.
 	 */
-	private static SQLFactory currentFactory; 
+	private static SQLFactory currentFactory;
+	/**
+	 * Indica si el modo debug esta activo, por ahora solo servira para poder usar
+	 * esta fabrica sin haber registrado un motor.
+	 */
+	private static boolean debugMode = false;
+	/**
+	 * Obtiene la implementación de SQLFactory que se le indique por parametro a
+	 * fines de realizar pruebas sin necesidad de tener que registrar un DBMS.
+	 * Si se intenta usar {@link #getFactory()} antes de llamar a {@link #debugModeOff()}
+	 * se producirá un error.
+	 * @param vendor
+	 * @return
+	 */
+	public static SQLFactory debugGetFactory(int vendor){
+		debugMode = true;
+		switch (vendor) {
+		case ManagerFactory.MYSQL_DB:
+			currentFactory = new MySQLFactory(); 
+			return currentFactory;
+		case ManagerFactory.SQLITE_DB:
+			currentFactory = new SQLiteFactory(); 
+			return currentFactory;
+		case ManagerFactory.POSTGRE_DB:
+			currentFactory = new PostgreSQLFactory(); 
+			return currentFactory;
+		default:
+			throw new RuntimeException("Identificador de base de datos desconocido, no existe el valor "+ManagerFactory.currentVendor);
+		}
+	}
+	
+	public static void debugModeOff(){
+		currentFactory = null;
+		debugMode = false;
+	}
+	
 	
 	/**
 	 * Crea si es que no existe la instancia de la fabrica adecuada revisando cual es
@@ -57,6 +92,7 @@ public abstract class SQLFactory {
 	public static final SQLFactory getFactory(){
 		if (!ManagerFactory.isRegistered) throw new RuntimeException("No se registro el manejador de conexiones, " +
 				"no se puede crear la fabrica de objetos");
+		if (debugMode) throw new RuntimeException("El modo debug esta activo no se puede continuar");
 		//Si el método ya fue llamado, siempre entregara el mismo objeto
 		if (currentFactory != null) return currentFactory;
 		//Si todavía no se ejecuto este método se revisa que tipo de fabrica se debe crear
@@ -78,14 +114,32 @@ public abstract class SQLFactory {
 	}
 	
 	/**
-	 * Crea una sentencia del tipo {@code INSERT}.
+	 * Crea una objeto que representa una sentencia del tipo {@code INSERT}.
 	 */
 	public abstract InsertQuery getInsertQuery();
+	/**
+	 * Crea una objeto que representa una sentencia del tipo {@code SELECT}.
+	 */
 	public abstract SelectQuery getSelectQuery();
+	/**
+	 * Crea una objeto que representa una sentencia del tipo {@code UPDATE}.
+	 */
 	public abstract UpdateQuery getUpdateQuery();
+	/**
+	 * Crea una objeto que representa una sentencia del tipo {@code DELETE}.
+	 */
 	public abstract DeleteQuery getDeleteQuery();
+	/**
+	 * Crea una objeto que representa una sentencia del tipo {@code ALTER TABLE}.
+	 */
 	public abstract AlterTableQuery getAlterTableQuery();
+	/**
+	 * Crea una objeto que representa una sentencia del tipo {@code CREATE TABLE}.
+	 */
 	public abstract CreateTableQuery getCreateTableQuery();
+	/**
+	 * Crea una objeto que representa una clausula del tipo {@code WHERE...}.
+	 */
 	public abstract WhereClause getWhereClause();
 
 }

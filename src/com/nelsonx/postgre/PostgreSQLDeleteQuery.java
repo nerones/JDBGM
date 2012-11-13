@@ -28,7 +28,7 @@ import com.crossdb.sql.Formatter;
  */
 public class PostgreSQLDeleteQuery extends DefaultDeleteQuery {
 
-	public PostgreSQLDeleteQuery(Formatter formatter) {
+	PostgreSQLDeleteQuery(Formatter formatter) {
 		super(formatter);
 		// TODO Auto-generated constructor stub
 	}

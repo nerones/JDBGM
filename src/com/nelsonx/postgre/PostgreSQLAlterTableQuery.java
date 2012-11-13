@@ -8,7 +8,7 @@ public class PostgreSQLAlterTableQuery extends DefaultAlterTableQuery {
 	/**
 	 * @param datatype
 	 */
-	public PostgreSQLAlterTableQuery() {
+	PostgreSQLAlterTableQuery() {
 		super(new PostgreSQLDataTypes());
 		// TODO Auto-generated constructor stub
 	}

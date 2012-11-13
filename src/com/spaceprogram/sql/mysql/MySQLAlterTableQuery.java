@@ -13,7 +13,7 @@ import com.crossdb.sql.DefaultAlterTableQuery;
 
 public class MySQLAlterTableQuery extends DefaultAlterTableQuery {
 
-	public MySQLAlterTableQuery() {
+	MySQLAlterTableQuery() {
 		super(new MySQLDataTypes());
 	}
 

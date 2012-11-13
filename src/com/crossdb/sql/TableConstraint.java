@@ -156,6 +156,10 @@ public class TableConstraint {
 		this.matchType = matchType; 
 	}
 	
+	public void addColumn(Column column){
+		columns.add(column);
+	}
+	
 	/**
 	 * Pone la clausula MATCH con algunas de sus opciones FULL, PARTIAL o SIMPLE
 	 * que se usa cuando la restricción de tabla es del tipo {@link #TYPE_FOREIGN_KEY}

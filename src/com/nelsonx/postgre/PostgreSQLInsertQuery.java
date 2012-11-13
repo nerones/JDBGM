@@ -5,7 +5,7 @@ import com.crossdb.sql.DefaultInsertQuery;
 
 public class PostgreSQLInsertQuery extends DefaultInsertQuery {
 
-	public PostgreSQLInsertQuery() {
+	PostgreSQLInsertQuery() {
 		super(new PostgreSQLFormatter());
 	}
 

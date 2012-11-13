@@ -26,21 +26,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.crossdb.sql.InsertQuery;
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
+import com.nelsonx.jdbgm.ManagerFactory;
 import com.nelsonx.postgre.PostgreSQLFormatter;
-import com.nelsonx.postgre.PostgreSQLInsertQuery;
-import com.nelsonx.postgre.PostgreSQLSelectQuery;
 
 /**
  * @author Nelson Efrain A. Cruz
  *Por ahora es exactamente igual a TestSQLiteInsert
  */
 public class TestPostgreSQLInsert {
-InsertQuery insert;
-	
+	InsertQuery insert;
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.POSTGRE_DB);
 	@Before
 	public void setup(){
-		insert = new PostgreSQLInsertQuery();
+		insert = factory.getInsertQuery();
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ InsertQuery insert;
 		insert.setTable("tabla");
 		insert.addColumn("uno", "algo1");
 		insert.addColumn("dos", "algo2");
-		SelectQuery select = new PostgreSQLSelectQuery(new PostgreSQLFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("Perro");
 		insert.setSelectStmt(select);		
 		String expected = "INSERT INTO tabla (uno, dos) SELECT * FROM Perro";
@@ -95,7 +95,7 @@ InsertQuery insert;
 		String expected = "INSERT INTO Perro DEFAULT VALUES";
 		assertEquals(expected, insert.toString());
 		
-		SelectQuery select = new PostgreSQLSelectQuery(new PostgreSQLFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("Dogs");
 		insert.setSelectStmt(select);
 		expected = "INSERT INTO Perro (Id) SELECT * FROM Dogs";

@@ -8,7 +8,7 @@ import com.crossdb.sql.DefaultInsertQuery;
 public class MySQLInsertQuery extends DefaultInsertQuery{
 
 
-	public MySQLInsertQuery() {
+	MySQLInsertQuery() {
 		super(new MySQLFormatter());
 	}
 

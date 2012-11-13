@@ -8,11 +8,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.WhereClause;
+import com.nelsonx.jdbgm.ManagerFactory;
 import com.spaceprogram.sql.mysql.MySQLFormatter;
 import com.spaceprogram.sql.mysql.MySQLFunctions;
-import com.spaceprogram.sql.mysql.MySQLSelectQuery;
 
 /**
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
@@ -22,11 +23,12 @@ public class TestSelectQuery {
 	
 	SelectQuery sq, sq2;
 	String expected;
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	
 	@Before
 	public void setUp() {
-		sq = new MySQLSelectQuery(new MySQLFormatter());
-		sq2 = new MySQLSelectQuery(new MySQLFormatter());
+		sq = factory.getSelectQuery();
+		sq2 = factory.getSelectQuery();
 	}
 	
 	@Test

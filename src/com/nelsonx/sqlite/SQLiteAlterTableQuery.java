@@ -5,7 +5,7 @@ import com.crossdb.sql.DefaultAlterTableQuery;
 
 public class SQLiteAlterTableQuery extends DefaultAlterTableQuery {
 
-	public SQLiteAlterTableQuery() {
+	SQLiteAlterTableQuery() {
 		super(new SQLiteDataTypes());
 		// TODO Auto-generated constructor stub
 	}

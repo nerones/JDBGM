@@ -7,7 +7,7 @@ import com.crossdb.sql.TableConstraint;
 public class SQLiteCreateTableQuery extends DefaultCreateTableQuery {
 
 	
-	public SQLiteCreateTableQuery() {
+	SQLiteCreateTableQuery() {
 		super(new SQLiteDataTypes());
 		// TODO Auto-generated constructor stub
 	}

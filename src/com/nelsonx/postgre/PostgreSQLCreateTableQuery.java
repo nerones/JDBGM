@@ -9,7 +9,7 @@ public class PostgreSQLCreateTableQuery extends DefaultCreateTableQuery {
 	/**
 	 * @param datatype
 	 */
-	public PostgreSQLCreateTableQuery() {
+	PostgreSQLCreateTableQuery() {
 		super(new PostgreSQLDataTypes());
 		// TODO Auto-generated constructor stub
 	}

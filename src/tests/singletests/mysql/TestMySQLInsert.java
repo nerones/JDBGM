@@ -26,21 +26,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.crossdb.sql.InsertQuery;
+import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
-import com.nelsonx.sqlite.SQLiteSelectQuery;
-import com.spaceprogram.sql.mysql.MySQLFormatter;
-import com.spaceprogram.sql.mysql.MySQLInsertQuery;
+import com.nelsonx.jdbgm.ManagerFactory;
 
 /**
  * @author Nelson Efrain A. Cruz
  *
  */
 public class TestMySQLInsert {
-InsertQuery insert;
+	InsertQuery insert;
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	
 	@Before
 	public void setup(){
-		insert = new MySQLInsertQuery();
+		insert = factory.getInsertQuery();
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ InsertQuery insert;
 		insert.setTable("tabla");
 		insert.addColumn("uno", "algo1");
 		insert.addColumn("dos", "algo2");
-		SelectQuery select = new SQLiteSelectQuery(new MySQLFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("Perro");
 		insert.setSelectStmt(select);		
 		String expected = "INSERT INTO tabla (uno, dos) SELECT * FROM Perro";
@@ -95,7 +95,7 @@ InsertQuery insert;
 		String expected = "INSERT INTO Perro () VALUES ()";
 		assertEquals(expected, insert.toString());
 		
-		SelectQuery select = new SQLiteSelectQuery(new MySQLFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("Dogs");
 		insert.setSelectStmt(select);
 		expected = "INSERT INTO Perro (Id) SELECT * FROM Dogs";

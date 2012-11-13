@@ -28,10 +28,10 @@ import org.junit.Test;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.CreateTableQuery;
+import com.crossdb.sql.SQLFactory;
+import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.TableConstraint;
-import com.spaceprogram.sql.mysql.MySQLCreateTableQuery;
-import com.spaceprogram.sql.mysql.MySQLFormatter;
-import com.spaceprogram.sql.mysql.MySQLSelectQuery;
+import com.nelsonx.jdbgm.ManagerFactory;
 
 /**
  * @author Nelson Efrain A. Cruz
@@ -41,12 +41,13 @@ public class TestMySqlCreate {
 	CreateTableQuery ct;
 	Column col;
 	String expectedSQL;
+	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ct = new MySQLCreateTableQuery();
+		ct = factory.getCreateTableQuery();
 	}
 	
 	@Test
@@ -60,7 +61,7 @@ public class TestMySqlCreate {
 		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id INTEGER AUTO_INCREMENT PRIMARY KEY, carac INTEGER )";
 		assertEquals( expectedSQL, ct.toString());
 		
-		ct = new MySQLCreateTableQuery();
+		ct = factory.getCreateTableQuery();
 		ct.setName("animales");
 		ct.addPrimaryKeyColumn(new Column("id",Types.INTEGER));
 		ct.addForeignKeyColumn(new Column("reino_id", Types.VARCHAR, "reinos", "id"));
@@ -74,7 +75,7 @@ public class TestMySqlCreate {
 	@Test
 	public void testAsSelect(){
 		ct.setName("animal");
-		MySQLSelectQuery select = new MySQLSelectQuery(new MySQLFormatter());
+		SelectQuery select = factory.getSelectQuery();
 		select.addTable("animales");
 		ct.setSelectStatementSource(select);
 		assertEquals("CREATE TABLE animal AS SELECT * FROM animales", ct.toString());

@@ -10,7 +10,7 @@ import com.crossdb.sql.Formatter;
  */
 public class MySQLDeleteQuery extends DefaultDeleteQuery {
 
-	public MySQLDeleteQuery(Formatter formatter) {
+	MySQLDeleteQuery(Formatter formatter) {
 		super(formatter);
 		// TODO Auto-generated constructor stub
 	}
