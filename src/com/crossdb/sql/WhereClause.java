@@ -223,16 +223,16 @@ public class WhereClause {
 	}
 	
 	/**
-	 * Lo mismo que {@link #andIn(String, String)} pero la negación lógica del mismo "NOT IN"
-	 * @see WhereClause#andIn(String, String)
+	 * Lo mismo que {@link #andIn(String, Object[])} pero la negación lógica del mismo "NOT IN"
+	 * @see WhereClause#andIn(String, Object[])
 	 */
 	public void andNotIn(String key, Object[] value) {
 		addConditionNoAlter("AND", key, NOT_IN, escapeArrayAsString(value));
 	}
 	
 	/**
-	 * Lo mismo que {@link #orIn(String, String)} pero la negación lógica del mismo "NOT IN"
-	 * @see WhereClause#orIn(String, String)
+	 * Lo mismo que {@link #orIn(String, Object[])} pero la negación lógica del mismo "NOT IN"
+	 * @see WhereClause#orIn(String, Object[])
 	 */
 	public void orNotIn(String key, Object[] value) {
 		addConditionNoAlter("OR", key, NOT_IN, escapeArrayAsString(value));
@@ -352,54 +352,6 @@ public class WhereClause {
 		
 		return " WHERE (" + whereClauseString + ")";
 	}
-		// rifle through conditions and separators
-		// if another clause found, call getWhereClause on that one
-
-		
-//		for (int i = 0; i < conditions.size(); i++) {
-//			Object ob = conditions.get(i);
-//			if (i != 0) {
-//				ret += " " + separators.get(i) + " ";
-//			}
-//			if (ob instanceof WhereCondition) {
-//				WhereCondition cond = (WhereCondition) ob;
-//				if (cond.getPreTable() != null) {
-//					ret += cond.getPreTable() + ".";
-//				}
-//				Object pre = cond.getPre();
-//				// check to see if object is a certain type for formatting
-//				if (pre instanceof java.util.Date) {
-//					if (sqldf == null)
-//						sqldf = new SQLDateTimeFormat();
-//
-//					ret += "'" + sqldf.format((java.util.Date) pre) + "' ";
-//				} else
-//					// TODO pre se convierte a string pero puede ser cualquier objeto.
-//					ret += pre + " ";
-//
-//				ret += "" + getOperatorString(cond.getComparison()) + " ";
-//				if (cond.getPostTable() != null) {
-//					ret += cond.getPostTable() + ".";
-//				}
-//				pre = cond.getPost();
-//				// check to see if object is a certain type for formatting
-//				if (pre instanceof java.util.Date) {
-//					if (sqldf == null)
-//						sqldf = new SQLDateTimeFormat();
-//
-//					ret += "'" + sqldf.format((java.util.Date) pre) + "' ";
-//				} else
-//					// TODO pre se convierte a string pero puede ser cualquier objeto.
-//					ret += pre + "";
-//					// TODO " " -> "" rompio algo?
-//
-//			} else { // clause cause that's all it can be
-//				//System.out.println("por aca " + i + conditions.size() + conditions.get(i));
-//				WhereClause clause = (WhereClause) ob;
-//				ret += "( " + clause.toString() + " )";
-//			}
-//		}
-
 
 	/**
 	 * gets operator string

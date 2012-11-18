@@ -16,7 +16,6 @@ public abstract class UpdateQuery extends DefaultUpdateableQuery {
 
 	public UpdateQuery(Formatter formatter) {
 		super(formatter);
-		// TODO Auto-generated constructor stub
 	}
 
 	// TODO revisar si crea algún problema

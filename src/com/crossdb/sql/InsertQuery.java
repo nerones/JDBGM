@@ -31,7 +31,6 @@ public abstract class InsertQuery extends DefaultUpdateableQuery {
 
 	public InsertQuery(Formatter formatter) {
 		super(formatter);
-		// TODO Auto-generated constructor stub
 	}
 
 	// void addColumn(String column, String value, boolean auto_inc);

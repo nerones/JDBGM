@@ -72,7 +72,6 @@ public abstract class DefaultSelectQuery implements SelectQuery {
         columns.append(" AS ").append(alias);
     }
     
-    // TODO  mover las funciones a Functions y ver los alias (AS)
     
     public void addFunctionColumn(String function, String column) {
     	if (columns.length() != 0) columns.append(", ");

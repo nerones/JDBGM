@@ -4,13 +4,15 @@ import java.sql.ResultSetMetaData;
 import java.sql.Types;
 // TODO review the documentation
 /**
- * Clase que representa una columna  de una tabla en una base de datos relacional.
+ * Clase que representa una columna  de una tabla en una base de datos relacional,
+ * la clase columna soporta los atributos y métodos necesarios para definir una
+ * columna de una tabla con la sentencia {@code CREATE TABLE}, pero además sirve
+ * de contenedor de datos cuando se quiere realizar algunas de las operaciones
+ * CRUD, para ello sirve para almacenar nombre, valor y tipo de dato para una columna.
  * 
- * Note: This was taken from DataField.
- * 
- * <p>
- * Copyright: Copyright (c) 2002 - Company: Space Program Inc.
- * </p>
+ * Para la creación de tablas con la clase {@link CreateTableQuery} se usan las
+ * constantes de tipos de datos definidas por JDBC en {@link Types} pero solo algunas de ellas
+ * son reconocidas para obtener mas detalles ver las implementaciones de {@link DataTypes}.
  * 
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Jorge P&eacute;rez Burgos - jorge.perez@adaptia.net - http://www.adaptia.net (C) 2003
@@ -26,7 +28,6 @@ public class Column {
 	 * defecto que ResultSetMetaData.columnNullable que es 1 y equivale a nullable.
 	 */
 	private int is_nullable = ResultSetMetaData.columnNullable;
-//	TODO review how to handle dataTypes
 	
 	/**
 	 * Identifica el tipo de dato de la columna
@@ -37,8 +38,6 @@ public class Column {
 	 * Tamaño por defecto para las cadenas de texto variable como CHAR y VARCHAR
 	 */
 	private int varcharSize = 50;
-	
-	//private int columnIndex = 0;
 	
 	/**
 	 * Indica si la columna es clave primaria o no.
@@ -69,17 +68,6 @@ public class Column {
 	 */
 	private boolean isAutoIncrementPK = false;
 	
-	/*
-	 * variables de ajuste para AUTOINCREMENT que no son soportados por SQLite
-	 */
-	//private int start_with = 1;
-	//private int increment_by = 1;
-	
-	/*
-	 *Sequence lo vi en oracle es para designar algo asi como un generador de "secuencias"
-	 *para agregar a las tablas, no quedo claro: se crea una sequence y esta genera  
-	 */
-	//private String sequence = null;
 	
 	/**
 	 * El valor por defecto de la columna que solo puede ser un valor constante.
@@ -296,33 +284,6 @@ public class Column {
 	public void setAutoIncrementPK(boolean b) {
 		isAutoIncrementPK = b;
 	}
-
-//	public void setStartWith(int sw) {
-//		start_with = sw;
-//	}
-//
-//	public int getStartWith() {
-//		return start_with;
-//	}
-//
-//	public void setIncrementBy(int ib) {
-//		increment_by = ib;
-//	}
-//
-//	public int getIncrementBy() {
-//		return increment_by;
-//	}
-	// TODO mover setSequence SQLite lo soporta?
-	/*
-	 * Sets the sequence used for this column if it's an auto increment column.
-	 */
-//	public void setSequence(String sequence_name) {
-//		sequence = sequence_name;
-//	}
-
-//	public String getSequence() {
-//		return sequence;
-//	}
 	
 	public void setColumnDefaultValue(String defaultValue){
 		this.columnDefaultValue = defaultValue;

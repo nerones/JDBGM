@@ -1,10 +1,53 @@
 package com.nelsonx.sqlite;
 
+import java.sql.Types;
+
 import com.crossdb.sql.DataTypes;
 
 public class SQLiteDataTypes extends DataTypes{
-	// TODO fix data types
-	public String getAsString(int type, int size) {
+	
+	public String getAsString(int type, int size ){
+    	
+    	switch (type) {
+		case Types.SMALLINT:
+			return "INTEGER";
+		case Types.INTEGER:
+			return "INTEGER";
+		case Types.BIGINT:
+			return "INTEGER";
+		
+		case Types.REAL:
+			return "REAL";
+		case Types.DOUBLE:
+			return "REAL";
+		
+		case Types.NUMERIC:
+			return "NUMERIC";
+		case Types.DECIMAL:
+			return "NUMERIC";
+		case Types.TIMESTAMP:
+			return "NUMERIC";
+		case Types.DATE:
+			return "NUMERIC";
+		case Types.TIME:
+			return "NUMERIC";
+		
+		case Types.CHAR:
+			return "TEXT";
+		case Types.VARCHAR:
+			return "TEXT";
+		//TODO missing type TEXT
+		
+		case Types.BOOLEAN:
+			return "TINYINT";
+
+		default:
+			throw new RuntimeException("No se reconoce el valor para el parametro type " +
+					"No se puede encontrar el tipo de dato");
+		}
+    }
+	
+	public String getAsString_OLD(int type, int size) {
         String query1;
         switch (type) {
             case java.sql.Types.BIGINT:

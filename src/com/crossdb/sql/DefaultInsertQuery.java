@@ -44,15 +44,6 @@ public abstract class DefaultInsertQuery extends InsertQuery {
 		// values.add(null);
 	}
 
-//	public void addAutoIncrementColumn(String column, String sequence) {
-//		Column c = new Column(column, null);
-//		c.setAutoIncrementPK(true);
-//		//TODO revisar setsequence
-//		//c.setSequence(sequence);
-//		columns.add(c);
-//		// values.add(null);
-//	}
-
 	public void returnID(boolean b) {
 		return_id = b;
 	}

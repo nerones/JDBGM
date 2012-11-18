@@ -25,11 +25,14 @@ public interface SelectQuery extends QueryStatement {
 	 */
 	void setDistinct(boolean distinct);
 	
-	//TODO las columnas pueden tener alias, no se agrego todavía.
 	/**
 	 * Agrega una columna a la sentencia SELECT que se esta armando. Si no hay
 	 * columnas agregadas a la sentencia (no se llamo a ningún método addColumn)
-	 * se devolverá de manera predeterminada todas las columnas (SELECT *)
+	 * se devolverá de manera predeterminada todas las columnas (SELECT *).
+	 * <p>
+	 * Si se desea agregar una funcion definida por el usuario a la sentencia select
+	 * se la puede agregar como una columna del modo 
+	 * <strong>{@code addColumn("myFunction()")}</strong>
 	 * 
 	 * @param column
 	 *            Nombre de la columna a devolver en la lista de columnas de la
@@ -117,8 +120,8 @@ public interface SelectQuery extends QueryStatement {
 	 * el método {@link #addJoin()}, solo la primer tabla se agrega mediante esta función
 	 * de modo que si se hace la consulta sobre una única tabla solo se debe llamar a esta
 	 * función. Como es posible establecer sentencia {@code SELECT} anidada en vez de una tabla 
-	 * mediante {@link #addTable(SelectQuery)} <strong>solo tendra efecto la ultima función en ser 
-	 * llamada </strong> por ejemplo si antes se había llamado a {@link #addTable(SelectQuery)} y luego
+	 * mediante {@link #addTable(SelectQuery,String)} <strong>solo tendra efecto la ultima función en ser 
+	 * llamada </strong> por ejemplo si antes se había llamado a {@link #addTable(SelectQuery,String)} y luego
 	 * a esta función la sentencia representada en el parámetro SelectQuery será descartada y la sentencia
 	 * tomara para {@code FROM} el nombre de la tabla.
 	 * 

@@ -1,10 +1,53 @@
 package com.nelsonx.postgre;
 
+import java.sql.Types;
+
 import com.crossdb.sql.DataTypes;
 
 public class PostgreSQLDataTypes extends DataTypes{
 	
-	public String getAsString(int type, int size) {
+public String getAsString(int type, int size ){
+    	
+    	switch (type) {
+		case Types.SMALLINT:
+			return "SMALLINT";
+		case Types.INTEGER:
+			return "INTEGER";
+		case Types.BIGINT:
+			return "BIGINT";
+		
+		case Types.REAL:
+			return "REAL";
+		case Types.DOUBLE:
+			return "DOUBLE PRECISION";
+		
+		case Types.NUMERIC:
+			return "NUMERIC";
+		case Types.DECIMAL:
+			return "DECIMAL";
+		case Types.TIMESTAMP:
+			return "TIMESTAMP";
+		case Types.DATE:
+			return "DATE";
+		case Types.TIME:
+			return "TIME";
+		
+		case Types.CHAR:
+			return "CHAR("+ size +")";
+		case Types.VARCHAR:
+			return "VARCHAR("+ size +")";
+		//TODO missing type TEXT
+		
+		case Types.BOOLEAN:
+			return "BOOLEAN";
+
+		default:
+			throw new RuntimeException("No se reconoce el valor para el parametro type " +
+					"No se puede encontrar el tipo de dato");
+		}
+    }
+
+	public String getAsString_old(int type, int size) {
 		String query1;
 		switch (type) {
 		case java.sql.Types.BIGINT:
