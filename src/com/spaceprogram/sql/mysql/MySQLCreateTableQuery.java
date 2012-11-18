@@ -1,5 +1,3 @@
-
-
 package com.spaceprogram.sql.mysql;
 
 import com.crossdb.sql.Column;
@@ -7,9 +5,11 @@ import com.crossdb.sql.DefaultCreateTableQuery;
 import com.crossdb.sql.TableConstraint;
 
 /**
- *
+ * Implementación especifica de la clase {@link DefaultCreateTableQuery} para el
+ * DBMS MySQL.
+ * 
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
  * @author  prophecy
- * @author Nelson Efrain A. Cruz
  * @version 0.5
  */
 public class MySQLCreateTableQuery extends DefaultCreateTableQuery {

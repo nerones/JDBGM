@@ -1,10 +1,14 @@
 package com.spaceprogram.sql.mysql;
 
-/** This is an initial beta of a class that will represent a query string */
-
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultInsertQuery;
 
+/**
+ * Implementación especifica de {@link DefaultInsertQuery} para el DBMS MySQL.
+ * 
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class MySQLInsertQuery extends DefaultInsertQuery{
 
 

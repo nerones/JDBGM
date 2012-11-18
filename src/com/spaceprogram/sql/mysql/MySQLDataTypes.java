@@ -1,27 +1,35 @@
-/**
- *
- * http://java.sun.com/docs/books/tutorial/jdbc/basics/retrieving.html
- *
- *
- This will basically be a datatype conversion from or two java.sql.Types
- to the equivalent text for the db.
-
- Need to convert for create tables and for alter tables.
-
- Info:
- http://www.mysql.com/doc/en/Column_types.html
- http://www.mysql.com/doc/en/Other-vendor_column_types.html
- */
-
 package com.spaceprogram.sql.mysql;
+/**
+ * Copyright 2011 Nelson Efrain Abraham Cruz
+ *
+ * This file is part of JDBGM.
+ * 
+ * JDBGM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JDBGM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JDBGM.  If not, see <http://www.gnu.org/licenses/>.
+ */
+import java.sql.Types;
 
-import com.crossdb.sql.*;
-
+import com.crossdb.sql.DataTypes;
+/**
+ * Implementación especifica de {@link DataTypes} para el DBMS MySQL.
+ * 
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class MySQLDataTypes extends DataTypes{
-
-    /**
-     */
-    public String getAsString(int type, int size) {
+	
+	@Deprecated
+    public String getAsString_old(int type, int size) {
         String query1;
         switch (type) {
             case java.sql.Types.BIGINT:
@@ -89,6 +97,45 @@ public class MySQLDataTypes extends DataTypes{
         }
         return query1;
     }
+
+    public String getAsString(int type, int size ){
+    	
+    	switch (type) {
+		case Types.SMALLINT:
+			return "SMALLINT";
+		case Types.INTEGER:
+			return "INT";
+		case Types.BIGINT:
+			return "BIGINT";
+		
+		case Types.REAL:
+			return "REAL";
+		case Types.DOUBLE:
+			return "DOUBLE PRECISION";
+		
+		case Types.NUMERIC:
+			return "NUMERIC";
+		case Types.DECIMAL:
+			return "DECIMAL";
+		case Types.TIMESTAMP:
+			return "TIMESTAMP";
+		case Types.DATE:
+			return "DATE";
+		case Types.TIME:
+			return "TIME";
+		
+		case Types.CHAR:
+			return "CHAR("+ size +")";
+		case Types.VARCHAR:
+			return "VARCHAR("+ size +")";
+		//TODO missing type TEXT
+		
+		case Types.BOOLEAN:
+			return "TINYINT(1)";
+
+		default:
+			throw new RuntimeException("No se reconoce el valor para el parametro type " +
+					"No se puede encontrar el tipo de dato");
+		}
+    }
 }
-
-

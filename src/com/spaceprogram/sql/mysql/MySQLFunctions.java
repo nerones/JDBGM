@@ -21,6 +21,10 @@ package com.spaceprogram.sql.mysql;
 import com.crossdb.sql.Functions;
 
 /**
+ * Implementación especifica de {@link Functions} para el DBMS MySQL.Esta clase
+ * redefine algunas constantes que representan los nombres de la funciones equivalentes
+ * para acomodarlas al dialecto usado por este motor.
+ * 
  * @author Nelson Efrain A. Cruz -neac03@gmail.com
  *
  */
