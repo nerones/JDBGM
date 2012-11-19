@@ -2,7 +2,8 @@
 package com.crossdb.sql;
 
 /**
- * default update query that other implementations can  and must extend
+ * Implementación por defecto de la interfaz {@link UpdateQuery} de la que cualquier
+ * implementación especifica para un DBMS debe heredar.
  *
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz - neac03@gmail.com

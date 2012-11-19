@@ -2,9 +2,10 @@ package com.crossdb.sql;
 
 /**
  * Esta clase representa una sentencia ALTER pero que es solo capaz de realizar dos acciones, el cambio
- * de nombre de la tabla o bien el agregado de columnas. El renombrado de columna presenta las mismas
+ * de nombre de la tabla o bien el agregado de columnas. El renombrado de la tabla presenta las mismas
  * restricciones que se tiene para nombrar las tablas, es decir que el nombre de la tabla a de ser un
- * nombre valido. El agregado de columnas tiene otras restricciones extras, las cuales son:
+ * nombre valido. El agregado de columnas tiene otras restricciones extras, las cuales se pueden
+ * ver en la documentación online.
  * 
  * <p>Copyright (c) 2002 Space Program Inc.</p>
  * @author Travis Reeder - travis@spaceprogram.com
@@ -21,6 +22,7 @@ public interface AlterTableQuery extends UpdateStatement{
 	/**
 	 * Agrega una columna a la tabla, de haberse llamado antes a la sentencia {@link #newTableName(String)}
 	 * esta dejara de tener efecto y la sentencia solo agregara columnas a la tabla.
+	 * 
 	 */
 	void addColumn(Column c);
 	
@@ -43,9 +45,5 @@ public interface AlterTableQuery extends UpdateStatement{
 	 * @return la definición de la creación de la columna.
 	 */
 	String columnToString(Column column);
-	
-//	/**
-//	 * Adds a column to be dropped.
-//	 */
-//	void dropColumn(String c);
+
 }

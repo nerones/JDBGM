@@ -3,22 +3,6 @@ package com.crossdb.sql;
 import java.util.Vector;
 
 /**
- * Description: There are some oddities with this class that are here to support
- * all databases. The main one is that you can specify a sequence table for dbs
- * like Oracle or SAPDB that need a sequence table to insert into identity
- * columns.
- * <p>
- * If none are specified, the implementation of this class should create the
- * sequence table called <table_name>_seq.
- * <p>
- * Now if the user specifies a sequence column, he should also use that same
- * sequence name in any insert query no matter what db he is using. dbs like
- * mysql or sql server ignore the sequence names.
- * </p>
- * <p>
- * Copyright: Copyright (c) 2002 - Company: Space Program Inc.
- * </p>
- * 
  * Es interfaz sirve de base para representar una sentencia CREATE TABLE. La interfaz
  * en si solo representa los atributos de la tabla (nombre básicamente), los tipos de datos, nombres de columnas
  * y restricciones sobre ellas se declaran en la clase {@link Column}. Las opciones para
@@ -29,9 +13,16 @@ import java.util.Vector;
  * estas restricciones se usan como restricciones de tablas mediante {@link TableConstraint}
  * por mas de que se trate de una clave no compuesta como por ejemplo una clave primaria
  * compuesta por una única columna.
+ * </p>
+ * <p>
+ * El soporte para la sentencia {@code CREATE TABLE} esta limitado aun mas
+ * debido a que escapa los objetivos de la primera versión de JDBGM, mas precisamente
+ * el soporte para los distintos tipos de datos en los diferentes motores no esta
+ * completamente implementado mas alla de las limitaciones que se producen por 
+ * tener que estar soportando tres diferentes DBMS.
  * 
- * @author Travis Reeder - travis@spaceprogram.com
- * @author Nelson Efrain A. Cruz
+ * @author Travis Reeder - travis@spaceprogram.com - Copyright (c) 2002 - Space Program Inc.
+ * @author Nelson Efrain A. Cruz neac03@gmail.com
  * @version 0.5
  */
 public interface CreateTableQuery extends UpdateStatement{
@@ -161,19 +152,6 @@ public interface CreateTableQuery extends UpdateStatement{
 	 * @see #addTableConstraint(TableConstraint)
 	 */
 	void addForeignKeyColumn(Vector<Column> fkColumns);
-	
-	//boolean isCompositePK();
-	
-	//String getCompositePK();
-
-	/*
-	 * This is used for dbs like Oracle and SAP db, but needs to be implemented
-	 * for all dbs for cross db compatability.
-	 * 
-	 * Not necessary to use it though, because implementation should have
-	 * default sequence names.
-	 */
-	// void setSequence(String sequence_table_name);
 	
 	String columnToString(Column column);
 

@@ -14,6 +14,11 @@ package com.crossdb.sql;
 public interface DeleteQuery extends UpdateStatement{
 
 	// public SelectQuery(String table);
+	/**
+	 * Especifica el nombre de la tabla a la que se quiere modificar.
+	 * 
+	 * @param table El nombre de la tabla
+	 */
 	public void setTable(String table);
 
 	/**

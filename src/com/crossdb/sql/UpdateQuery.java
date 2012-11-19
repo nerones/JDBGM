@@ -14,6 +14,13 @@ package com.crossdb.sql;
 
 public abstract class UpdateQuery extends DefaultUpdateableQuery {
 
+	/**
+	 * El constructor de la clase obliga a que se le pase una implementación de
+	 * el formateador de tipos de datos para que la clase sepa como formatear los
+	 * diferentes tipos de datos.
+	 * 
+	 * @param formatter La clase que formatea los tipos de datos.
+	 */
 	public UpdateQuery(Formatter formatter) {
 		super(formatter);
 	}
@@ -55,7 +62,7 @@ public abstract class UpdateQuery extends DefaultUpdateableQuery {
 	 * este método siempre entrega una referencia a un único objeto. Para
 	 * mas detalle de uso referirse a la documentación de dicha clase.
 	 * 
-	 * @see WhereClause.
+	 * @see WhereClause
 	 */
 	public abstract WhereClause addWhere();
 

@@ -9,10 +9,6 @@ import java.util.Vector;
  * @author Travis Reeder - travis@spaceprogram.com
  * @author Nelson Efrain A. Cruz
  * @version 0.6
- * 
- * Date: Jun 27, 2002
- * Time: 8:47:24 PM
- *
  */
 public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 
@@ -25,8 +21,7 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected boolean haveAutoincrementPrimaryKey = false;
 
 	protected Vector<TableConstraint> tableConstraints; 
-    protected boolean hasFK = false; 
-    //protected Vector<String[]> foreignKeys = new Vector<String[]>();
+    protected boolean hasFK = false;
     
     /**
      * La clase que mapea los tipos de datos de {@link java.sql.Types} a los tipos
@@ -35,21 +30,6 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
     protected DataTypes datatype;
     
     //protected Formatter formatter;
-    
-    /*
-     * Cuenta la cantidad de columnas que forman la clave Primaria (pk) tener en
-     * cuenta que si su valor final es 0 se trata de una pk formada por una única
-     * columna, valores mayores a 0 indican la cantidad de columnas que forman la
-     * clave primaria por lo que se estaría frente a una pk compuesta por varias
-     * columnas.  
-     */
-    //protected int pkCounter = -1;
-    
-    /*
-     * De tener la tabla una clave primaria (pk) compuesta por mas de una columna
-     * esta variable guarda la lista de columnas que la conforman en forma de String.
-     */
-    //protected String compositePrimaryKey = "";
 
     /**
      * El constructor obliga a que se le pase una implementación especifica de
@@ -152,77 +132,9 @@ public abstract class DefaultCreateTableQuery implements CreateTableQuery {
 	public void setHaveAutoincrementPrimaryKey(boolean haveAutoincrementPrimaryKey) {
 		this.haveAutoincrementPrimaryKey = haveAutoincrementPrimaryKey;
 	}
-    
-//    public boolean isCompositePK(){
-//    	if (pkCounter > 0) return true;
-//    	else return false;
-//    }
-    
-//    protected void setForeignKey(Column column){
-//    	hasFK = true;
-//    	boolean matchFK = false;
-//    	for (int i = 0; i < foreignKeys.size(); i++) {
-//			String[] foreignKey = foreignKeys.get(i);
-//			if (foreignKey[0].equals(column.getForeignTable()) ){
-//				foreignKey[1] += ", " + column.getName();
-//				foreignKey[2] += ", " + column.getForeignPrimaryKey();
-//				matchFK = true;
-//				break;
-//			}
-//		}
-//    	if (!matchFK){
-//    		String[] foreignKey = new String[3];
-//    		foreignKey[0] = column.getForeignTable();
-//    		foreignKey[1] = column.getName();
-//    		foreignKey[2] = column.getForeignPrimaryKey();
-//    		foreignKeys.add(foreignKey);
-//    	}
-//    }
-    
-//    public Vector<String[]> getForeignKeys(){
-//    	return foreignKeys;
-//    }
-    
-//    public String getCompositePK(){
-//    	// 
-//    	return compositePrimaryKey;
-//    }
-
-//    public void setAutoDefaults(boolean b) {
-//        auto_defaults = b;
-//    }
-   
 	//TODO quitar este método?
     public abstract String columnToString(Column column);
-    //{
-	//	String query1 = column.getName() + " ";
 
-//		query1 += datatype.getAsString(column);
-//
-//		// if (df.isAutoIncrement()) {
-//		// //una tabla de mysql solo puede tener una columna auto_increment
-//		// query1 += " AUTO_INCREMENT";// primary key NOT NULL";
-//		if (column.isUnique()) query1 += " UNIQUE";
-//		if (column.isPrimaryKey() && !isCompositePK()){
-//			query1 += " PRIMARY KEY";
-//			//Por el momento se elimina la opción de crear una  PK con autoincrement
-//			//if (column.isAutoIncrement()) query1 += " AUTO_INCREMENT";
-//		} 
-//		if (column.isNullable() == 0)
-//			query1 += " NOT NULL";
-//		if (column.getColumnDefaultValue() != null) {
-//			if (column.getType() == java.sql.Types.VARCHAR
-//					|| column.getType() == java.sql.Types.CHAR) {
-//				query1 += " DEFAULT '" + column.getColumnDefaultValue() + "' ";}
-//			else if (!(column.getType() == java.sql.Types.TIMESTAMP)) {// "datetime")){
-//				// Can't use functions like Now() in defaults in mysql
-//				query1 += " DEFAULT " + column.getColumnDefaultValue();
-//			}
-//
-//		}
-    	
-//    	return query1;
-//    }
     /**
      * Convierte la sentencia en una cadena de texto pero es para uso interno de
      * la clase, el método adecuado para convertir la sentencia es {@link #toString()}.

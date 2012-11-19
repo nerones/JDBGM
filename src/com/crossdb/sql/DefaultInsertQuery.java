@@ -6,7 +6,7 @@ package com.crossdb.sql;
  * 
  * 
  * @author Travis Reeder - travis@spaceprogram.com
- * @author Nelson Efrain A. Cruz
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
  * @version 0.3
  */
 public abstract class DefaultInsertQuery extends InsertQuery {

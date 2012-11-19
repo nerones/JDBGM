@@ -14,21 +14,19 @@ package com.crossdb.sql;
  * {@link #setSelectStmt(SelectQuery)} solo tendrá efecto el ultimo de los que fuera
  * llamado.
  * 
- * <p>
- * Note: You should ALWAYS specify an auto_increment column using
- * addAutoIncrementColumn() if you are using one of course.
- * <p>
- * Rest is pretty self explanatory.
- * Copyright: Copyright (c) 2002 - Company: Space Program Inc.
- * 
- * @author Travis Reeder - travis@spaceprogram.com
+ * @author Travis Reeder - travis@spaceprogram.com - Copyright (c) 2002 - Space Program Inc.
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
- * @version 0.1
+ * @version 0.5
  */
 public abstract class InsertQuery extends DefaultUpdateableQuery {
 
 	//public abstract void setTable(String table);
-
+	/**
+	 * EL constructor toma una implementación de {@link Formatter} para poder
+	 * formatear correctamente los tipos de datos usados por java a los de los
+	 * DBMS.
+	 * @param formatter La clase que formatea los tipos de datos.
+	 */
 	public InsertQuery(Formatter formatter) {
 		super(formatter);
 	}
@@ -60,16 +58,5 @@ public abstract class InsertQuery extends DefaultUpdateableQuery {
 	 * @param isFromValues 
 	 */
 	public abstract void setFromValues(boolean isFromValues);
-
-	
-	
-	/**
-	 * Returns a java.sql.PreparedStatement object based on the query.
-	 * 
-	 * This should guarantee that the ordering of the "?" passed in is the same
-	 * ordering as in the returned statement.
-	 */
-	// PreparedStatement getPreparedStatement(Connection conn) throws
-	// SQLException;
 
 }

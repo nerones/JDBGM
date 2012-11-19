@@ -30,9 +30,6 @@ public abstract class DefaultDeleteQuery implements DeleteQuery {
 		return wclause;
 	}
 
-	
-	
-
 	public String toString() {
 		String ret = "DELETE FROM " + table;
 		if (wclause != null) {

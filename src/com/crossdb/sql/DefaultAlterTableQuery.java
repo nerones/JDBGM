@@ -4,7 +4,7 @@ import java.util.Vector;
 /**
  * Implementación base de {@link AlterTableQuery} de la cual debe heredar cualquier
  * implementación especifica para algún DBMS.
- * @author Nelson Efrain A. Cruz
+ * @author Nelson Efrain A. Cruz - neac03@gmail.com
  * @author Travis Reeder - travis@spaceprogram.com
  */
 public abstract class DefaultAlterTableQuery implements AlterTableQuery {

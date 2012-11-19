@@ -108,8 +108,8 @@ public interface UpdateableQuery extends UpdateStatement{
 	 * La intención de este método es recordar que se debe re escribir la función
 	 * {@link Object#toString()}, se debe tener en cuenta que la clase base que implemente
 	 * esta interfaz (de la que heredaran las implementaciones especificas) deberá declarar
-	 * como abstracto el método para asi obligar a que sea implementado en las clases finales. 
-	 * @return
+	 * como abstracto el método para así obligar a que sea implementado en las clases finales. 
+	 * @return String La sentencia como cadena de texto.
 	 */
 	public String toString();
 	
