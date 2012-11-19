@@ -37,7 +37,7 @@ import com.nelsonx.jdbgm.ManagerFactory;
  * @author Nelson Efrain A. Cruz
  *
  */
-public class TestMySqlCreate {
+public class TestMySQLCreate {
 	CreateTableQuery ct;
 	Column col;
 	String expectedSQL;
@@ -58,14 +58,14 @@ public class TestMySqlCreate {
 		ct.addColumn(test);
 		ct.addAutoincrementPrimaryKeyColumn(new Column("id", Types.INTEGER));
 		ct.addColumn(new Column("carac", Types.INTEGER));
-		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id INTEGER AUTO_INCREMENT PRIMARY KEY, carac INTEGER )";
+		expectedSQL = "CREATE TABLE Animales ( Genero CHAR(50) NOT NULL, id INT AUTO_INCREMENT PRIMARY KEY, carac INT )";
 		assertEquals( expectedSQL, ct.toString());
 		
 		ct = factory.getCreateTableQuery();
 		ct.setName("animales");
 		ct.addPrimaryKeyColumn(new Column("id",Types.INTEGER));
 		ct.addForeignKeyColumn(new Column("reino_id", Types.VARCHAR, "reinos", "id"));
-		expectedSQL = "CREATE TABLE animales ( id INTEGER, reino_id VARCHAR(50), " +
+		expectedSQL = "CREATE TABLE animales ( id INT, reino_id VARCHAR(50), " +
 				"PRIMARY KEY (id), " +
 				"FOREIGN KEY (reino_id) REFERENCES reinos(id) )";
 		assertEquals( expectedSQL, ct.toString());
@@ -123,7 +123,7 @@ public class TestMySqlCreate {
 		ct.addColumn(new Column("carac", Types.INTEGER));
 		//System.out.println(ct.toString());
 		expectedSQL = "CREATE TABLE Animales4 ( Genero CHAR(50) NOT NULL, Genero2 CHAR(50), Cientifico CHAR(50)," +
-				" Id INTEGER AUTO_INCREMENT PRIMARY KEY, carac INTEGER," +
+				" Id INT AUTO_INCREMENT PRIMARY KEY, carac INT," +
 				" FOREIGN KEY (Genero, Genero2) REFERENCES Entes(Genero, Genero2)," +
 				" FOREIGN KEY (Cientifico) REFERENCES Estudio(Cientifico2) )"; 
 		assertEquals( expectedSQL, ct.toString());
@@ -141,8 +141,8 @@ public class TestMySqlCreate {
 		columns.add(new Column("uno", Types.INTEGER));
 		columns.add(new Column("dos", Types.INTEGER));
 		ct.addCompositeUniqueColumns(columns);
-		expectedSQL = "CREATE TABLE Animales2 ( Genero CHAR(50) DEFAULT 'RATA', Id INTEGER, " +
-				"uno INTEGER, dos INTEGER, " +
+		expectedSQL = "CREATE TABLE Animales2 ( Genero CHAR(50) DEFAULT 'RATA', Id INT, " +
+				"uno INT, dos INT, " +
 				"UNIQUE (Genero), " +
 				"UNIQUE (uno, dos) )";
 		//System.out.println(ct.toString());
@@ -158,7 +158,7 @@ public class TestMySqlCreate {
 		TableConstraint foreign = new TableConstraint(TableConstraint.TYPE_FOREIGN_KEY, columns);
 		foreign.setMatchTypeFK(TableConstraint.MATCH_FULL);
 		ct.addTableConstraint(foreign);
-		expectedSQL = "CREATE TABLE animales ( uno INTEGER, dos INTEGER, " +
+		expectedSQL = "CREATE TABLE animales ( uno INT, dos INT, " +
 				"FOREIGN KEY (uno, dos) REFERENCES tunos(tuno_id, tdos_id) MATCH FULL )";
 		//System.out.println(ct.toString());
 		assertEquals(expectedSQL, ct.toString());
@@ -167,42 +167,42 @@ public class TestMySqlCreate {
 	@Test
 	public void testTypes(){
 		ct.setName("Animales5");
-		Column col = new Column("col1", Types.BIGINT, false);
+		Column col = new Column("col1", Types.BIGINT );
 		ct.addColumn(col );
-		ct.addColumn(new Column("col2", Types.BINARY, false));
-		ct.addColumn(new Column("col3", Types.BIT, false));
-		ct.addColumn(new Column("col4", Types.BLOB, false));
-		ct.addColumn(new Column("col5", Types.BOOLEAN, false));
-		ct.addColumn(new Column("col6", Types.CHAR, false));
-		ct.addColumn(new Column("col7", Types.CLOB, false));
-		ct.addColumn(new Column("col8", Types.DATALINK, false));
-		ct.addColumn(new Column("col9", Types.DATE, false));
-		ct.addColumn(new Column("col10", Types.DECIMAL, false));
-		ct.addColumn(new Column("col11", Types.DISTINCT, false));
-		ct.addColumn(new Column("col12", Types.DOUBLE, false));
-		ct.addColumn(new Column("col13", Types.FLOAT, false));
-		ct.addColumn(new Column("col14", Types.INTEGER, false));
-		ct.addColumn(new Column("col15", Types.JAVA_OBJECT, false));
-		ct.addColumn(new Column("col16", Types.LONGNVARCHAR, false));
-		ct.addColumn(new Column("col17", Types.LONGVARBINARY, false));
-		ct.addColumn(new Column("col18", Types.LONGVARCHAR, false));
-		ct.addColumn(new Column("col19", Types.NCHAR, false));
-		ct.addColumn(new Column("col20", Types.NCLOB, false));
-		ct.addColumn(new Column("col21", Types.NULL, false));
-		ct.addColumn(new Column("col22", Types.NUMERIC, false));
-		ct.addColumn(new Column("col23", Types.NVARCHAR, false));
-		ct.addColumn(new Column("col24", Types.OTHER, false));
-		ct.addColumn(new Column("col25", Types.REAL, false));
-		ct.addColumn(new Column("col26", Types.REF, false));
-		ct.addColumn(new Column("col27", Types.ROWID, false));
-		ct.addColumn(new Column("col28", Types.SMALLINT, false));
-		ct.addColumn(new Column("col29", Types.SQLXML, false));
-		ct.addColumn(new Column("col30", Types.STRUCT, false));
-		ct.addColumn(new Column("col31", Types.TIME, false));
-		ct.addColumn(new Column("col32", Types.TIMESTAMP, false));
-		ct.addColumn(new Column("col33", Types.TINYINT, false));
-		ct.addColumn(new Column("col34", Types.VARBINARY, false));
-		ct.addColumn(new Column("col35", Types.VARCHAR, false));
+		ct.addColumn(new Column("col2", Types.BINARY ));
+		ct.addColumn(new Column("col3", Types.BIT ));
+		ct.addColumn(new Column("col4", Types.BLOB ));
+		ct.addColumn(new Column("col5", Types.BOOLEAN ));
+		ct.addColumn(new Column("col6", Types.CHAR ));
+		ct.addColumn(new Column("col7", Types.CLOB ));
+		ct.addColumn(new Column("col8", Types.DATALINK ));
+		ct.addColumn(new Column("col9", Types.DATE ));
+		ct.addColumn(new Column("col10", Types.DECIMAL ));
+		ct.addColumn(new Column("col11", Types.DISTINCT ));
+		ct.addColumn(new Column("col12", Types.DOUBLE ));
+		ct.addColumn(new Column("col13", Types.FLOAT ));
+		ct.addColumn(new Column("col14", Types.INTEGER ));
+		ct.addColumn(new Column("col15", Types.JAVA_OBJECT ));
+		ct.addColumn(new Column("col16", Types.LONGNVARCHAR ));
+		ct.addColumn(new Column("col17", Types.LONGVARBINARY ));
+		ct.addColumn(new Column("col18", Types.LONGVARCHAR ));
+		ct.addColumn(new Column("col19", Types.NCHAR ));
+		ct.addColumn(new Column("col20", Types.NCLOB ));
+		ct.addColumn(new Column("col21", Types.NULL ));
+		ct.addColumn(new Column("col22", Types.NUMERIC ));
+		ct.addColumn(new Column("col23", Types.NVARCHAR ));
+		ct.addColumn(new Column("col24", Types.OTHER ));
+		ct.addColumn(new Column("col25", Types.REAL ));
+		ct.addColumn(new Column("col26", Types.REF ));
+		ct.addColumn(new Column("col27", Types.ROWID ));
+		ct.addColumn(new Column("col28", Types.SMALLINT ));
+		ct.addColumn(new Column("col29", Types.SQLXML ));
+		ct.addColumn(new Column("col30", Types.STRUCT ));
+		ct.addColumn(new Column("col31", Types.TIME ));
+		ct.addColumn(new Column("col32", Types.TIMESTAMP ));
+		ct.addColumn(new Column("col33", Types.TINYINT ));
+		ct.addColumn(new Column("col34", Types.VARBINARY ));
+		ct.addColumn(new Column("col35", Types.VARCHAR ));
 		
 		assertEquals("CREATE TABLE Animales5 ( " +
 				"col1 BIGINT, " +

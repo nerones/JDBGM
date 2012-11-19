@@ -52,7 +52,6 @@ public class TestMySQLInsert {
 		
 		String expected = "INSERT INTO tabla () VALUES ()";
 		assertEquals(expected, insert.toString());
-		
 	}
 	
 	@Test

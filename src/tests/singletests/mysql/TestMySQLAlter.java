@@ -27,12 +27,15 @@ import com.crossdb.sql.AlterTableQuery;
 import com.crossdb.sql.Column;
 import com.crossdb.sql.SQLFactory;
 import com.nelsonx.jdbgm.ManagerFactory;
+import com.spaceprogram.sql.mysql.MySQLAlterTableQuery;
 
 /**
+ * Pruebas unitarias para la implementación de {@link MySQLAlterTableQuery}.
+ * 
  * @author Nelson Efrain A. Cruz
  *
  */
-public class TestAlterMySQL {
+public class TestMySQLAlter {
 	AlterTableQuery at;
 	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.MYSQL_DB);
 	@Before
@@ -50,10 +53,8 @@ public class TestAlterMySQL {
 	@Test
 	public void testBasic(){
 		at.setTable("tabla");
-		at.addColumn(new Column("columna", java.sql.Types.DECIMAL));
 		at.addColumn(new Column("columna2", java.sql.Types.INTEGER));
-		assertEquals("ALTER TABLE tabla ADD COLUMN columna DECIMAL", at.toString());
-		//sdsdsd
+		assertEquals("ALTER TABLE tabla ADD COLUMN columna2 INT", at.toString());
 	}
 	
 	@Test
@@ -61,8 +62,5 @@ public class TestAlterMySQL {
 		at.setTable("tabla");
 		at.newTableName("new_table_name");
 		assertEquals("ALTER TABLE tabla RENAME TO new_table_name", at.toString());
-		//sdsdsd
 	}
-	
-
 }

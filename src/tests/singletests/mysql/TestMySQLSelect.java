@@ -19,7 +19,7 @@ import com.spaceprogram.sql.mysql.MySQLFunctions;
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
  *
  */
-public class TestSelectQuery {
+public class TestMySQLSelect {
 	
 	SelectQuery sq, sq2;
 	String expected;

@@ -30,7 +30,6 @@ import org.junit.Test;
 import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
-import com.crossdb.sql.UpdateQuery;
 import com.nelsonx.jdbgm.GenericManager;
 import com.nelsonx.jdbgm.JDException;
 import com.nelsonx.jdbgm.ManagerFactory;
@@ -127,6 +126,7 @@ public class TestMySQLManager {
 	public void testQuery() throws JDException{
 		SelectQuery select = factory.getSelectQuery();
 		select.addTable("tabla1");
+		@SuppressWarnings("unused")
 		ResultSet rs = manager.query(select);
 		
 	}
