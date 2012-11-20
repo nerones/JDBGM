@@ -30,7 +30,6 @@ public class SQLiteDeleteQuery extends DefaultDeleteQuery {
 
 	SQLiteDeleteQuery(Formatter formatter) {
 		super(formatter);
-		// TODO Auto-generated constructor stub
 	}
 
 }
