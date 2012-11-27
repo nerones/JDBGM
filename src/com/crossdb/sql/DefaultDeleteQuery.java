@@ -26,7 +26,7 @@ public abstract class DefaultDeleteQuery implements DeleteQuery {
 	}
 	
 	public WhereClause addWhere(){
-		if (wclause != null) wclause = new WhereClause(formatter);
+		if (wclause == null) wclause = new WhereClause(formatter);
 		return wclause;
 	}
 
