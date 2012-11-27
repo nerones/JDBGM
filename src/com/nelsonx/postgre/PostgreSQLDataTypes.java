@@ -4,6 +4,12 @@ import java.sql.Types;
 
 import com.crossdb.sql.DataTypes;
 
+/**
+ * Implementación especifica de {@link DataTypes} para el DBMS PostgreSQL.
+ * 
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class PostgreSQLDataTypes extends DataTypes{
 	
 public String getAsString(int type, int size ){

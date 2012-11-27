@@ -3,11 +3,16 @@ package com.nelsonx.postgre;
 import com.crossdb.sql.DefaultSelectQuery;
 import com.crossdb.sql.Formatter;
 
+/**
+ * Implementación por defecto de {@link DefaultSelectQuery} para el 
+ * DBMS PostgreSQL.
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class PostgreSQLSelectQuery extends DefaultSelectQuery {
 
 	PostgreSQLSelectQuery(Formatter formatter) {
 		super(formatter);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

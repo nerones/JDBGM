@@ -21,6 +21,7 @@ package com.nelsonx.postgre;
 import com.crossdb.sql.Functions;
 
 /**
+ * Implementación especifica de {@link Functions} para el DBMS PostgreSQL.
  * @author Nelson Efrain A. Cruz -neac03@gmail.com
  *
  */

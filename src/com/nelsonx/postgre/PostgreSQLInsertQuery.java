@@ -2,11 +2,18 @@ package com.nelsonx.postgre;
 
 import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultInsertQuery;
+import com.crossdb.sql.Formatter;
 
+/**
+ * Implementación especifica de {@link DefaultInsertQuery} para el 
+ * DBMS PostgreSQL.
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class PostgreSQLInsertQuery extends DefaultInsertQuery {
 
-	PostgreSQLInsertQuery() {
-		super(new PostgreSQLFormatter());
+	PostgreSQLInsertQuery(Formatter formatter) {
+		super(formatter);
 	}
 
 	@Override

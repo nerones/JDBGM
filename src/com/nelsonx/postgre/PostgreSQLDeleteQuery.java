@@ -22,7 +22,8 @@ import com.crossdb.sql.DefaultDeleteQuery;
 import com.crossdb.sql.Formatter;
 
 /**
- * Implementación Especifica de {@link DefaultDeleteQuery} para el motor PostgreSQL.
+ * Implementación Especifica de {@link DefaultDeleteQuery} para el motor 
+ * PostgreSQL.
  * @author Nelson Efrain A. Cruz - neac03@gmail.com
  *
  */
@@ -30,7 +31,6 @@ public class PostgreSQLDeleteQuery extends DefaultDeleteQuery {
 
 	PostgreSQLDeleteQuery(Formatter formatter) {
 		super(formatter);
-		// TODO Auto-generated constructor stub
 	}
 
 }

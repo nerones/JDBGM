@@ -9,6 +9,11 @@ import com.crossdb.sql.SelectQuery;
 import com.crossdb.sql.UpdateQuery;
 import com.crossdb.sql.WhereClause;
 
+/**
+ * Implementación especifica de {@link SQLFactory} para el DBMS PostgreSQL.
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class PostgreSQLFactory extends SQLFactory {
 
 	private PostgreSQLFormatter formatter;
@@ -19,7 +24,7 @@ public class PostgreSQLFactory extends SQLFactory {
 	
 	@Override
 	public InsertQuery getInsertQuery() {
-		return new PostgreSQLInsertQuery();
+		return new PostgreSQLInsertQuery(formatter);
 	}
 
 	@Override

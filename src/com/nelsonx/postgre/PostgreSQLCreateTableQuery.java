@@ -4,14 +4,17 @@ import com.crossdb.sql.Column;
 import com.crossdb.sql.DefaultCreateTableQuery;
 import com.crossdb.sql.TableConstraint;
 
+/**
+ * Implementación especifica de {@link DefaultCreateTableQuery} para el DBMS
+ * PostgreSQL.
+ * 
+ * @author Nelson Efrain A. Cruz -neac03@gmail.com
+ *
+ */
 public class PostgreSQLCreateTableQuery extends DefaultCreateTableQuery {
 
-	/**
-	 * @param datatype
-	 */
 	PostgreSQLCreateTableQuery() {
 		super(new PostgreSQLDataTypes());
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
