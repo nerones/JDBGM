@@ -29,15 +29,15 @@ import com.crossdb.sql.InsertQuery;
 import com.crossdb.sql.SQLFactory;
 import com.crossdb.sql.SelectQuery;
 import com.nelsonx.jdbgm.ManagerFactory;
-import com.nelsonx.postgre.PostgreSQLFormatter;
 
 /**
  * @author Nelson Efrain A. Cruz
- *Por ahora es exactamente igual a TestSQLiteInsert
+ *
  */
 public class TestPostgreSQLInsert {
 	InsertQuery insert;
 	SQLFactory factory = SQLFactory.debugGetFactory(ManagerFactory.POSTGRE_DB);
+	
 	@Before
 	public void setup(){
 		insert = factory.getInsertQuery();
@@ -52,7 +52,6 @@ public class TestPostgreSQLInsert {
 		
 		String expected = "INSERT INTO tabla DEFAULT VALUES";
 		assertEquals(expected, insert.toString());
-		
 	}
 	
 	@Test
@@ -105,5 +104,4 @@ public class TestPostgreSQLInsert {
 		expected = "INSERT INTO Perro (Id) VALUES (522)";
 		assertEquals(expected, insert.toString());
 	}
-
 }
