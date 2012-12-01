@@ -9,17 +9,17 @@ El presente trabajo pretende desarrollar en principio una capa de abstracción p
 %
 %
 \section{Objetivos generales}
-El presente proyecto obliga a realizar dos tareas bien distintas, la primera es el estudio de los diferentes \dd para aprender como es que se manejan esos motores y poder conocer tanto las características en común como aquellas en las que difieran, la segunda tarea tiene que ver con estudiar el modo de diseñar el proyecto es decir de que modo estará estructurado \jj para poder permitir una fácil ampliación, un fácil mantenimiento todo esto teniendo en cuenta que el proyecto es mas que una librería pues proporcionara métodos pero a su vez exigirá un modo de implementar. Así podemos enumerar los siguientes objetivos generales del proyecto:
+El presente proyecto precisa que se realicen dos tareas básicas bien distintas, la primera es el estudio de los diferentes \dd para aprender como es que se manejan esos motores y poder conocer tanto las características en común como aquellas en las que difieran, la segunda tarea tiene que ver con estudiar el modo de diseñar el proyecto, es decir de que modo estará estructurado \jj para poder permitir una fácil ampliación y un fácil mantenimiento. Así podemos enumerar los siguientes objetivos generales del proyecto:
 \begin{enumerate}
 \item Familiarizarse con la lectura de documentación de proyectos.
 \item Investigar sobre el uso de patrones de diseño.
-\item Investigar como se diseña una API.
+\item Investigar como se diseña una API\footnote{\textit{Application Programming Interface}}.
 \end{enumerate}
 %
 \section{Tecnología utilizada}
-El proyecto sera desarrollado sobre el lenguaje de programación Java, originalmente desarrollado por la empresa Sun Microsystems pero desde el 2010 paso a manos de Oracle ya que Sun fue adquirida por completo por Oracle, y los motores de base de datos \m, \p y \s a los que inicialmente se les pretende dar soporte en este proyecto. Como herramientas para asistir el desarrollo se utilizara el entorno de desarrollo Eclipse especializado en java que además agrega otras herramientas como por ejemplo la librería de pruebas unitarias JUnit y el sistema de control de versiones Git. Para el desarrollo de este informe se uso Latex junto con el ``IDE'' Texmaker. Todo el proyecto se desarrollo sobre el sistema operativo Ubuntu principalmente por la familiaridad y facilidad de uso de las herramientas que se estaban utilizando sobre este tipo de sistemas, por ejemplo Git fue creado para ser usado en entornos *nix\footnote{Aunque actualmente se lo puede usar en Windows/Linux/Mac}.
+El proyecto sera desarrollado sobre el lenguaje de programación Java y los motores de base de datos \m, \p y \s que son a los que inicialmente se les pretende dar soporte. Como herramientas para asistir el desarrollo se utilizara el entorno de desarrollo Eclipse que esta especializado en java y que además agrega otras herramientas como por ejemplo la librería de pruebas unitarias JUnit y por otro lado se usara el sistema de control de versiones Git que a pesar de que se puede integrar en Eclipse, se prefirió manejarlo de manera separada para poder aprender de manera mas profunda su uso. Para el desarrollo de este informe se uso Latex junto con el ``IDE'' Texmaker. Todo el proyecto se desarrollo sobre el sistema operativo Ubuntu principalmente por la familiaridad y facilidad de uso de las herramientas que se están utilizando sobre este tipo de sistemas, por ejemplo Git fue creado para ser usado en entornos *nix\footnote{Aunque actualmente se lo puede usar en Windows/Linux/Mac}.
 %
-\section{Contribución de este trabajo}
+%\section{Contribución de este trabajo}
 %
 %
 %
@@ -27,7 +27,4 @@ El proyecto sera desarrollado sobre el lenguaje de programación Java, originalm
 %
 El presente trabajo se organiza de la siguiente forma. El Capítulo 1 introduce a el objetivo de el trabajo y lo enmarca dentro de una tecnología determinada además de presentar los objetivos generales que se persiguen. El Capítulo 2 expone algunas de las herramientas existentes que resuelven desde distintos enfoques la problemática que ataca este trabajo, nombrando entre ellas ORM, generadores de código y otros. El Capítulo 3 introduce formalmente la problemática que se esta atacando e introduce el concepto de Patrones de Diseño para terminar introduciendo la solución que se propone. En el Capítulo 4 es la especificación formal de la solución que se propone, para ello se divide el proyecto en dos módulos internos, un manejador de sentencias y un API para el acceso a motores de base de datos. El capitulo 5 documenta los aspectos importantes de el diseño sobre el que se construyo el proyecto, siguiendo para ello la división en dos módulos principales. El Capítulo 6 documenta los pormenores, ajustes y correcciones que se tuvieron que hacer durante la implementación de el proyecto y para terminar se comentan el modo en que se realizaron las pruebas sobre el código escrito. Para terminar con los capítulos se escribió una breve reseña sobre los resultados que se obtuvieron de el proyecto y el trabajo a futuro que se espera realizar.
 
-Como Apéndice de la tesis se creo un manual de usuario que cubre los aspectos basicos de uso de la herramienta que se desarrollo y una descripción de una simple aplicación de ejemplo que muestra un uso practico de la herramienta.     
-
-
-
+Como Apéndice de la tesis se creo un manual de usuario que cubre los aspectos basicos de uso de la herramienta que se desarrollo y una descripción de una simple aplicación de ejemplo que muestra un uso practico de la herramienta.
