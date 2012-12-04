@@ -1,13 +1,13 @@
 \chapter{Especificación}
 \label{capitulo:especificacion}
 En este capitulo estableceremos los requisitos necesarios para cumplir con las necesidades que presentamos anteriormente, para ello estableceremos que medidas debemos tener en cuenta a la hora de establecer el API que nos permitirá comunicarnos con el motor de base de datos y además que se requiere para que el código escrito sea independiente del motor en particular que se este por utilizar.
-
 %trabajando con mysql 5.1 reference manual\\
-
 %trabajando con PostgreSQL 8.4 reference manual\\
-
 %sqlite con el de la pagina la version 3\\
+%
+%
 \section{Contexto}
+%
 El proyecto como ya se comento se desarrollara sobre el lenguaje Java e inicialmente se dará soporte para tres motores de base de datos, las versiones usadas de cada una de ellas para el desarrollo del proyecto son las siguientes:
 \begin{enumerate}
 	\item Java SE 6 o versión superior.
@@ -15,29 +15,32 @@ El proyecto como ya se comento se desarrollara sobre el lenguaje Java e inicialm
 	\item MySQL 5.1
 	\item Sqlite 3
 \end{enumerate}
+%
 En este capitulo se pretenden declarar los requerimientos generales del proyecto para cumplir con su objetivo y el por que de los mismos. Básicamente hay dos tópicos diferentes a tratar: primero se definirá como se ocultara el acceso a la base de datos en otras palabras definir que funciones debe proveer la interfaz que ocultara el uso de JDBC; en segundo lugar esta definir como se trataran las sentencias SQL para que no sean ``dialecto dependientes".
-
+%
 \section{Ocultando el acceso a el motor}
-Cuando se habla de ocultar el acceso a el motor se esta haciendo referencia a que la API proveída por este proyecto debe en primer termino ocultar el uso de JDBC en el sentido de que no se hace uso explicito de los métodos que este ofrece, en segundo lugar se refiere a que los métodos proveídos por la API aquí desarrollada no deben ser ``motor dependiente'' para evitar que el código también lo sea. Para manejar el acceso al motor de base de datos \jj debe proveer las siguientes funcionalidades mínimas que a su vez puede que se desglosen en mas de una función (o método):
+Cuando se habla de ocultar el acceso a el motor se esta haciendo referencia a que la API proveída por este proyecto debe en primer termino ocultar el uso de JDBC, en el sentido de que no se hace uso explicito de los métodos que este ofrece, en segundo lugar se refiere a que los métodos proveídos por la API aquí desarrollada no deben ser ``motor dependiente'' para evitar que el código escrito con ella también lo sea. Para manejar el acceso al motor de base de datos \jj debe proveer las siguientes funcionalidades mínimas que a su vez puede que se desglosen en mas de una función (o método):
+%
 \begin{enumerate}
-
-\item Crear una conexión con el motor: es decir se debe encargar de obtener una conexión al motor y ponerla a disponibilidad de los métodos definidos.
-
+%
+\item Crear una conexión con el motor: es decir se debe encargar de obtener una conexión al motor y ponerla a disponibilidad de los métodos definidos, verificando que cuando se la necesite esta siga estando ``viva''.
+%
 \item Cerrar la conexión con el motor: poder cerrar la conexión con el motor para liberar recursos de la misma, una conexión no usada sin cerrar es un desperdicio de recursos.
-
+%
 \item Enviar sentencias SQL al motor: el modo de interactuar con el motor es mediante el envío de sentencias SQL, este punto se lo discutirá mas ampliamente en la sección siguiente.
-
-\item Poder enviar transacciones: una transacción consiste en un conjunto de sentencias que deben ejecutarse en conjunto, una vez finalizadas se guardan los cambios (commit) o se rechazan (rollback) si sucediere algún error.
-
-\item Manejar los errores que se puedan producir: se pueden dar errores en la sintaxis de las sentencias SQL como así también errores en la lógica de las sentencias que se formaron, como por ejemplo equivocarse en el nombre de una tabla o referirse a una columna inexistente.
-
+%
+\item Poder enviar transacciones: una transacción consiste en un conjunto de sentencias que deben ejecutarse en conjunto, una vez finalizadas se guardan los cambios (commit) o se rechazan (rollback) si sucediere algún error en cualquiera de las sentencias que se pretenden ejecutar como un conjunto.
+%
+\item Manejar los errores que se puedan producir: se pueden dar errores en la sintaxis de las sentencias SQL como así también errores en la lógica de las sentencias que se formaron, como por ejemplo equivocarse en el nombre de una tabla o referirse a una columna inexistente, además pueden existir otros tipos de errores que no están directamente relacionados con el \dd, por ejemplo que la conexión de red necesaria para comunicarse con un motor que se encuentra en un servidor externo falle. Estos errores deben ser correctamente atrapados para que el programador evite que el programa que esta desarrollando simplemente se cuelgue.
+%
 \item Devolver resultados de las consultas, por ejemplo para una consulta del tipo \verb=SELECT= es necesario devolver el conjunto de datos que resultaron de la consulta, para las otras sentencias DML como \verb=INSERT= puede resultar necesario conocer la cantidad de columnas que fueron afectadas.
-
+%
 \item Manejar la creación de los objetos de modo que se instancien desde la clase adecuada dependiendo de el motor que se esta por utilizar. En primer instancia esto puede parecer algo trivial pero es en realidad importante por que libera al programador de la necesidad de decidir que clase debe instanciar y hace a el código independiente de una implementación particular de las interfaces definidas.
 \end{enumerate}
-
-
-\section{Eliminando dialectos} \label{seccion:especificacion:dialectos}
+%
+%
+\section{Eliminando dialectos}
+\label{seccion:especificacion:dialectos}
 En el capitulo anterior se comento que parte del desafío de nuestro proyecto era lidiar con los diferentes  dialectos utilizados por cada motor por lo que a continuación analizaremos como es que pretendemos sortear esta dificultad.
 
 JDBC nos provee de la clase \verb=Statement=\footnote{Posteriormente explicare como es que se trabaja con JDBC por ahora interesa solo lo expuesto} la cual posee los métodos \verb=executeUpdate= y \verb=executeQuery= los cuales permiten enviar sentencias SQL al motor de base de datos. El envío de estas sentencia se hace mediante cadenas de texto por lo que se nos presenta el problema de que estas cadenas ``estáticas'' dependen, según cuan complejas sean las sentencias, de el motor en particular que se este usando es por ello que en este proyecto se opto por generar las sentencias sobre demanda, es decir se pretende que las sentencias se almacenen desglosadas de modo que su sintaxis quede expuesta y pueda luego ser volcada en una cadena de texto cuando sean requeridas por el programador. El almacenar de este modo las sentencias no asegura tampoco la independencia de los dialectos usados pero nos permite manejar el modo en que las sentencias son convertidas en cadenas de textos, entonces si se define un nuevo dialecto que sea compatible con los dialectos usados por los otros motores y ajustando la estructura de datos que se va a utilizar para las sentencias a este dialecto se puede luego mediante las reglas adecuadas "traducir" la sentencia a su dialecto correspondiente. 
