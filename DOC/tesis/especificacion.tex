@@ -41,34 +41,39 @@ Cuando se habla de ocultar el acceso a el motor se esta haciendo referencia a qu
 %
 \section{Eliminando dialectos}
 \label{seccion:especificacion:dialectos}
-En el capitulo anterior se comento que parte del desafío de nuestro proyecto era lidiar con los diferentes  dialectos utilizados por cada motor por lo que a continuación analizaremos como es que pretendemos sortear esta dificultad.
+En el capitulo anterior se comento que parte del desafío de este proyecto consiste en lidiar con los diferentes  dialectos utilizados por cada motor en particular, por lo que a continuación se analizara como es que se pretende sortear esta dificultad.
 
-JDBC nos provee de la clase \verb=Statement=\footnote{Posteriormente explicare como es que se trabaja con JDBC por ahora interesa solo lo expuesto} la cual posee los métodos \verb=executeUpdate= y \verb=executeQuery= los cuales permiten enviar sentencias SQL al motor de base de datos. El envío de estas sentencia se hace mediante cadenas de texto por lo que se nos presenta el problema de que estas cadenas ``estáticas'' dependen, según cuan complejas sean las sentencias, de el motor en particular que se este usando es por ello que en este proyecto se opto por generar las sentencias sobre demanda, es decir se pretende que las sentencias se almacenen desglosadas de modo que su sintaxis quede expuesta y pueda luego ser volcada en una cadena de texto cuando sean requeridas por el programador. El almacenar de este modo las sentencias no asegura tampoco la independencia de los dialectos usados pero nos permite manejar el modo en que las sentencias son convertidas en cadenas de textos, entonces si se define un nuevo dialecto que sea compatible con los dialectos usados por los otros motores y ajustando la estructura de datos que se va a utilizar para las sentencias a este dialecto se puede luego mediante las reglas adecuadas "traducir" la sentencia a su dialecto correspondiente. 
+\jd provee la clase \verb=Statement=\footnote{Posteriormente se explicara como es que se trabaja con JDBC, por ahora interesa solo lo expuesto.} la cual posee los métodos \verb=executeUpdate= y \verb=executeQuery= los cuales permiten enviar sentencias SQL al motor de base de datos. El envío de estas sentencia se hace mediante cadenas de texto por lo que se nos presenta el problema de que estas cadenas ``estáticas'' dependen, según cuan complejas sean las sentencias, de el motor en particular que se este usando. Es por ello que en este proyecto se opto por generar las sentencias sobre demanda, es decir se pretende que las sentencias se almacenen desglosadas de modo que su sintaxis quede expuesta y pueda luego ser volcada en una cadena de texto cuando sean requeridas por el programador. El almacenar de este modo las sentencias no asegura tampoco la independencia de los dialectos usados pero permite manejar el modo en que las sentencias serán convertidas en cadenas de textos, entonces si se define un nuevo dialecto que sea compatible con los dialectos usados por los otros motores y ajustando la estructura de datos que se va a utilizar para las sentencias a este dialecto se puede, mediante las reglas adecuadas, "traducir" la sentencia a su dialecto correspondiente. 
 
-Definir un nuevo dialecto puede parecer algo engorroso, pero en realidad este nuevo dialecto estará basado en los dialectos usados por los motores a los que se le esta dando soporte en este proyecto y además solo se trabajara con un subconjunto de sentencias definidos en estos dialectos pues no es objetivo del proyecto brindar un total soporte sobre SQL si no que se cubrirán las siguientes sentencias:
+Definir un nuevo dialecto puede parecer algo engorroso, pero en realidad este nuevo dialecto estará basado en los dialectos usados por los motores a los que se le esta dando soporte y además solo se trabajara con un subconjunto de las sentencias definidos en estos dialectos pues no es objetivo del proyecto brindar un total soporte sobre SQL si no que se pretende cubrir un subconjunto de estas que permitan realizar las operaciones usualmente conocidas como CRUD\footnote{Aunque a veces se cambian el significado de algunas de las siglas, usualmente la definición dada es la mas usada.} que viene del ingles ``\textit{Create, Read, Update and Delete}'' que puede traducirse en el uso de las sentencias SQL \verb=INSERT, SELECT, UPDATE= y \verb=DELETE=.
+
+Las necesidades del proyecto quedarían satisfechas con el soporte para las sentencias listadas en el párrafo anterior pero como esta parte del proyecto se basara en una librería pre-existente que también da soporte para las sentencias \verb=CREATE TABLE= y \verb=ALTER TABLE= estas también serán incluidas como parte del proyecto. Un punto interesante de aclarar es que no hay que confundir la sentencia \verb=CREATE TABLE= con la operación \textit{create} a la que hace referencia el acrónimo CRUD pues este se refiere a crear un nuevo registro en el sistema de persistencia de datos que se este usando, llevándolo al ámbito de los motores de base de datos relacionales se refiere a crear una fila en una tabla, mientras que \verb=CREATE TABLE= sirve para crear tablas, las filas en las tablas se insertan mediante \verb=INSERT=, visto esto y como no es parte del objetivo planteado para el proyecto el soporte para estas dos sentencias sera básico, dejando las puertas abiertas para que en futuras versiones el trabajo pueda ser refinado fácilmente. Por lo que las siguientes sentencias serán las reconocidas por \jj:
+%
 \begin{itemize}
-\item CREATE TABLE - Permite crear tablas 
-\item ALTER TABLE - Modifica la estructura de una tablas \footnote{Solo se da un soporte básico para esta sentencia}
-\item UPDATE - Modifica las filas de una tabla 
-\item INSERT - Inserta nuevas filas a una tabla
-\item DELETE - Elimina columnas de una tabla
-\item SELECT - Realiza consulta sobre las tablas
+\item CREATE TABLE - Permite crear tablas. 
+\item ALTER TABLE - Modifica la estructura de una tablas.
+\item UPDATE - Modifica las filas de una tabla.
+\item INSERT - Inserta nuevas filas a una tabla.
+\item DELETE - Elimina filas de una tabla.
+\item SELECT - Realiza consulta sobre las tablas.
 \end{itemize}
-Los cuales cubren las necesidades que se pueden presentar en la lógica de negocio del proyecto sobre el cual se este trabajando, el uso de mas extensivo de SQL se da a la hora de la administración de la base de datos trabajo que usualmente es realizado por la persona que cumpla el rol de DBA (\textit{Data Base Administrator}) el cual usa una interfaz diferente propia a veces de el motor para trabajar directamente sobre el.
+%
+%
+Las sentencias listadas anteriormente cubren las necesidades que se pueden presentar en la lógica de negocio del proyecto sobre el cual se este trabajando, el uso de mas extensivo de SQL se da a la hora de la administración de la base de datos trabajo que usualmente es realizado por la persona que cumpla el rol de DBA (\textit{Data Base Administrator}) el cual usa una interfaz diferente, propia a veces de el motor mismo, para trabajar directamente sobre el.
 
-La estructura de datos que se quiere manejar la cual quedara expresada en forma de una Clase aparte de contener los datos que hacen a la sentencia debe brindar métodos para convertir la sentencia en una cadena de texto, asignarles valores a los atributos y ser capaz de definir el comportamiento especifico que pueda tener la sentencia. Así podemos hacer un resumen de las características que se desea cumplan estas clases:
+La estructura de datos que se quiere manejar, la cual quedara expresada en forma de una clase, aparte de contener los datos que hacen a la sentencia debe brindar métodos para convertir la sentencia en una cadena de texto, asignarles valores a los atributos y definir el comportamiento especifico que pueda tener la sentencia. Así podemos hacer un resumen de las características que se desea cumplan estas clases:
 \begin{itemize}
-
+%
 	\item Deben poder devolver una cadena de caracteres (\textit{String}) que represente una sentencia SQL valida para el dialecto deseado.
-	\item La sintaxis proveída para el manejo de las clases debe ser consistente entre todas ellas de modo que el aprendizaje de esta no presente mayor dificultad y debe ser lo suficientemente "expresiva" para poder entender lo que se esta haciendo sin tener que recurrir necesariamente a la documentación, lo que tampoco quita que la documentación deba ser dejada de lado. 
-	\item Deben contemplar que no se realicen acciones no permitidas con las sentencias es decir respetar la sintaxis de los dialectos, aspecto que también ah de tenerse en cuenta cuando se este definiendo el dialecto genérico para el proyecto. El manejo de estos errores debe ser mediante el uso de excepciones usando las clases hijas de verb=Exception= en Java.
+	\item La sintaxis proveída para el manejo de las clases debe ser consistente entre todas ellas de modo que el aprendizaje de esta no presente mayor dificultad y debe ser lo suficientemente ``expresiva'' como para poder entender lo que se esta haciendo sin tener que recurrir necesariamente a la documentación, lo que tampoco quita que la documentación deba ser dejada de lado. 
+	\item Deben contemplar de manera básica que no se realicen acciones no permitidas con las sentencias, es decir respetar la sintaxis de los dialectos, aspecto que también ah de tenerse en cuenta cuando se este definiendo el dialecto genérico para el proyecto. El manejo de estos errores debe ser mediante el uso de excepciones usando las clases hijas de \verb=Exception= en Java.
 	\item Deben contemplar todas las opciones disponibles para las sentencias que se están por incluir definidas en el dialecto genérico.
 	\item Deben proveer los métodos necesarios para poblar de datos las clases.
-
+%
 \end{itemize}
-
-Una vez definido el subconjunto de sentencias con las que se trabajaran es necesario definir el dialecto genérico sobre el cual se apoyara este proyecto por lo que para cada una de las sentencias se definirá un comportamiento común, pero para que esto sea posible deberemos restringir las dialectos soportados al que menos posibilidades presente pues las diferencias entre los dialectos usados por los motores se da generalmente por que se agregan funcionalidades a las definidas en el estándar  SQL y raramente se da el caso en que la diferencia se de por la falta de implementación de lo definido en el estándar. Como parte del análisis de las diferencias entre los dialectos y mas allá de la diferencia entre las sintaxis usadas para las sentencias es importante analizar también los tipos de datos que se usan en cada \dd. También para ellos debemos encontrar un factor común, por lo que a continuación dedicamos un capitulo entero a analizar los tipos de datos usados por cada motor.
-
+%
+Una vez definido el subconjunto de sentencias con las que se trabajaran es necesario definir el dialecto genérico sobre el cual se apoyara este proyecto, por lo que para cada una de las sentencias se definirá un comportamiento común, pero para que esto sea posible se deberán restringir los dialectos soportados al que menos posibilidades presente pues las diferencias entre los dialectos usados por los motores se da generalmente por que se agregan funcionalidades a las definidas en el estándar  SQL y raramente se da el caso en que la diferencia se de por la falta de implementación de lo definido en el estándar. Como parte del análisis de las diferencias entre los dialectos es importante analizar también los tipos de datos que se usan en cada \dd. También para ellos se debe encontrar un factor común, mas que nada por la inclusión de la sentencias \verb=CREATE TABLE= y \verb=ALTER TABLE= que precisan que se definan tipos de datos, por lo que a continuación se dedicara un capitulo entero a analizar los tipos de datos usados por cada motor.
+%
 %\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
 %class Sentencia{
 %	nombre_comando;
@@ -78,7 +83,7 @@ Una vez definido el subconjunto de sentencias con las que se trabajaran es neces
 %	devolver_sentencia();
 %}
 %\end{lstlisting}
-
+%
 \subsection{Tipos de datos y sus diferencias}
 \label{subsection:datatypes}
 Al analizar los tipos usados en los diferentes motores quizá la diferencia mas notoria se da en el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo de dato declarado en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos usualmente definidos, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER=, que maneja \m.\\
