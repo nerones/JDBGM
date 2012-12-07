@@ -50,12 +50,12 @@ Definir un nuevo dialecto puede parecer algo engorroso, pero en realidad este nu
 Las necesidades del proyecto quedarían satisfechas con el soporte para las sentencias listadas en el párrafo anterior pero como esta parte del proyecto se basara en una librería pre-existente que también da soporte para las sentencias \verb=CREATE TABLE= y \verb=ALTER TABLE= estas también serán incluidas como parte del proyecto. Un punto interesante de aclarar es que no hay que confundir la sentencia \verb=CREATE TABLE= con la operación \textit{create} a la que hace referencia el acrónimo CRUD pues este se refiere a crear un nuevo registro en el sistema de persistencia de datos que se este usando, llevándolo al ámbito de los motores de base de datos relacionales se refiere a crear una fila en una tabla, mientras que \verb=CREATE TABLE= sirve para crear tablas, las filas en las tablas se insertan mediante \verb=INSERT=, visto esto y como no es parte del objetivo planteado para el proyecto el soporte para estas dos sentencias sera básico, dejando las puertas abiertas para que en futuras versiones el trabajo pueda ser refinado fácilmente. Por lo que las siguientes sentencias serán las reconocidas por \jj:
 %
 \begin{itemize}
-\item CREATE TABLE - Permite crear tablas. 
-\item ALTER TABLE - Modifica la estructura de una tablas.
-\item UPDATE - Modifica las filas de una tabla.
-\item INSERT - Inserta nuevas filas a una tabla.
-\item DELETE - Elimina filas de una tabla.
-\item SELECT - Realiza consulta sobre las tablas.
+\item \verb=CREATE TABLE= - Permite crear tablas. 
+\item \verb=ALTER TABLE= - Modifica la estructura de una tablas.
+\item \verb=UPDATE= - Modifica las filas de una tabla.
+\item \verb=INSERT= - Inserta nuevas filas a una tabla.
+\item \verb=DELETE= - Elimina filas de una tabla.
+\item \verb=SELECT= - Realiza consulta sobre las tablas.
 \end{itemize}
 %
 %
@@ -72,7 +72,7 @@ La estructura de datos que se quiere manejar, la cual quedara expresada en forma
 %
 \end{itemize}
 %
-Una vez definido el subconjunto de sentencias con las que se trabajaran es necesario definir el dialecto genérico sobre el cual se apoyara este proyecto, por lo que para cada una de las sentencias se definirá un comportamiento común, pero para que esto sea posible se deberán restringir los dialectos soportados al que menos posibilidades presente pues las diferencias entre los dialectos usados por los motores se da generalmente por que se agregan funcionalidades a las definidas en el estándar  SQL y raramente se da el caso en que la diferencia se de por la falta de implementación de lo definido en el estándar. Como parte del análisis de las diferencias entre los dialectos es importante analizar también los tipos de datos que se usan en cada \dd. También para ellos se debe encontrar un factor común, mas que nada por la inclusión de la sentencias \verb=CREATE TABLE= y \verb=ALTER TABLE= que precisan que se definan tipos de datos, por lo que a continuación se dedicara un capitulo entero a analizar los tipos de datos usados por cada motor.
+Una vez definido el subconjunto de sentencias con las que se trabajaran es necesario definir el dialecto genérico sobre el cual se apoyara este proyecto, por lo que para cada una de las sentencias se definirá un comportamiento común, pero para que esto sea posible se deberán restringir los dialectos soportados al que menos posibilidades presente pues las diferencias entre los dialectos usados por los motores se da generalmente por que se agregan funcionalidades a las definidas en el estándar  SQL y raramente se da el caso en que la diferencia se de por la falta de implementación de lo definido en el estándar. Como parte del análisis de las diferencias entre los dialectos es importante analizar también los tipos de datos que se usan en cada \dd. También para ellos se debe encontrar un factor común, mas que nada por la inclusión de la sentencias \verb=CREATE TABLE= y \verb=ALTER TABLE= que precisan que se definan tipos de datos, por lo que a continuación se dedicara una sección entera a analizar los tipos de datos usados por cada motor.
 %
 %\begin{lstlisting}[title=Pseudocódigo de la estructura de dato que contiene la sentencia]
 %class Sentencia{
@@ -86,12 +86,12 @@ Una vez definido el subconjunto de sentencias con las que se trabajaran es neces
 %
 \subsection{Tipos de datos y sus diferencias}
 \label{subsection:datatypes}
-Al analizar los tipos usados en los diferentes motores quizá la diferencia mas notoria se da en el modo en que \s maneja los tipos de datos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que podrá almacenar, o sea el tipo de dato declarado en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que definieron las clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos usualmente definidos, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar 6 diferentes tipos de datos enteros con diferentes longitudes, que es en definitiva en lo que difieren por ejemplo los tipos de datos \verb=SMALLINT= e \verb=INTEGER=, que maneja \m.\\
+Al analizar los tipos de datos usados en los diferentes motores, quizá la diferencia mas notoria se da en el modo en que \s maneja estos tipos. La mayoría de los motores de datos manejan un tipo de datos estático, en el que el contenedor del dato (la columna) define el tipo de dato que este podrá almacenar, o sea el tipo de dato declarado en la definición de la columna. En cambio en \s no existen los tipos de datos como tal, si no que se definen clases de almacenamiento\cite{sqlite:datatypes} (\textit{storage clases}) que son mas genéricas que los tipos de datos usualmente definidos, por ejemplo la clase de almacenamiento \verb=INTEGER= puede almacenar los 6 diferentes tipos de datos enteros que define \m , que en definitiva en lo único que difieren es en el espacio que ocupan para ser almacenados, por ejemplo \verb=SMALLINT= ocupa menos bits para ser representado que el tipo \verb=INTEGER=.
 
- En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s). Observado esto podemos decir que al ser \s tan flexible los tipos de datos que se usaran estarán definidos en base a \m y \p.\\
+En \s el tipo de dato de un valor esta asociado a el dato en si y no a su contenedor, pero aun así existe compatibilidad con los otros motores en el sentido de que \s puede interpretar adecuadamente sentencias SQL validas que usen los clásicos tipos de datos estáticos. Para brindar esta compatibilidad se define el concepto de afinidad de tipo para las columnas que viene a ser el tipo de dato recomendado para los datos almacenados en esa columna, así existe una serie de reglas para definir la afinidad de la columna en base a el nombre del tipo de dato declarado para esa columna, pudiendo ser este nombre cualquiera. Aun así la afinidad de la columna \textbf{recomienda} un tipo de dato no lo exige para esa columna, por lo que en \s una columna puede almacenar cualquiera de los tipos de datos definidos (storage class para \s). Observado esto podemos decir que al ser \s tan flexible los tipos de datos que se usaran estarán definidos en base a \m y \p.
  
-\jj debe proveer una interfaz única en la que se establezcan los tipos de datos disponibles para usar, estos tipos de datos deben ser elegidos en base a las compatibilidades entre los diferentes motores que soporta para lograr un uso genérico sobre cualquiera de los motores, en principio se podrían elegir todos los tipos de datos definidos en los motores, uniendo a aquellos que sean equivalentes en un solo tipo y dejando que después \cc se encargue de mapear los datos a los soportados por un motor en concreto, recordando que algunos de los datos declarados no son directamente soportados por todos los \dd. Pero esto podría acarrear confusiones pues veamos, el tipo de dato entero mas chico (el que ocupa menos espacio en disco para representarse) en \m\cite{mysql:datatypes} es \verb=TINYINT= que ocupa solo 1 byte, en cambio en \p\cite{postgre:datatypes} el mas chico es \verb=SMALLINT= que ocupa 2 bytes entonces en el caso de que en los tipos de datos especificados para \jj se encuentren estos dos no habría problemas al usarlos pues si se llegara a especificar una columna con tipo de dato \verb=TINYINT= mientras se trabaja sobre una base de datos con \p no habría mas que mapear internamente el tipo de dato a \verb=SMALLINT= que al ser mas grande tranquilamente lo puede contener, pero en esta situación el programador podría no enterarse de que en realidad la columna que el esta usando ocupa 2 bytes por dato lo que en casos en que el espacio en disco duro sea un tema sensible podría llevar a serias confusiones, entonces lo mejor es que en la especificación de \jj solo se incluyan los tipos que no lleven a este tipo de confusiones. A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero mediante un cuadro comparativo en los que los tipos puestos en la misma linea son congruentes entre si, salvo que se indique lo contrario:
-        
+\jj debe proveer una interfaz única en la que se establezcan los tipos de datos disponibles para usar, estos tipos de datos deben ser elegidos en base a las compatibilidades entre los diferentes motores que soporta para lograr un uso genérico sobre cualquiera de los motores. En principio se podrían elegir todos los tipos de datos definidos en los motores, uniendo a aquellos que sean equivalentes en un solo tipo y dejando que después \jj se encargue de mapear los datos a los soportados por un motor en concreto, recordando que algunos de los datos declarados no son directamente soportados por todos los \dd. Pero esto podría acarrear confusiones pues el tipo de dato entero mas chico (el que ocupa menos espacio en disco para representarse) en \m\cite{mysql:datatypes} es \verb=TINYINT= que ocupa solo 1 byte, en cambio en \p\cite{postgre:datatypes} el mas chico es \verb=SMALLINT= que ocupa 2 bytes entonces en el caso de que en los tipos de datos especificados para \jj se encuentren estos dos no habría problemas al usarlos pues si se llegara a especificar una columna con tipo de dato \verb=TINYINT= mientras se trabaja sobre una base de datos con \p no habría mas que mapear internamente el tipo de dato a \verb=SMALLINT= que al ser mas grande tranquilamente lo puede contener, pero en esta situación el programador podría no enterarse de que en realidad la columna que el esta usando ocupa 2 bytes por dato lo que en casos en que  la capacidad  de almacenamiento sea un tema sensible podría llevar a serias confusiones, entonces lo mejor es que en la especificación de \jj solo se incluyan los tipos que no lleven a este tipo de confusiones. A continuación se analizan los tipos de datos y sus congruencias, empezando por los datos numéricos del tipo entero mediante un cuadro comparativo en los que los tipos puestos en la misma linea son congruentes entre si, salvo que se indique lo contrario:
+%        
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -106,9 +106,9 @@ Al analizar los tipos usados en los diferentes motores quizá la diferencia mas 
 \end{center}
 \caption{Comparación de los tipos de datos enteros}
 \end{table}
-
+%
 Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de contener todos los tipos de datos declarados en los otros dos motores, en \m se definen mas tipos de datos enteros que  difieren únicamente en el espacio que utiliza para almacenarse en disco, el mas chico usa  solo 1 Byte para almacenarse, mientras que el mas grande usa 8 Bytes. En \s el dato es almacenado en disco con la menor cantidad posible de Bytes pero tan pronto como es cargado en memoria es convertido a un entero de 8 bytes con signo\footnote{Cuando al representarse un numero se usa el signo ($\pm$) se achica el rango de numero que se puede representar}. Lo que nos  interesa a nosotros es elegir un subconjunto de estos tipos que sean aplicables a los tres motores, en este caso es \p el que define menos tipos de datos, teniendo en cuenta que \s presenta un tipo de dato que envuelve a todos los demás, por lo que tomaremos esos tipos como los elegidos para \jj
-
+%
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -121,9 +121,9 @@ Como podemos ver la clase de almacenamiento \verb=INTEGER= de \s es capaz de con
 \end{center}
 \caption{Comparación de los tipos de datos reales aproximados}
 \end{table}
-
+%
 En el caso de los tipos de números reales tenemos básicamente dos clases de tipos, los que guardan los datos de forma exacta y otros no exactos que se guardan en el formato punto flotante. Para el caso de los tipos de datos con punto flotante se tomaran los tipos definidos para \p como los elegidos para \jj, el tipo \verb=FLOAT= definido en \m es similar a \verb=REAL=, y nuevamente el tipo \verb=REAL= de \s es capaz de contener los otros tipos. 
-
+%
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -139,9 +139,9 @@ NUMERIC  & DATETIME &  \\
 \end{center}
 \caption{Comparación de los tipos de datos reales exactos y fechas}
 \end{table}
-
+%
 Para analizar el caso de los tipos de datos reales con almacenamiento exacto, deberemos analizar los tipos de datos de fecha y hora, pues aunque parezca un poco confuso \s no tiene un tipo de dato especifico para estos tipos, pero si posee una afinidad de columnas para ellos que se denomina, \verb=NUMERIC=, este afinidad lo que hace es decidir cual es el mejor modo de almacenar el dato, pudiendo ser cualquier de las clases \verb=NULL, INTEGER, REAL, TEXT= y \verb=BLOB=. Para los tipos \verb=NUMERIC= Y \verb=DECIMAL= que son para almacenamiento exacto de números reales no tenemos una clase especifica, pero lo que si podemos hacer es asignarle el tipo (afinidad de columna) \verb=NUMERIC= que se encargara de que el motor guarde el dato en el formato que le parezca mas adecuado. Para los datos del tipo fecha y hora tenemos bastante similitud  en \m y \p salvo que en \m esta \verb=DATETIME= que en lo unico que difiere de \verb=TIMESTAMP= es en el rango de fechas que soporta. En \s no tenemos tipos de datos para fecha y hora, pero se pueden guardar las fechas como cadenas de texto o numero, por lo que si se le da la afinidad de columna \verb=NUMERIC= el motor resolver cual es el mejor tipo de datos para almacenar la facha u hora según el formato que estemos utilizando.   
-
+%
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -149,7 +149,7 @@ Para analizar el caso de los tipos de datos reales con almacenamiento exacto, de
 \hline  & CHAR(n) & CHAR(n) \\  
     & VARCHAR(n) & VARCHAR(n) \\ 
   TEXT   & TINYTEXT &  \\  
-    & TEXT & TEXT \\  e{wiki:xxx}
+    & TEXT & TEXT \\
     & MEDIUMTEXT &  \\  
     & LONGTEXT &  \\  
 \hline 
@@ -157,9 +157,9 @@ Para analizar el caso de los tipos de datos reales con almacenamiento exacto, de
 \end{center}
 \caption{Comparación de los tipos de datos cadenas de texto}
 \end{table}
-
+%
 Para el caso de los tipos de datos cadenas de texto tenemos como siempre \s con una clase de almacenamiento bastante genérica que cubre todos los tipos de datos definidos en los demás motores. La diferencia que encontramos con los otros dos motores es que el tipo \verb=TEXT= que en \m tiene 4 variantes que varían en el limite de almacenamiento, siendo el ultimo sin limite (\verb=LONGTEXT=) en cambio en \p existe solo \verb=TEXT= y que es para almacenamiento de texto sin limite, así que como antes tomaremos los tipos de datos que define \p como los elegidos para \cc. 
-
+%
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -175,10 +175,10 @@ Para el caso de los tipos de datos cadenas de texto tenemos como siempre \s con 
 \end{center}
 \caption{Comparación de los tipos de datos binarios}
 \end{table}
-
+%
 En el caso de los tipos de datos binarios tenemos.
 Faltan los tipos monetarios, booleanos
-
+%
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -191,14 +191,16 @@ Faltan los tipos monetarios, booleanos
 \end{center}
 \caption{Comparación de tipos de datos varios}
 \end{table}
-
+%
 \subsection{Funciones}
 \label{especificacion:funciones} 
 Las funciones que presentan los diferentes motores son variadas, en la documentación de  \p se puede leer\citep{postgre:functions} la siguiente aclaración:
+%
 \begin{quotation}
 \textit{If you are concerned about portability then note that most of the functions and operators described in this chapter, with the exception of the most trivial arithmetic and comparison operators and some explicitly marked functions, are not specified by the SQL standard. Some of this extended functionality is present in other SQL database management systems, and in many cases this functionality is compatible and consistent between the various implementations.}
 \end{quotation}
-Que en resumen explica que la mayoría de las funciones ofrecidas por \p con excepción de algunas pocas no forman parte de ninguno de los estándares SQL por lo que no hay que esperar compatibilidad entre los diferentes motores aunque existen algunas funciones comunes que se pueden encontrar entre los diferentes motores. Así que a continuación se buscaran funciones similares entre los diferentes motores a los que se les esta dando soporte en este proyecto, para lo cual empezaremos con una tabla comparativa:
+%
+Que en resumen explica que la mayoría de las funciones ofrecidas por \p con excepción de algunas pocas no forman parte de ninguno de los estándares SQL por lo que no hay que esperar compatibilidad entre los diferentes motores aunque existen algunas funciones comunes que se pueden encontrar entre los diferentes motores. Así que a continuación se buscaran funciones similares entre los diferentes motores a los que se les esta dando soporte en este proyecto, para lo cual empezaremos con una tabla comparativa en la que las funciones equivalentes de la misma linea tiene la palabra igual para denotar tal situación:
 
 \begin{table}[h]
 \begin{center}
@@ -257,11 +259,12 @@ upper(X) & igual & igual \\
 }
 \end{center}
 \caption{Comparación de las funciones core de \s}
+\label{tabla:core_functions}
 \end{table}  
+%
+En la tabla \ref{tabla:core_functions} están listadas las funciones que son parte de las funciones básicas\citep{sqlite:functions} o \textit{core functions} de \s que como se puede ver no son muchas, igual se obviaron algunas funciones especificas de \s aunque las aquí presentadas son una gran parte de las mismas, lo que se pretende mostrar con esta tabla es la equivalencia de estas funciones con las que presentan los otros motores para lo cual se estudio la documentación proveída por \p\cite{postgre:functions} y por \m\citep{mysql:functions} y se encontraron las equivalencias mostradas.
 
-En la tabla anterior están listadas las funciones que son parte de las funciones básicas\citep{sqlite:functions} o \textit{core functions} de \s que como se puede ver no son muchas, igual se obviaron algunas funciones especificas de \s aunque las aquí presentadas son una gran parte de las mismas, lo que se pretende mostrar con esta tabla es la equivalencia de estas funciones con las que presentan los otros motores para lo cual se estudio la documentación proveída por \p\cite{postgre:functions} y por \m\citep{mysql:functions} y se encontraron las equivalencias mostradas.
-
-Tal como fue señalado existe cierta universalidad entre las funciones que ofrecen los motores como por ejemplo ocurre con la función \verb=abs()= que se usa de igual manera en todos los motores y diferencias como con la función \verb=ifnull()= que en \p no existe pero se tiene un resultado igual con la función \verb=coalesce()=, además \s aclara en su documentación que \verb=ifnull(x,y)= es equivalente a \verb=coalesce(x,y)=, o diferencias también se pueden ver en funciones que no tienen equivalente en los otros motores como ocurre en el caso de la función \verb=randomblob(N)= de \s. De todos modos es posible definir nuevas funciones en cualquiera de los tres motores con lo que se puede llegar a una total compatibilidad pero esa no es la intención de este proyecto, lo que se pretende es buscar las compatibilidades existentes entre los motores por lo que \jj tendrá disponible un conjunto de funciones que son reconocidas por los tres motores de manera predeterminada.
+Tal como fue señalado existe cierta universalidad entre las funciones que ofrecen los motores como por ejemplo ocurre con la función \verb=abs()= que se usa de igual manera en todos los motores y diferencias como con la función \verb=ifnull()= que en \p no existe pero se tiene un resultado igual con la función \verb=coalesce()=, además \s aclara en su documentación que \verb=ifnull(x,y)= es equivalente a \verb=coalesce(x,y)=, otras diferencias también se pueden ver en funciones que no tienen equivalente en los otros motores como ocurre en el caso de la función \verb=randomblob(N)= de \s. De todos modos es posible definir nuevas funciones en cualquiera de los tres motores con lo que se puede llegar a una total compatibilidad pero esa no es la intención de este proyecto, lo que se pretende es buscar las compatibilidades existentes entre los motores por lo que \jj tendrá disponible un conjunto de funciones que son reconocidas por los tres motores de manera predeterminada.
 
 De las funciones ofrecidas por este proyecto solo se ofrecerá el nombre de la función quedando a cargo del usuario la correcta utilización de las mismas teniendo en cuenta que a pesar de tener los mismos nombres la implementación de una función en un motor puede ser mas permisiva que en otro en cuanto a los parámetros aceptados y las valores que devuelven, así que de existir un error este sera reportado cuando se intente usar la sentencia que se formo haciendo uso de cualquiera de estas funciones. \s tiene algunas funciones mas disponibles por defecto que están documentadas en dos capítulos aparte por lo que a continuación veamos dos tablas que muestran las equivalencias de las mismas en los otros motores.
 
@@ -295,7 +298,7 @@ min() & igual & igual \\
 \caption{Comparación de las funciones agregadas de \s}
 \end{table}  
 
-Entre las funciones agregadas de \s encontramos que casi todas son compatibles excepto por la función \verb=group_concat= que presenta una sintaxis algo diferente pero funciona igual en \m y se puede obtener el mismo resultado en \p mediante el uso de dos funciones distintas la otra función que no existe en los demás motores es \verb=total()= que es similar a \verb=sum()= pero  trabaja de manera diferente con los valores \verb=null= y además a diferencia de \verb=sum= devuelve siempre un \verb=float= como resultado. Cabe aclarar que \verb=max()= y \verb=min()= aparecen también en el \textit{core} de \s pero estas son diferentes pues toman distintos parámetros y se comportan de manera diferente.
+Entre las funciones agregadas de \s encontramos que casi todas son compatibles excepto por la función \verb=group_concat= que presenta una sintaxis algo diferente pero funciona igual en \m y se puede obtener el mismo resultado en \p mediante el uso de dos funciones distintas, la otra función que no existe en los demás motores es \verb=total()= que es similar a \verb=sum()= pero  trabaja de manera diferente con los valores \verb=null= y además a diferencia de \verb=sum= devuelve siempre un \verb=float= como resultado. Cabe aclarar que \verb=max()= y \verb=min()= aparecen también en el \textit{core} de \s pero estas son diferentes pues toman distintos parámetros y se comportan de manera diferente.
 
 \begin{table}[h]
 \begin{center}
@@ -323,7 +326,7 @@ strftime() & - & varios \\
 \label{table:functions:dates}
 \end{table}
 
-La tabla \ref{table:functions:dates} muestra las funciones que tiene \s para el manejo de fechas y horas y sus equivalentes de existir en los otros dos motores, las funciones que define \s tienden a estar sobrecargadas (o admiten valores por defecto para los parámetros como en PHP) por ejemplo la función \verb=date()= de usársela sin ningún parámetro devuelve la fecha (DATE) actual en el formato \verb='YYYY-MM-DD'= en cambio si se le pasa una cadena de texto equivalente a un \verb=TIMESTAMP= la misma función devuelve la porción de la fecha de la cadena de texto, para lograr esto en \m y \p se usan dos funciones para obtener la misma funcionalidad por ejemplo si en \s se quiere obtener la fecha (DATE) actual se debe usar \verb=date(now())= y \verb=date(D)= funcionaria como en \s donde \verb=D= es una fecha completa (TIMESTAMP). Para \verb=juliandays()= y \verb=strftime()= se pueden obtener resultados parecidos mediante el uso de más de una función para obtener el mismo resultado o incluso realizando algunos cálculos por lo que no existe una función equivalente para las mismas a menos que se la defina o se usen  más de una para obtener el mismo resultado.
+La tabla \ref{table:functions:dates} muestra las funciones que tiene \s para el manejo de fechas y horas y sus equivalentes de existir en los otros dos motores, las funciones que define \s tienden a estar sobrecargadas (o admiten valores por defecto para los parámetros como en PHP) por ejemplo la función \verb=date()= de usársela sin ningún parámetro devuelve la fecha (DATE) actual en el formato \verb='YYYY-MM-DD'= en cambio si se le pasa una cadena de texto equivalente a un \verb=TIMESTAMP= la misma función devuelve la porción de la fecha de la cadena de texto, para lograr esto en \m y \p se usan dos funciones para obtener la misma funcionalidad por ejemplo si en \s se quiere obtener la fecha (DATE) actual se debe usar \verb=date(now())= y \verb=date(D)= funcionaria como en \s donde \verb=D= es una fecha completa (TIMESTAMP). Para \verb=juliandays()= y \verb=strftime()= se pueden obtener resultados parecidos mediante el uso de más de una función o realizando algunos cálculos, por lo que no existe una función equivalente para las mismas a menos que se la defina o se usen  más de una para obtener el mismo resultado.
 
 Como se dijo previamente el uso de las funciones puede llegar a comprometer la portabilidad y salvo por aquellas mas comunes se pueden obtener resultados diferentes ante las mismas entradas por lo que \jj debe ofrecer las funciones que tengan su equivalente en los otros motores y no debe chequear sintaxis pues esto ya lo hará el propio motor, el realizar esta comprobación seria una redundancia y un aumento de procesamiento con su correspondiente sobrecarga totalmente evitable. Por lo que el soporte para funciones se limitara a ofrecer una lista de funciones permitidas pero dejando la puerta abierta a el uso de otras a riesgo propio del programador.
 
@@ -341,7 +344,7 @@ Esta sentencia es usada para crear tablas en una base de datos relacional, un re
   [ PRIMARY KEY <indexed columns> ]
   [ FOREIGN KEY <columns and referenced table> ]
 \end{Verbatim}
-Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definición de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su "pequeñez" por lo cual pasamos a estudiar\verb= CREATE TABLE= tal como la entiende \s\cite{sqlite:sql}\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m\citep{mysql:sql} y \p\citep{postgre:sql}
+Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definición de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente podemos empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su ``pequeñez'' por lo cual pasamos a estudiar\verb= CREATE TABLE= tal como la entiende \s\cite{sqlite:sql}\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m\citep{mysql:sql} y \p\citep{postgre:sql}
 
 \begin{Verbatim}[frame=leftline, framesep=3mm]
   CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
@@ -352,7 +355,7 @@ Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= p
   | AS <select stmt>
 \end{Verbatim}
 
-Los parámetros\verb= TEMPORARY= y\verb= TEMP= se usan indistintamente para crear una tabla temporaria en \s, lo cual es soportados por los 3 DBMS con la salvedad que en \m solo se acepta la palabra reservada\verb= TEMPORARY=. El parámetro\verb= IF NOT EXISTS= indica que de existir una tabla del mismo nombre la sentencia \verb= CREATE TABLE= no tiene efecto sobre la base de datos, este parámetro no es soportado por \p por lo que sera omitido. Por ultimo hay que tener en cuenta que al ser \s un motor "serverless" siempre se esta trabajando o sobre la base de dato principal o sobre una temporaria por lo que este para el parámetro\verb= <database name>= solo acepta\verb= "main"= ó\verb= "temp"= de modo que en un principio el nombre de la base de dato no se tomara en cuenta y cualquier tabla que se cree sera en la base de dato actual.  La restricción \verb=AS <select stmt>= funciona de manera similar para los tres motores de base de datos por lo que también sera incluida, en lo único que varían es en como son reconocidos los tipos de datos y además que debido a \ss los nombres de las columnas agregadas deben ser los mismo que los de la sentencia \verb=SELECT=, por ultimo vale aclarar que \verb=<select stmt>= debe ser una sentencia \verb=SELECT= valida y correspondiente a el mismo motor.
+Los parámetros\verb= TEMPORARY= y\verb= TEMP= se usan indistintamente para crear una tabla temporaria en \s, lo cual es soportados por los 3 DBMS con la salvedad que en \m solo se acepta la palabra reservada\verb= TEMPORARY=. El parámetro\verb= IF NOT EXISTS= indica que de existir una tabla del mismo nombre la sentencia \verb= CREATE TABLE= no tiene efecto sobre la base de datos, este parámetro no es soportado por \p por lo que sera omitido. Por ultimo hay que tener en cuenta que al ser \s un motor ``serverless'' siempre se esta trabajando o sobre la base de dato principal o sobre una temporaria por lo que este para el parámetro\verb= <database name>= solo acepta\verb= "main"= ó\verb= "temp"= de modo que en un principio el nombre de la base de dato no se tomara en cuenta y cualquier tabla que se cree sera en la base de dato actual.  La restricción \verb=AS <select stmt>= funciona de manera similar para los tres motores de base de datos por lo que también sera incluida, en lo único que varían es en como son reconocidos los tipos de datos y además que debido a \s los nombres de las columnas agregadas deben ser los mismo que los de la sentencia \verb=SELECT=, por ultimo vale aclarar que \verb=<select stmt>= debe ser una sentencia \verb=SELECT= valida y correspondiente a el mismo motor.
 
 \begin{Verbatim}
   <table element> ::=
