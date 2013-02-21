@@ -1,7 +1,7 @@
 Descripcion
 -----------
 
-Proyecto para el seminario de Computador Universitario (CU) de la Facultad de ciencias Exactas de la Universidad Nacional de Salta.
+Trabajo final para el seminario de Computador Universitario (CU) de la Facultad de ciencias Exactas de la Universidad Nacional de Salta.
 
 Autor
 -----
