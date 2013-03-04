@@ -672,7 +672,7 @@ En ella se puede encontrar unas pocas diferencias con las demás motores de base
 %
 \subsubsection{Especificación de SELECT} 
 \label{especificacion:dialectos:select}
-Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta así sin mas se analiza a continuación \verb=SELECT= tal como es conocido por \s:
+Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posibilidades que presenta y a que es una de las sentencias que mas se utilizara dentro de un sistema por lo que es necesario poner énfasis en ella, así sin mas se analiza a continuación \verb=SELECT= tal como es conocido por \s:
 %
 \begin{Verbatim}
   <query specification> ::=
@@ -680,8 +680,8 @@ Esta sentencia es quizá la mas compleja a analizar debido a la cantidad de posi
   [ ORDER BY <ordering term> [ { <comma> <ordering term> }... ]
   [ LIMIT <expr> [ { OFFSET | <comma> } <expr> ] ]  
 \end{Verbatim}
-
-Hasta este punto la sintaxis usada es compatible con los otros dos motores, por lo que sera aceptada tal cual, así que se siguen buscando diferencias:
+%
+Hasta este punto la sintaxis usada es compatible con los otros dos motores, por lo que sera aceptada tal cual aunque es necesario aclarar que hay una diferencia con respecto a \m el cual permite que las consultas intervinientes en una unión puedan tener cada una una restricción \verb=ORDER BY= y/o \verb=LIMIT= mientras que en los otros dos motores esto solo es posible de aplicarse a la consulta resultado de la \verb=UNION= de consultas, siendo \verb=UNION= uno de los posibles valores para \verb=<compound operator>=. Se siguen buscando diferencias:
 
 \begin{Verbatim}
   <select core> ::=
@@ -721,14 +721,14 @@ Hasta este punto la sintaxis usada es compatible con los otros dos motores, por 
   
   <ordering term> ::=
   <expr> [ COLLATE <collation name> ] [ ASC | DESC ]
-  %no COLLATE en mysql no ASC DESC en postgre
+  %no COLLATE en mysql
   <compound operator> ::=
     UNION [ ALL ]
   | INTERSECT 
   | EXCEPT
   %solo union para Mysql
 \end{Verbatim}
-Son pocas las incompatibilidades que podemos encontrar, pero existen, la primera incompatibilidad es que el elemento \verb=<index option>= no es aceptado por \p; segundo en el elemento \verb=<ordering item>= nos encontramos con que \m no soporta establecer la opcion \verb=COLLATE= y \p no acepta la anterior ni los elementos \verb=ASC, DESC=; por ultimo \m solo acepta \verb=UNION [ ALL ]= para el elemento \verb=<compound operator>=. Así que nuestra sintaxis final quedaría de la siguiente manera:  
+Son pocas las incompatibilidades que se pueden encontrar, pero existen, la primera incompatibilidad es que el elemento \verb=<index option>= dentro de \verb=<single source>= no es aceptado por \p; segundo en el elemento \verb=<ordering item>= nos encontramos con que \m y \p no soportan establecer la opción \verb=COLLATE= que son las restricciones para \verb=ORDER BY=; por ultimo \m solo acepta \verb=UNION [ ALL ]= para el elemento \verb=<compound operator>=. Así que la sintaxis final quedaría de la siguiente manera:  
 
 \begin{Verbatim}[frame=single, label=sintaxis para SELECT]
   <query specification> ::=
@@ -765,6 +765,9 @@ Son pocas las incompatibilidades que podemos encontrar, pero existen, la primera
   <join constraint> ::=
     [ ON <expr> ]
   | USING <left paren> <comma><column name> <right paren>
+  
+  <ordering term> ::=
+  <expr> [ASC | DESC]
 \end{Verbatim}
 
-Habiendo definido un dialecto genérico que sea soportado por todos los motores a los que se le esta dando soporte teniendo en cuenta además de la sintaxis de las sentencias a los tipos de datos definidos y las funciones que presentan cada uno de los motores es necesario a continuación diseñar la arquitectura del proyecto atendiendo a las necesidades expuestas en este capitulo, actividad que se desarrollara en el siguiente capitulo. 
+Habiendo definido un dialecto genérico que sea soportado por todos los motores a los que se le esta dando soporte y teniendo en cuenta además de la sintaxis de las sentencias a los tipos de datos definidos y las funciones que presentan cada uno de los motores es necesario a continuación diseñar la arquitectura del proyecto atendiendo a las necesidades expuestas en este capitulo, actividad que se desarrollara en el siguiente capitulo.
