@@ -6,7 +6,7 @@ package com.crossdb.sql;
  * como por ejemplo WHERE (x = y AND (x=z OR x=b)). Todas las funciones que ofrece
  * esta clase son para ir construyendo las diferentes condiciones de la cláusula, todas
  * ellas vienen con el prefijo "and" u "or" esto es para definir el modo en que se
- * irán concatenando las diferentes condiciones, la unica que ves que se ignora
+ * irán concatenando las diferentes condiciones, la única que ves que se ignora
  * el prefijo es cuando se esta agregando la primera condición a la cláusula.
  * <p>
  * Si se quiere agregar los nombre de las tablas como por ejemplo "tabla.columna = 1"
