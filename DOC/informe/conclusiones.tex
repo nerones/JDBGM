@@ -1,7 +1,7 @@
 \chapter*{Conclusiones}
 %
 %
-Después de analizar, diseñar e implementar queda como ultima tarea la de exponer la experiencia que resulto de todo el trabajo echo, como introducción puedo destacar que tome verdadera conciencia de lo que implica analizar el problema antes de iniciar con un proyecto aun cuando este no sea muy grande, a la hora de diseñar e implementar dada mi poca o nula experiencia la tarea estuvo mezclada pues algunos detalles de diseño debido a la naturaleza de el proyecto requerían mayor conocimientos sobre el lenguaje de los que inicialmente poseía, además claro de otros conceptos mucho mas abstractos como por ejemplo los de los patrones y de las buenas practicas a la hora de desarrollar o mejor dicho escribir código.
+Después de analizar, diseñar e implementar queda como ultima tarea la de exponer la experiencia que resulto de todo el trabajo echo, como introducción se puede destacar que se tomo verdadera conciencia de lo que implica analizar un problema antes de iniciar con un proyecto aun cuando este no sea muy grande, a la hora de diseñar e implementar dada la poca o nula experiencia la tarea estuvo mezclada pues algunos detalles de diseño, debido a la naturaleza de el proyecto, requerían mayor conocimientos sobre el lenguaje de los que inicialmente se poseían, además de otros conceptos mucho mas abstractos como por ejemplo los de los patrones y de las buenas practicas a la hora de desarrollar o mejor dicho escribir código.
 %
 %
 \section{Resultado de el proyecto}
@@ -13,13 +13,13 @@ La liviandad que se busco tanto en tamaño físico como de carga extra de recurs
 \begin{itemize}
 \item \textbf{\jd}: en orden de hacer ocultar el uso de \jd y de proveer una interfaz mucho mas simple se ocultan muchas de las funcionalidades de el mismo, pero también muchas de estas posibilidades están fuera de el alcance actual de este proyecto.
 %
-\item \textbf{Manejo de los datos extraídos}: dado que \jd ya provee una manera independiente de el DB que se este utilizando de acceder a los datos que se obtuvieron de una consulta este aspecto no es cubierto directamente por \jj si no que utiliza \verb=ResultSet= que es la interfaz que provee dicha API, por lo que es necesario conocer el uso de esta interfaz para poder utilizar los datos extraídos desde el DB.
+\item \textbf{Manejo de los datos extraídos}: dado que \jd ya provee una manera independiente de el DB que se este utilizando para acceder a los datos que se obtuvieron de una consulta, este aspecto no es cubierto directamente por \jj si no que utiliza \verb=ResultSet= que es la interfaz que provee dicha API, por lo que es necesario conocer el uso de esta interfaz para poder utilizar los datos extraídos desde el DB.
 %
 \item \textbf{Control de errores}: en el manejador de sentencias solo se controlan los errores mas triviales que puedan ocurrir cuando no se respeta la sintaxis de creación de sentencias, esto evita controles redundantes puesto que el DBMS al recibir la sentencia vuelve a controlar los errores. En el lado de la capa de abstracción de \jd los errores no deben ser manejados si no que deben ser relanzados, en este sentido la depuración de el programa puede resultar mas compleja que si se utilizara únicamente el API de Java.
 %
 \item \textbf{API simplificada}: hay demasiados configuraciones posibles para las sentencias SQL por lo que no se cubren algunos aspectos principalmente con el uso de funciones, hay tantas diferencias entre las mismas que no es factible entregar un API que las contemple a todas ellas sin caer en la dependencia de un motor en especifico.
 %
-\item \textbf{Sintaxis genérica}: la sintaxis en común que se definió entre los tres motores a los que se le esta dando soporte limita mucho las capacidades de los diferentes motores, esto debido principalmente a la presencia de \ss entre los motores puesto que este es un motor minimalista que no tiene muchas de las características que los otros si aun así algunas de estas características pueden ser implementadas si se las "programa" por cuenta propia pero esto ya implicaría que se debe realizar trabajo extra para migrar de motor y por lo tanto se perdería independencia. 
+\item \textbf{Sintaxis genérica}: la sintaxis en común que se definió entre los tres motores a los que se le esta dando soporte limita mucho las capacidades de los diferentes motores, esto debido principalmente a la presencia de \s entre los motores puesto que este es un motor minimalista que no tiene muchas de las características que los otros si, aun así algunas de estas características pueden ser implementadas si se las ``programa'' por cuenta propia pero esto ya implicaría que se debe realizar trabajo extra para migrar de motor y por lo tanto se perdería independencia. 
 \end{itemize}
 %
 %
