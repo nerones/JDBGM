@@ -1,1 +1,41 @@
-\chapter{Sintaxis utilizada en este informe}
+\chapter{Sintaxis y convenciones utilizadas}
+Este informe utiliza las siguientes convenciones:
+%
+\begin{itemize}
+\item Para código tanto de sentencias SQl como de Java se utilizan \verb=tipografía monoespaciada=.
+%
+\item Para palabras en ingles se utilizan \textit{itálicas}, estas usualmente se utilizan para nombrar marcas o conceptos que se entienden mejor por su nombre original.
+%
+\item Para la definición de las sentencias SQL una sintaxis cuya definición se puede ver a continuación.
+\end{itemize}
+%
+\section{Sintaxis utilizada para definir las sentencias SQL}
+Dicha sintaxis se basa en la sintaxis vista en algunos extractos de la sintaxis usada para definir el estándar SQL, además es similar a la sintaxis usada por \p y \m en su documentación oficial. A continuación la definición de la sintaxis:
+\begin{enumerate}
+\item \verb=<nombre etiqueta>= La etiqueta es el componente principal, sirve para definir elementos y nombrarlos.
+%
+\item \verb|::=| El símbolo ``dos puntos dos puntos igual'' sirve para asignar una definición a la etiqueta, la definición de una etiqueta puede estar compuesta por otras etiquetas y de los componentes que se describirán a continuación.
+%
+\item \verb=|= La barra vertical sirve para declarar alternativas para un componente, por ejemplo \verb(<tag> ::= <tag 1> | <tag 2>( indica que \verb=<tag>= debe tomar uno y solo uno de los valores definidos por \verb=<tag 1>= y \verb=<tag 2>=.
+%
+\item \verb=[]= Los corchetes sirven para indicar componentes opcionales.
+%
+\item \verb={}= Las llaves sirven para indicar componentes obligatorios cuando sea preciso resaltar dicha obligatoriedad.
+%
+\item \verb=...= Los tres puntos o puntos suspensivos indican que un componente se puede repetir indefinidamente.
+%
+\item \verb=NOMBRE= Se pueden utilizar palabras en mayúsculas para indicar palabras reservadas de SQL como por ejemplo \verb=SELECT=.
+\end{enumerate}
+%
+Los componentes recién nombrados pueden ser mezclados libremente, por ejemplo una lista de alternativas encerradas entre corchetes (\verb=[<elem> | <elem> | <elem>]=) indica que se puede elegir o no una de las alternativas dadas, en cambio si estuviera encerrada entre corchetes (\verb={<elem> | <elem> | <elem>}=) indica que la elección de una de las alternativas es obligatoria. El siguiente es un ejemplo tomado del capitulo \ref{cap:disenio}.
+%
+\begin{Verbatim}[frame=leftline, framesep=3mm]
+  CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
+  [ IF NOT EXISTS ] <table contents source>
+
+  <table contents source> ::=
+    <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+  | AS <select stmt>
+\end{Verbatim}
+%
+En el se puede ver el uso de palabras reservadas y un ejemplo de uso de los puntos suspensivos. \verb=[ { <comma> <table element> }... ]= este código significa que el componente \verb=<comma> <table element>= es opcional, pero de existir debe estar compuesto por las dos etiquetas encerradas entre las llaves y lo que ellas significasen. Los puntos suspensivos indican que el elemento opcional puede estar repetido tantas veces como se desee. 
