@@ -120,6 +120,7 @@ public class Column {
 	 */
 	public Column(String columnName, int dataType, Object columnValue) {
 		this.columnName = columnName;
+		this.type = dataType;
 		this.columnValue = columnValue;
 	}
 
@@ -152,6 +153,24 @@ public class Column {
 	public Column(String name, int type) {
 		this.columnName = name;
 		this.type = type;
+	}
+	
+	/**
+	 * Crea una columna con nombre dado por name y el tipo de dato de la columna
+	 * dado por java.sql.Types. el ultimo parámetro es para definir el tamaño del
+	 * tipo de datos, solo valido para algunos tipos.
+	 * 
+	 * @param name
+	 *             el nombre de la columna
+	 * @param type
+	 *            el tipo de dato de la columna tomado de {@link java.sql.Types}
+	 * @param size
+	 * 				el tamaño para el tipo de datos, solo valido para algunos.
+	 */
+	public Column(String name, int type, int size) {
+		this.columnName = name;
+		this.type = type;
+		this.varcharSize = size;
 	}
 
 	/**
