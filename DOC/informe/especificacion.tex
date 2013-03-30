@@ -180,8 +180,7 @@ Para el caso de los tipos de datos cadenas de texto se tiene como siempre \s con
 \end{table}
 %
 
-En el caso de los tipos de datos binarios tenemos.
-Faltan los tipos monetarios, booleanos
+En el caso de los tipos de datos binarios se tienen en \m una gran cantidad de variantes de \verb=BLOB= que varían en tamaño máximo permitido y otros que son de tamaño variable. En cambio para \s como siempre se tiene una única clase ``genérica'' bastante flexible y en \p se tiene un solo tipo que puede almacenar datos binarios que difiere en el tamaño máximo que es capaz de contener. Como la principal diferencia entre los motores es el tamaño máximo se optara por elegir un único tipo, el \verb=BLOB=.
 %
 \begin{table}[h]
 \begin{center}
@@ -196,6 +195,8 @@ Faltan los tipos monetarios, booleanos
 \caption{Comparación de tipos de datos varios}
 \end{table}
 %
+
+Los últimos tipos que quedan por revisar son los booleanos que en lo que difieren es en el modo en el que se almacenan, por ejemplo en \m mediante un valor entero y en \p mediante un carácter. pero no se generan mayores complicaciones si se utiliza un único tipo para representarlos a todos. Para los valores monetarios por lo general se exigen valores exactos para no generar errores en los cálculos que se pudieran hacer sobre estos numero, para ellos \p define un tipo especial, \verb=MONETARY=, pero que puede ser fácilmente reemplazado en su función especifica por \verb=NUMERIC= así que se descartara el tipo especifico de \p, decantándose por el uso de \verb=NUMERIC=.  
 \subsection{Funciones}
 \label{especificacion:funciones} 
 Las funciones que presentan los diferentes motores son variadas, en la documentación de  \p se puede leer\citep{postgre:functions} la siguiente aclaración:
