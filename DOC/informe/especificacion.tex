@@ -196,7 +196,7 @@ En el caso de los tipos de datos binarios se tienen en \m una gran cantidad de v
 \end{table}
 %
 
-Los últimos tipos que quedan por revisar son los booleanos que en lo que difieren es en el modo en el que se almacenan, por ejemplo en \m mediante un valor entero y en \p mediante un carácter. pero no se generan mayores complicaciones si se utiliza un único tipo para representarlos a todos. Para los valores monetarios por lo general se exigen valores exactos para no generar errores en los cálculos que se pudieran hacer sobre estos numero, para ellos \p define un tipo especial, \verb=MONETARY=, pero que puede ser fácilmente reemplazado en su función especifica por \verb=NUMERIC= así que se descartara el tipo especifico de \p, decantándose por el uso de \verb=NUMERIC=.  
+Los últimos tipos que quedan por revisar son los booleanos que en lo que difieren es en el modo en el que se almacenan, por ejemplo en \m mediante un valor entero y en \p mediante un carácter. Pero no se generan mayores complicaciones si se utiliza un único tipo para representarlos a todos. Para los valores monetarios por lo general se exigen valores exactos para no generar errores en los cálculos que se pudieran hacer sobre estos numero, para ellos \p define un tipo especial, \verb=MONETARY=, pero que puede ser fácilmente reemplazado en su función especifica por \verb=NUMERIC= así que se descartara el tipo especifico de \p, decantándose por el uso de \verb=NUMERIC=.  
 \subsection{Funciones}
 \label{especificacion:funciones} 
 Las funciones que presentan los diferentes motores son variadas, en la documentación de  \p se puede leer\citep{postgre:functions} la siguiente aclaración:
@@ -205,7 +205,7 @@ Las funciones que presentan los diferentes motores son variadas, en la documenta
 \textit{If you are concerned about portability then note that most of the functions and operators described in this chapter, with the exception of the most trivial arithmetic and comparison operators and some explicitly marked functions, are not specified by the SQL standard. Some of this extended functionality is present in other SQL database management systems, and in many cases this functionality is compatible and consistent between the various implementations.}
 \end{quotation}
 %
-Que en resumen explica que la mayoría de las funciones ofrecidas por \p con excepción de algunas pocas no forman parte de ninguno de los estándares SQL por lo que no hay que esperar compatibilidad entre los diferentes motores aunque existen algunas funciones comunes que se pueden encontrar entre los diferentes motores. Así que a continuación se buscaran funciones similares entre los diferentes motores a los que se les esta dando soporte en este proyecto, para lo cual empezaremos con una tabla comparativa en la que las funciones equivalentes de la misma linea tiene la palabra igual para denotar tal situación:
+Que en resumen explica que la mayoría de las funciones ofrecidas por \p con excepción de algunas pocas no forman parte de ninguno de los estándares SQL por lo que no hay que esperar compatibilidad entre los diferentes motores aunque existen algunas funciones comunes que se pueden encontrar entre los diferentes motores. Así que a continuación se buscaran funciones similares entre los diferentes motores a los que se les esta dando soporte en este proyecto, para lo cual se empezara con una tabla comparativa en la que las funciones equivalentes de la misma linea tiene la palabra \verb=igual= para denotar tal situación:
 
 \begin{table}[h]
 \begin{center}
@@ -267,11 +267,11 @@ upper(X) & igual & igual \\
 \label{tabla:core_functions}
 \end{table}  
 %
-En la tabla \ref{tabla:core_functions} están listadas las funciones que son parte de las funciones básicas\citep{sqlite:functions} o \textit{core functions} de \s que como se puede ver no son muchas, igual se obviaron algunas funciones especificas de \s aunque las aquí presentadas son una gran parte de las mismas, lo que se pretende mostrar con esta tabla es la equivalencia de estas funciones con las que presentan los otros motores para lo cual se estudio la documentación proveída por \p\cite{postgre:functions} y por \m\citep{mysql:functions} y se encontraron las equivalencias mostradas.
+En la tabla \ref{tabla:core_functions} están listadas las funciones que son parte de las funciones básicas\citep{sqlite:functions} o \textit{core functions} de \s que como se puede ver no son muchas, igual se obviaron algunas funciones especificas de \s aunque las aquí presentadas son una gran parte de las mismas. Lo que se pretende mostrar con esta tabla es la equivalencia de estas funciones con las que presentan los otros motores para lo cual se estudio la documentación proveída por \p\cite{postgre:functions} y por \m\citep{mysql:functions} y se encontraron las equivalencias mostradas.
 
-Tal como fue señalado existe cierta universalidad entre las funciones que ofrecen los motores como por ejemplo ocurre con la función \verb=abs()= que se usa de igual manera en todos los motores y diferencias como con la función \verb=ifnull()= que en \p no existe pero se tiene un resultado igual con la función \verb=coalesce()=, además \s aclara en su documentación que \verb=ifnull(x,y)= es equivalente a \verb=coalesce(x,y)=, otras diferencias también se pueden ver en funciones que no tienen equivalente en los otros motores como ocurre en el caso de la función \verb=randomblob(N)= de \s. De todos modos es posible definir nuevas funciones en cualquiera de los tres motores con lo que se puede llegar a una total compatibilidad pero esa no es la intención de este proyecto, lo que se pretende es buscar las compatibilidades existentes entre los motores por lo que \jj tendrá disponible un conjunto de funciones que son reconocidas por los tres motores de manera predeterminada.
+Tal como fue señalado existe cierta universalidad entre las funciones que ofrecen los motores como por ejemplo ocurre con la función \verb=abs()= que se usa de igual manera en todos los motores y diferencias como con la función \verb=ifnull()= que en \p no existe pero se tiene un resultado igual con la función \verb=coalesce()=\footnote{\s aclara en su documentación que \texttt{ifnull(x,y)} es equivalente a \texttt{coalesce(x,y)}.}. Otras diferencias también se pueden ver en funciones que no tienen equivalente en los otros motores como ocurre en el caso de la función \verb=randomblob(N)= de \s, de todos modos es posible definir nuevas funciones en cualquiera de los tres motores con lo que se podría llegar a una total compatibilidad, pero esa no es la intención de este proyecto, lo que se pretende es buscar las compatibilidades existentes entre los motores por lo que \jj tendrá disponible un conjunto de funciones que son reconocidas por los tres motores de manera predeterminada.
 
-De las funciones ofrecidas por este proyecto solo se ofrecerá el nombre de la función quedando a cargo del usuario la correcta utilización de las mismas teniendo en cuenta que a pesar de tener los mismos nombres la implementación de una función en un motor puede ser mas permisiva que en otro en cuanto a los parámetros aceptados y las valores que devuelven, así que de existir un error este sera reportado cuando se intente usar la sentencia que se formo haciendo uso de cualquiera de estas funciones. \s tiene algunas funciones mas disponibles por defecto que están documentadas en dos capítulos aparte por lo que a continuación veamos dos tablas que muestran las equivalencias de las mismas en los otros motores.
+De las funciones ofrecidas por este proyecto solo se ofrecerá el nombre de la función quedando a cargo del usuario la correcta utilización de las mismas teniendo en cuenta que a pesar de tener los mismos nombres la implementación de una función en un motor puede ser mas permisiva que en otro en cuanto a los parámetros aceptados y las valores que devuelven, así que de existir un error este sera reportado cuando se intente usar la sentencia que se formo haciendo uso de cualquiera de estas funciones. \s posee otras funciones disponibles por defecto que están documentadas en dos capítulos aparte, por lo que a continuación se presentaran dos tablas que muestran las equivalencias de las mismas en los otros motores.
 
 \begin{table}[h]
 \begin{center}
@@ -303,7 +303,7 @@ min() & igual & igual \\
 \caption{Comparación de las funciones agregadas de \s}
 \end{table}  
 
-Entre las funciones agregadas de \s encontramos que casi todas son compatibles excepto por la función \verb=group_concat= que presenta una sintaxis algo diferente pero funciona igual en \m y se puede obtener el mismo resultado en \p mediante el uso de dos funciones distintas, la otra función que no existe en los demás motores es \verb=total()= que es similar a \verb=sum()= pero  trabaja de manera diferente con los valores \verb=null= y además a diferencia de \verb=sum= devuelve siempre un \verb=float= como resultado. Cabe aclarar que \verb=max()= y \verb=min()= aparecen también en el \textit{core} de \s pero estas son diferentes pues toman distintos parámetros y se comportan de manera diferente.
+Entre las funciones agregadas de \s se encuentra que casi todas son compatibles excepto por la función \verb=group_concat= que presenta una sintaxis algo diferente pero funciona igual en \m y se puede obtener el mismo resultado en \p mediante el uso de dos funciones distintas. La otra función que no existe en los demás motores es \verb=total()= que es similar a \verb=sum()= pero  trabaja de manera diferente con los valores \verb=null= y además a diferencia de \verb=sum= devuelve siempre un \verb=float= como resultado. Cabe aclarar que \verb=max()= y \verb=min()= aparecen también en el \textit{core} de \s pero estas son diferentes pues toman distintos parámetros y se comportan de manera diferente.
 
 \begin{table}[h]
 \begin{center}
@@ -337,7 +337,7 @@ Como se dijo previamente el uso de las funciones puede llegar a comprometer la p
 
 
 \subsection{Sentencias SQL}
-En las siguientes secciones se pasa a analizar por separado cada una de las sentencias que se están por incluir en nuestro dialecto genérico, para ello se compararan las implementaciones que se hicieron sobre cada uno de los motores sobre los que se da soporte.
+En las siguientes secciones se pasa a analizar por separado cada una de las sentencias que se están por incluir en el dialecto genérico, para ello se compararan las implementaciones que se hicieron sobre cada uno de los motores sobre los que se da soporte.
 
 \subsubsection{Especificación de CREATE TABLE} 
 \label{especificacion:dialectos:create}
@@ -350,7 +350,7 @@ Esta sentencia es usada para crear tablas en una base de datos relacional, un re
   [ FOREIGN KEY <columns and referenced table> ]
 \end{Verbatim}
 %
-Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar, además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definición de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente el analisi puede empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su ``pequeñez'' por lo cual se pasa a estudiar\verb= CREATE TABLE= tal como la entiende \s\cite{sqlite:sql}\footnote{para ver la sintaxis usada ir a QQQQQQQQ} y comparando las diferencias con \m\citep{mysql:sql} y \p\citep{postgre:sql}
+Se obviaron las definiciones de algunas de las opciones de\verb= CREATE TABLE= puesto que escapan al alcance del proyecto el cual esta limitado por los DBMS a los que tiene que soportar, además hay que tener en cuenta algunas salvedades, como que si se especifica una columna como\verb= PRIMARY KEY= dentro de la definición de la columna no se puede especificar la clausula\verb= PRIMARY KEY= fuera de los paréntesis que encierran a las definiciones de las columnas. Mas específicamente el analisi puede empezar con \s el cual, sin restarle importancia, es el que menos características implementa debido a su ``pequeñez'' por lo cual se pasa a estudiar\verb= CREATE TABLE= tal como la entiende \s\cite{sqlite:sql}\footnote{para ver la sintaxis usada ir a el apéndice \ref{apendice:sintaxis} } y comparando las diferencias con \m\citep{mysql:sql} y \p\citep{postgre:sql}
 %
 \begin{Verbatim}[frame=leftline, framesep=3mm]
   CREATE [ TEMP | TEMPORARY ] TABLE <database name> <dot> <table name> 
@@ -396,7 +396,7 @@ Como primer diferencia se observan los tipos de datos que tienen diferentes nomb
 
 El parámetro \verb=COLLATE= también presenta diferencias, pero es en este caso es \p el que limita ya que no acepta \verb=COLLATE= en la definición de columna por lo que no sera adoptada en la especificación de \jj. En \p se puede especificar el ``collate'' a usar sobre todas las tablas en la creación de la base de datos. \verb= UNIQUE= y \verb= PRIMARY KEY= como restricción de columna no aceptan ningún modificador en \m, por lo tanto se obviara el modificador \verb=<conflict cause>= de \s y otros que acepta \p. El parametro \verb= NOT NULL= tampoco acepta ningún modificador en \m, su contra parte el parámetro\verb= NULL= puede ser omitido ya que de no agregarse se toma por defecto que la columna puede aceptar valores nulos. Por ultimo hay que señalar que \m si bien implementa\verb= CHEK <expre>= este no es reconocido en la definición de columna.
 
-En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m una ultima diferencia la podemos ver en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando. Aun así es posible sortear este problema en \p es posible usar la palabra clave \verb=SERIAL= la cual es un atajo para crear una secuencia y asignársela a la columna, en este caso se usara para emular el funcionamiento de la clausula anterior y con \m lo único que hace falta es limitar esta clausula como lo hace \s.   
+En \s y \p a las restricciones de columna se les puede especificar un nombre con \verb=CONSTRAINT <name>= pero esto no es soportado en \m. Una ultima diferencia se puede observar en el parámetro\verb= AUTOINCREMENT= (\verb=AUTO_INCREMENT= en \m) que solo se puede especificar cuando una columna es\verb= PK= y del tipo \verb= INTEGER=, en \m se puede hacer incluso sobre columnas que no sean \verb=PK=, en \p este parámetro no existe, al menos no en la version  sobre la que se esta trabajando. Aun así es posible sortear este problema en \p pues es posible usar la palabra clave \verb=SERIAL= la cual es un atajo para crear una secuencia y asignársela a la columna, en este caso se usara para emular el funcionamiento de la clausula anterior y con \m lo único que hace falta es limitar esta clausula como lo hace \s.   
 %
 \begin{Verbatim}
   <table constraint definition> ::=
@@ -611,7 +611,7 @@ La sintaxis que se analiza a continuación corresponde a la sentencia \verb=INSE
 %
 \subsubsection{Especificación de ALTER TABLE} 
 \label{especificacion:dialectos:altertable}
-\verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso nos encontramos con que \s esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:
+\verb=ALTER TABLE= sirve en SQL para alterar la estructura de las tablas, en este caso \s es el motor que esta limitando a los demás motores pues la sintaxis que soporta esta muy limitada, las únicas acciones que soportan son renombrar las tablas y agregar nuevas columnas a una tabla. Por lo que la sintaxis final elegida es la misma que soporta \s:
 %
 %\begin{Verbatim}
 %  <alter table statement> ::= 
@@ -622,7 +622,7 @@ La sintaxis que se analiza a continuación corresponde a la sentencia \verb=INSE
 %  | ADD [ COLUMN ] <column def>
 %\end{Verbatim}
 \begin{Verbatim}[frame=single, label=sintaxis para ALTER TABLE]
-<alter table statement> ::= 
+  <alter table statement> ::= 
   ALTER TABLE [ <database name><dot> ] <table name> <alter table action>
   
   <alter table action> ::=
@@ -733,7 +733,7 @@ Hasta este punto la sintaxis usada es compatible con los otros dos motores, por 
   | EXCEPT
   %solo union para Mysql
 \end{Verbatim}
-Son pocas las incompatibilidades que se pueden encontrar, pero existen, la primera incompatibilidad es que el elemento \verb=<index option>= dentro de \verb=<single source>= no es aceptado por \p; segundo en el elemento \verb=<ordering item>= nos encontramos con que \m y \p no soportan establecer la opción \verb=COLLATE= que son las restricciones para \verb=ORDER BY=; por ultimo \m solo acepta \verb=UNION [ ALL ]= para el elemento \verb=<compound operator>=. Así que la sintaxis final quedaría de la siguiente manera:  
+Son pocas las incompatibilidades que se pueden encontrar, pero existen, la primera incompatibilidad es que el elemento \verb=<index option>= dentro de \verb=<single source>= no es aceptado por \p; segundo en el elemento \verb=<ordering item>= \m y \p no soportan establecer la opción \verb=COLLATE= que son las restricciones para \verb=ORDER BY=; por ultimo \m solo acepta \verb=UNION [ ALL ]= para el elemento \verb=<compound operator>=. Así que la sintaxis final quedaría de la siguiente manera:  
 
 \begin{Verbatim}[frame=single, label=sintaxis para SELECT]
   <query specification> ::=
