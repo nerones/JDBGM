@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="/home/nelson/jdbgm.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/JDBGM/deploy.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <javaElement handleIdentifier="=JDBGM/src&lt;com.crossdb.sql"/>
+        <javaElement handleIdentifier="=JDBGM/src&lt;com.nelsonx.postgre"/>
+        <javaElement handleIdentifier="=JDBGM/src&lt;com.nelsonx.sqlite"/>
+        <javaElement handleIdentifier="=JDBGM/src&lt;com.nelsonx.jdbgm"/>
+        <javaElement handleIdentifier="=JDBGM/src&lt;com.spaceprogram.sql.mysql"/>
+        <file path="/JDBGM/LICENSE-crossdb.txt"/>
+    </selectedElements>
+</jardesc>
