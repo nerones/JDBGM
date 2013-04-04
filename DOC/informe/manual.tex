@@ -50,7 +50,7 @@ public void test() throws JDException{
 }
 \end{lstlisting}
 %
-El método \verb=ManagerFactory.getManager= es el que precisamente sirve para registra el motor y obtener una instancia de el manejador del mismo, asignado a la variable \verb=manager= en este caso, los parámetros que recibe son:
+El método \verb=ManagerFactory.getManager= es el que precisamente sirve para registra el motor y obtener una instancia de el manejador del mismo, asignada a la variable \verb=manager= en este caso. Los parámetros que recibe son:
 \begin{itemize}
 \item Una constante que identifica el motor que se quiere registrar y cuyos valores posibles son \verb=ManagerFactory.MYSQL_DB, ManagerFactory.SQLITE_DB= y por ultimo \verb=ManagerFactory.POSTGRE_DB=. De agregarse soporte para mas motores se deben agregar sendas constantes identificativas.
 \item Un nombre de usuario con acceso a la base de datos.
@@ -97,7 +97,7 @@ La cual es en la ultima porcion del código enviada a el motor mediante el méto
 SelectQuery select = sentencesFactory.getSelectQuery();
 select.addTable("example_table");
 select.addColumn("column_pk");
-select.addJoin().innerJoin("anoter_table", "example_table.id = anoter_table.id");
+select.addJoin().innerJoin("anoter_table","example_table.id=anoter_table.id");
 select.addOrderBy("column_pk");
 ResultSet result = manager.query(select); 
 \end{lstlisting}
@@ -124,7 +124,7 @@ manager.beginTransaction();
 manager.endTransaction();
 \end{lstlisting}
 %
-Los métodos \verb=beginTransaction()= y \verb=endtransaction()= demarcan el inicio y fin de la , cualquier sentencia que se ejecute en medio de estas dos no impactara completamente hasta que la transacción sea finalizada, de ocurrir algún error toda la transacción, o lo que se había ejecutado de ella, sera desecha (\verb=rollback=) y además se detendrá la ejecución del código pues se lanzara una excepción. En el ejemplo, suponiendo que el objeto \verb=insert= represente una sentencia valida, supóngase que  algunos de los \verb=insert= enviado hacia el motor no pueda ser ejecutado sobre la base de datos entonces los cambios previos dentro de la transacción serán desechos y el ciclo interrumpido pues se lanzara una excepción que debe ser o  bien relanzada o capturada dentro de un bloque \verb=try/catch.= Los métodos \verb=GenericManager.queryAndClose()= y \verb=GenericManager.updateAndClose()= no se pueden usar dentro de una transacción puesto que estas trabajan independientemente de la única conexión  que maneja \verb=GenericManager= por lo que no se verán afectadas por la transacción.
+Los métodos \verb=beginTransaction()= y \verb=endtransaction()= demarcan el inicio y fin de la transacción, cualquier sentencia que se ejecute en medio de estas dos no impactara completamente hasta que la transacción sea finalizada, de ocurrir algún error toda la transacción, o lo que se había ejecutado de ella, sera desecha (\verb=rollback=) y además se detendrá la ejecución del código pues se lanzara una excepción. En el ejemplo, suponiendo que el objeto \verb=insert= represente una sentencia valida, supóngase que  uno de los \verb=insert= enviado hacia el motor no pueda ser ejecutado sobre la base de datos entonces los cambios previos dentro de la transacción serán desechos y el ciclo interrumpido pues se lanzara una excepción que debe ser o  bien relanzada o capturada dentro de un bloque \verb=try/catch.= Los métodos \verb=GenericManager.queryAndClose()= y \verb=GenericManager.updateAndClose()= no se pueden usar dentro de una transacción puesto que estas trabajan independientemente de la única conexión  que maneja \verb=GenericManager= por lo que no se verán afectadas por la transacción.
 %
 \section{Liberando recursos}
 Con \jj el único momento en que el programador se debe preocupar en liberar recursos se da en dos situaciones:
