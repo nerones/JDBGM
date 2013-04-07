@@ -1,5 +1,5 @@
 \chapter{Manual de usuario}
-\jj es sencillo de utilizar, para empezar es necesario contar con \jd que usualmente esta disponible por defecto en el SDK de JSE\footnote{Y por supuesto también en JEE.} y el driver de el motor que se pretenda utilizar aparte claro de contar con \jj. Una vez que se tienen a disposición las dependencias nombradas es necesario hacerle conocer al compilador la ubicación de los archivos necesarios\footnote{No se dará una explicación de como hacer esto pues no es la intención del manual enseñar el uso de Java.}.
+\jj es sencillo de utilizar, para empezar es necesario contar con \jd que usualmente esta disponible por defecto en el SDK de JSE\footnote{Y por supuesto también en JEE.} y el driver del motor que se pretenda utilizar aparte claro de contar con \jj. Una vez que se tienen a disposición las dependencias nombradas es necesario hacerle conocer al compilador la ubicación de los archivos necesarios\footnote{No se dará una explicación de como hacer esto pues no es la intención del manual enseñar el uso de Java.}.
 %
 \section{Primeros pasos}
 Para empezar a usar el paquete es necesario importar algunas librerías, el siguiente seria un ejemplo típico de las librerías necesarias.
@@ -50,9 +50,9 @@ public void test() throws JDException{
 }
 \end{lstlisting}
 %
-El método \verb=ManagerFactory.getManager= es el que precisamente sirve para registra el motor y obtener una instancia de el manejador del mismo, asignada a la variable \verb=manager= en este caso. Los parámetros que recibe son:
+El método \verb=ManagerFactory.getManager= es el que precisamente sirve para registra el motor y obtener una instancia del manejador del mismo, asignada a la variable \verb=manager= en este caso. Los parámetros que recibe son:
 \begin{itemize}
-\item Una constante que identifica el motor que se quiere registrar y cuyos valores posibles son \verb=ManagerFactory.MYSQL_DB, ManagerFactory.SQLITE_DB= y por ultimo \verb=ManagerFactory.POSTGRE_DB=. De agregarse soporte para mas motores se deben agregar sendas constantes identificativas.
+\item Una constante que identifica el motor que se quiere registrar y cuyos valores posibles son \verb=ManagerFactory.MYSQL_DB, ManagerFactory.SQLITE_DB= y por ultimo \verb=ManagerFactory.POSTGRE_DB=. De agregarse soporte para más motores se deben agregar sendas constantes identificativas.
 \item Un nombre de usuario con acceso a la base de datos.
 \item Una URI hacia la ubicación de la base de datos.
 \item La contraseña del usuario que se le proporciono en el parámetro anterior.
@@ -111,7 +111,7 @@ El segmento de código anterior es para una sentencia \verb=SELECT= y la sentenc
 \end{Verbatim}
 Y al igual que en el ejemplo anterior se envía también la sentencia hacia el motor pero mediante el método \verb=query()= que es el apropiado para enviar las sentencias del tipo \verb=SELECT=, todas las otras sentencias se envían mediante \verb=update()=.
 
-Siempre que se hace una consulta, su resultado debe ser obtenido a través de un objeto \verb=ResultSet=, este objeto es parte de \jd por lo que para una completa guía de su uso es necesario consultar la documentación\citep{java:jdbc:tutorial} de Oracle disponible en su web. Como ya se comento para una completa referencia de todos los métodos disponibles para cada una de las sentencias es necesario referirse a su documentación, la cual esta también disponible en  el código fuente de \jj en formato de \verb=javadoc=. No se profundiza mas en el uso de las sentencias puesto que los nombres de los métodos son bastante auto descriptivos.
+Siempre que se hace una consulta, su resultado debe ser obtenido a través de un objeto \verb=ResultSet=, este objeto es parte de \jd por lo que para una completa guía de su uso es necesario consultar la documentación\citep{java:jdbc:tutorial} de Oracle disponible en su web. Como ya se comento para una completa referencia de todos los métodos disponibles para cada una de las sentencias es necesario referirse a su documentación, la cual esta también disponible en  el código fuente de \jj en formato de \verb=javadoc=. No se profundiza más en el uso de las sentencias puesto que los nombres de los métodos son bastante auto descriptivos.
 %
 \section{Realizando transacciones}
 Independientemente de cuales sentencias se quieran enviar hacia el motor estas se pueden hacer de dos maneras, la normal que es la que se explico en la sección anterior y para ese caso si la  sentencia puede ser ejecutada, no tienen errores, los cambios que ella indique son permanentes, la segunda manera es hacerlo mediante transacciones. Una transacción trata un grupo de sentencias como si de una sola se tratase, de modo que si alguna de ellas falla o es imposible de realizar se revierten todos los cambios que se estaban por realizar, quedando la base de datos en el mismo estado que estaba antes de ejecutar la transacción, si ningún error ocurre recién todos los cambios que generaría la transacción son impactados permanentemente en la base de datos, la manera de realizar esto con \jj es de la siguiente:
