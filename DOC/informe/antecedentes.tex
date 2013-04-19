@@ -23,7 +23,7 @@ Las herramientas de mapeo objeto-relacional o \textit{Object-Relational Mapping}
 Uno de los ejemplos más conocidos de estas herramientas es Hibernate, esta es una herramienta para la plataforma Java (y disponible también para .Net con el nombre de NHibernate) que facilita el mapeo de atributos entre una base de datos relacional tradicional y el modelo de objetos de una aplicación mediante archivos declarativos (XML) o anotaciones en los \textit{beans}\footnote{Los JavaBeans son un modelo de componentes para la construcción de aplicaciones en Java.} de las entidades que permiten establecer estas relaciones. 
 
 Hibernate es una herramienta bastante poderosa una vez que se aprende a utilizarla por completo, además decir que es solo un ORM es menospreciar las capacidades de la herramienta puesto que esta termino convirtiéndose en un conjunto de herramientas diferentes relacionadas entre si que brindan una solución mucho más completa. El código que se puede leer a continuación de una pequeña y simplificada muestra del uso de la herramienta:
-\begin{lstlisting}[title=Minimo ejemplo de Hibernate: guardando datos en la DB]
+\begin{lstlisting}[title=Mínimo ejemplo de Hibernate: guardando datos en la DB]
 Session session = sessionFactory.openSession();
 session.beginTransaction();
 session.save( new Event( "Our very first event!", new Date() ) );

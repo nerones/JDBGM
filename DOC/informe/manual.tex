@@ -91,7 +91,7 @@ Como se ve la sintaxis ofrecida es bastante amigable con el lenguaje utilizado p
   VALUES 
   (1, 3)
 \end{Verbatim}
-La cual es en la ultima porcion del código enviada a el motor mediante el método \verb=manager.update(insert)=, en este caso no se recupera el valor devuelto por dicha función que indica el numero de filas afectadas por la sentencia, en este caso seria $0$ por que insert agrega una fila, no altera ninguna. Este numero puede ser utilizado para saber si la consulta afecto o no a alguna fila para una consulta \verb=UPDATE= por ejemplo.
+La cual es en la ultima porción del código enviada a el motor mediante el método \verb=manager.update(insert)=, en este caso no se recupera el valor devuelto por dicha función que indica el numero de filas afectadas por la sentencia, en este caso seria $0$ por que insert agrega una fila, no altera ninguna. Este numero puede ser utilizado para saber si la consulta afecto o no a alguna fila para una consulta \verb=UPDATE= por ejemplo.
 %
 \begin{lstlisting}[title=Uso de una sentencia SELECT]
 SelectQuery select = sentencesFactory.getSelectQuery();
